@@ -8,11 +8,29 @@
 </head>
 <body>
 <!-- partial:index.partial.html -->
+<style>
+.bg-text {
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0, 0.4); /* Black w/opacity/see-through */
+  color: white;
+  font-weight: bold;
+  border: 3px solid #f1f1f1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 80%;
+  padding: 20px;
+  text-align: center;
+}
+</style>	
 <div class="hero-section">	
 		<div class="about-text hover-target">about</div>
 		<div class="contact-text hover-target">contact</div>
 		<div class="section-center">
 			<div class="container-fluid">
+				<div class="bg-text">
 				<div class="row justify-content-center">
 					<div class="col-12 text-center">
 						<h1>Anmol K Sachan</h1>
@@ -28,6 +46,7 @@
 							<span class="nature hover-target">Blog</span>
 						</p>
 					</div>
+					</div>	
 				</div>
 			</div>
 		</div>
