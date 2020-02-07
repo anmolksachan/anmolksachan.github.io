@@ -87,7 +87,7 @@ a:hover {
 	display: block;
 	overflow: hidden;
 	height: 100vh;
-	background-image: url('http://incognimous.com/ctf/pic3.JPG');
+	background-image: url('./pic3.png');
 	/* background-image: url('http://www.ivang-design.com/svg-load/portfolio/photo.jpg'); */
 	background-size: cover;
 	background-position: center;
