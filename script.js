@@ -13,7 +13,7 @@ Hackerman = (function(){
         }, 1);
       } else {
         page.className += ' uh-oh';
-        setTimeout(abort, 3000);
+        setTimeout(abort, 4000);
       }
   
   }
@@ -22,7 +22,7 @@ Hackerman = (function(){
     page.className += ' warp';
     setTimeout(function() {
       yearsHacked(1);
-    }, 4000);
+    }, 6000);
   } 
   
   function abort() {
@@ -43,7 +43,7 @@ Hackerman = (function(){
       } else {
         abort();
       }
-    }, 5000);
+    }, 8000);
   }
   
   function init() {
