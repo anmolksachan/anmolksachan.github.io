@@ -43,7 +43,7 @@ Hackerman = (function(){
       } else {
         abort();
       }
-    }, 2500);
+    }, 5000);
   }
   
   function init() {
