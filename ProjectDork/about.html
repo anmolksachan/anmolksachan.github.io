@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>About</title>
+	<style>
+		body {
+			background-color: #f8f8f8;
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+		h1, h2 {
+			color: #333;
+			text-align: center;
+		}
+		p {
+			font-size: 18px;
+			margin: 20px auto;
+			text-align: justify;
+			max-width: 800px;
+		}
+		}
+		label {
+			display: block;
+			font-size: 18px;
+			font-weight: bold;
+			margin: 20px auto 10px;
+			text-align: center;
+		}
+		input[type="text"] {
+			border: 2px solid #ccc;
+			border-radius: 5px;
+			font-size: 16px;
+			margin: 0 auto;
+			padding: 10px;
+			width: 300px;
+		}
+        div{
+                     align: center;
+                }
+		button {
+			background-color: #333;
+                        order: none;           
+                        border-radius: 5px;
+                        color: #fff;
+                        cursor: pointer;
+                        display: inline;
+			font-size: 16px;
+                        margin: 10px auto;
+                        padding: 10px;
+                        width: 300px;
+		}
+		button:hover {
+			background-color: #555;
+		}
+	</style>
+	
+</head>
+<body>
+	<h1>About the Dork Search Tools</h1>
+	<p>The Dork Search Tools are designed to help bug bounty hunters and penetration testers find sensitive information and vulnerabilities on web applications. The tools consist of two separate 
+search engines, one for Google and one for GitHub, that allow users to search for specific keywords, known as dorks, that can reveal sensitive information such as API keys, passwords, and 
+authentication tokens.</p>
+	<h2>GitHub Dork Search</h2>
+	<p>The GitHub Dork Search tool is specifically designed to search the GitHub code repository for sensitive information. It uses a set of predefined dorks, such as "api_key" and 
+"client_secret", to search for specific keywords in the code. Users can enter a domain or subdomain to search, and then select one or more dorks to search for. The tool will then open a new tab in 
+the browser with the search results.<br>
+<center><button onclick="window.location.href = 'github.html'" target="myFrame">Github Dorks</button></center></p>
+	<h2>Google Dork Search</h2>
+	<p>The Google Dork Search tool is designed to search the entire internet for sensitive information. It uses a similar set of predefined dorks as the GitHub tool, but can search any website 
+that is indexed by Google. Users can enter a domain or subdomain to search, and then select one or more dorks to search for. The tool will then open a new tab in the browser with the search 
+results.<br>
+<center><button onclick="window.location.href = 'google.html'" target="myFrame">Google Dorks</button></center></p>
+    <h2>Shodan Dork Search</h2>
+    <p>Shodan Dork Search is a tool that allows users to search for specific keywords or phrases in internet-connected devices and services indexed by Shodan. It uses a set of predefined dorks, such as "port:22" or "default password", to search for devices or services with known vulnerabilities or misconfigurations. Users can enter a query and select one or more dorks to narrow down the search results. The tool will then display the search results, including information such as the IP address, open ports, and operating system of the devices or services found.<br>
+<center><button onclick="window.location.href = 'shodan.html'" target="myFrame">Shodan Dorks</button></center></p>
+	<h2>Disclaimer</h2>
+	<p>The Google Dork, GitHub Dork, and Shodan Dork tools are intended to assist ethical security researchers, bug bounty hunters, and penetration testers in identifying potential vulnerabilities and sensitive information in web applications and internet-connected devices. It is crucial to use these tools responsibly and with proper authorization to avoid any potential legal or ethical issues.<br>The tools are not intended for any malicious use, such as hacking, cyber-attacks, or data theft. I, as the developer of these tools, do not endorse or condone any such activities, and I will not be responsible for any malicious use of these tools.
+    <br>By using these tools, you agree to use them for ethical and legitimate purposes only. You should always obtain proper authorization before using these tools on any web application or device. Additionally, you should take appropriate measures to protect yourself and others from any potential harm or damage that may result from using these tools.
+    <br>In conclusion, while these tools are designed to make your work easier and more efficient, you should use them with caution and always follow ethical and legal guidelines.</p>
+    <h2>Suggestions</h2>
+    <p>DM me using any of the below links:</p>
+<center><button onclick="window.location.href = 'https://anmolksachan.github.io'" target="_blank">Whats here!</button></center>
+    <!--<iframe name="myFrame" src="https://anmolksachan.github.io"></iframe>-->
+</body>
+</html>
+

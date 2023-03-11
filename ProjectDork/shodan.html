@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sensitive File Search</title>
+	<style>
+		body {
+			background-color: #f8f8f8;
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+		h1, h2 {
+			color: #333;
+			text-align: center;
+		}
+		label {
+			display: block;
+			font-size: 18px;
+			font-weight: bold;
+			margin: 20px auto 10px;
+			text-align: center;
+		}
+		input[type="text"] {
+			border: 2px solid #ccc;
+			border-radius: 5px;
+			font-size: 16px;
+			margin: 0 auto;
+			padding: 10px;
+			width: 300px;
+		}
+                div{
+                     align: center;
+                }
+		button {
+			background-color: #333;
+                        order: none;           
+                        border-radius: 5px;
+                        color: #fff;
+                        cursor: pointer;
+                        display: inline;
+			font-size: 16px;
+                        margin: 10px auto;
+                        padding: 10px;
+                        width: 300px;
+		}
+		button:hover {
+			background-color: #555;
+		}
+	</style>
+</head>
+<body>
+     <h1>Project Dork : Shodan.io</h1>
+	<h2>Sensitive File Search For Bug Bounty Hunters</h2>
+	<label for="searchTerm">Enter a domain /subdomain /custom word to search:</label>
+        <center><input type="text" id="searchTerm" placeholder="target.com"></center>
+	<br><br>
+	<h2>Search Options : Shodan.io Dorks for Finding Sensitive Information</h2>
+        <div><center>
+        <button onclick="search('http.title:&quot;Dashboard&quot;')">Dashboard</button>
+	   <button onclick="search('http.title:&quot;Login&quot;')">Login</button>
+ 	   <button onclick="search('http.title:&quot;Admin&quot;')">Admin</button>
+        <button onclick="search('http.title:&quot;Index of /&quot;')">Index of /</button>
+        </div></center>
+        <div><center>
+	   <button onclick="search('apache')">apache</button>
+	   <button onclick="search('nginx')">nginx</button>
+	   <button onclick="search('iis')">iis</button>
+	   <button onclick="search('mysql')">mysql</button>
+	   </div></center>
+        <div><center>
+		<button onclick="search('postgresql')">postgresql</button>
+		<button onclick="search('oracle')">oracle</button>
+		<button onclick="search('mongodb')">mongodb</button>
+		<button onclick="search('couchdb')">couchdb</button>
+	   </div></center>
+        <div><center>
+		<button onclick="search('ftp')">ftp</button>
+		<button onclick="search('ssh')">ssh</button>
+		<button onclick="search('telnet')">telnet</button>
+		<button onclick="search('snmp')">snmp</button>
+	   </div></center>
+        <div><center>
+		<button onclick="search('rdp')">rdp</button>
+		<button onclick="search('vnc')">vnc</button>
+		<button onclick="search('xmpp')">xmpp</button>
+		<button onclick="search('mqtt')">mqtt</button>
+	   </div></center>
+        <div><center>
+		<button onclick="search('http.favicon.hash')">http.favicon.hash</button>
+		<button onclick="search('http.title')">http.title</button>
+		<button onclick="search('http.html')">http.html</button>
+		<button onclick="search('http.component')">http.component</button>
+	   </div></center>
+        <div><center>
+		<button onclick="search('http.component_category')">http.component_category</button>
+		<button onclick="search('http.component_type')">http.component_type</button>
+		<button onclick="search('http.headers.server')">http.headers.server</button>
+		<button onclick="search('http.headers.www-authenticate')">http.headers.www-authenticate</button>
+	   </div></center>
+        <div><center>
+		<button onclick="search('http.status')">http.status</button>
+		<button onclick="search('http.html_hash')">http.html_hash</button>
+		<button onclick="search('ssl.cert.subject.common_name')">ssl.cert.subject.common_name</button>
+		<button onclick="search('ssl.cert.fingerprint')">ssl.cert.fingerprint</button>
+	   </div></center>
+        <div><center>
+		<button onclick="search('ssl.cert.issuer.common_name')">ssl.cert.issuer.common_name</button>
+		<button onclick="search('ssl.cert.serial_number')">ssl.cert.serial_number</button>
+		<button onclick="search('ssl.cert.subject.country_name')">ssl.cert.subject.country_name</button>
+		<button onclick="search('ssl.cert.subject.organization_name')">ssl.cert.subject.organization_name</button>
+	   </div></center>
+        <div><center>
+		<button onclick="search('ssl.cert.subject.organizational_unit_name')">ssl.cert.subject.organizational_unit_name</button>
+		<button onclick="search('ssl.cert.validity')">ssl.cert.validity</button>
+		<button onclick="search('ssl.chain_count')">ssl.chain_count</button>
+		<button onclick="search('ssl.cipher.bits')">ssl.cipher.bits</button>
+	   </div></center>
+        <div><center>
+		<button onclick="search('ssl.cipher.name')">ssl.cipher.name</button>
+		<button onclick="search('ssl.cipher.version')">ssl.cipher.version</button>
+		<button onclick="search('ssl.get.version')">ssl.get.version</button>
+		<button onclick="search('ssl.has.rc4')">ssl.has.rc4</button>
+	   </div></center>
+        <div><center>
+        	<button type="button" onclick="search('.exports')">filename:exports</button>
+          <button type="button" onclick="search('ssl.heartbleed.status')">ssl.heartbleed.status</button>
+          <button type="button" onclick="search('ssl.protocol')">ssl.protocol</button>
+          <button type="button" onclick="search('ssl.version')">ssl.version</button>
+        <script>
+		function search(searchTerm) {
+			let customWord = document.getElementById('searchTerm').value;
+			let url = "https://www.shodan.io/search?query=" + searchTerm + " " +  encodeURIComponent(customWord);
+			window.open(url);
+		}
+	</script>
+</body>
+</html>
+

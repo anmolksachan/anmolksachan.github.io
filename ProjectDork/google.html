@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sensitive File Search</title>
+	<style>
+		body {
+			background-color: #f8f8f8;
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+		h1, h2 {
+			color: #333;
+			text-align: center;
+		}
+		label {
+			display: block;
+			font-size: 18px;
+			font-weight: bold;
+			margin: 20px auto 10px;
+			text-align: center;
+		}
+		input[type="text"] {
+			border: 2px solid #ccc;
+			border-radius: 5px;
+			font-size: 16px;
+			margin: 0 auto;
+			padding: 10px;
+			width: 300px;
+		}
+                div{
+                     align: center;
+                }
+		button {
+			background-color: #333;
+                        order: none;           
+                        border-radius: 5px;
+                        color: #fff;
+                        cursor: pointer;
+                        display: inline;
+			font-size: 16px;
+                        margin: 10px auto;
+                        padding: 10px;
+                        width: 300px;
+		}
+		button:hover {
+			background-color: #555;
+		}
+	</style>
+</head>
+<body>
+     <h1>Project Dork : Google</h1>
+	<h2>Sensitive File Search Bug Bounty Hunters</h2>
+	<label for="searchTerm">Enter a domain /subdomain /custom word to search:</label>
+        <center><input type="text" id="searchTerm" placeholder="target.com"></center>
+	<br><br>
+	<h2>Search Options : Google Dorks for Finding juicy stuff</h2>
+	
+        <div><center>
+        <button onclick="search('filename:manifest.xml')">manifest.xml</button>
+	<button onclick="search('filename:config.php')">config.php</button>
+	<button onclick="search('filename:travis.yml')">travis.yml</button>
+	<button onclick="search('filename:config.inc.php')">config.inc.php</button>
+        </div></center>
+        <div><center>
+        <button onclick="search('filename:.ovpn')">.ovpn</button>
+        <button onclick="search('filename:vim_settings.xml')">vim_settings.xml</button>
+        <button onclick="search('filename:prod.secret.exs')">prod.secret.exs</button>
+        <button onclick="search('filename:.cscfg')">.cscfg</button>
+        </div></center>
+        <div><center>
+        <button onclick="search('filename:.rdp')">.rdp</button>
+        <button onclick="search('filename:database')">database</button>
+        <button onclick="search('filename:prod.exs')">prod.exs</button>
+        <button onclick="search('filename:configuration.php')">configuration.php</button>
+        </div></center>
+        <div><center>
+        <button onclick="search('filename:.mdf')">.mdf</button>
+        <button onclick="search('filename:.sh_history')">.sh_history</button>
+        <button onclick="search('filename: sdf')"> sdf</button>
+        <button onclick="search('filename:prod.secret.exs')">prod.secret.exs</button>
+        </div></center>
+        <div><center>        
+        <button onclick="search('filename:shadow')">shadow</button> 
+        <button onclick="search('filename:.npmrc _auth flename: dockercis')">.npmrc _auth flename: dockercis</button>
+        <button onclick="search('filename:proftpdpasswd')">proftpdpasswd</button>
+        <button onclick="search('filename:sqlite')">sqlite</button>
+        </div></center>
+        <div><center>
+        <button onclick="search('filename:.psafe3')">.psafe3</button>
+        <button onclick="search('filename:.pspass')">.pspass</button>
+        <button onclick="search('filename:secret token.rb')">secret token.rb</button>
+        <button onclick="search('filename:WebServers.xml')">WebServers.xml</button>
+        </div></center>
+        <div><center>
+        <button onclick="search('filename: bash history')"> bash history</button>
+        <button onclick="search('filename:idea14.key')">idea14.key</button>
+        <button onclick="search('filename:hub')">hub</button>
+        <button onclick="search('filename:carrierwave.rb')">carrierwave.rb</button>
+        </div></center>
+        <div><center>
+        <button onclick="search('filename:sftp-config.json')">sftp-config.json</button>
+        <button onclick="search('filename:database.yml')">database.yml</button>
+        <button onclick="search('filename:.bash_profile')">.bash_profile</button>
+        <button onclick="search('filename:sftp.json')">sftp.json</button>
+        </div></center>
+        <div><center>
+        <button onclick="search('filename: keychain')"> keychain</button>
+        <button onclick="search('filename:.env')">.env</button>
+        <button onclick="search('filename: kwallet')"> kwallet</button>
+        <button onclick="search('filename:secrets.yml')">secrets.yml</button>
+        </div></center>
+        <div><center>
+        <button onclick="search('filename:wp-config.php')">wp-config.php</button>
+        <button onclick="search('filename: esmtprc')"> esmtprc</button>
+        <button onclick="search('filename:.exports')">.exports</button>
+        <button onclick="search('filename:credentials')">credentials</button>
+        </div></center>
+        <div><center>
+        <button onclick="search('filename:passwd')">passwd</button>
+        <button onclick="search('filename:id rsa')">id rsa</button>
+        <button onclick="search('filename:config.yaml')">config.yaml</button>
+        <button onclick="search('filename:LocalSettings.php')">LocalSettings.php</button>
+        </div></center>
+        <div><center>
+        <button onclick="search('filename:settings.py')">settings.py</button>
+	<button onclick="search('filename:id dsa')">id dsa</button>
+	<button onclick="search('filename:credentials.xmi')">credentials.xmi</button>
+        <script>
+		function search(searchTerm) {
+			let customWord = document.getElementById('searchTerm').value;
+			let url = "https://www.google.com/search?q=" + searchTerm + " " +  encodeURIComponent(customWord);
+			window.open(url);
+		}
+	</script>
+</body>
+</html>
+

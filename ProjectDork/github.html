@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sensitive File Search</title>
+	<style>
+		body {
+			background-color: #f8f8f8;
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+		h1, h2 {
+			color: #333;
+			text-align: center;
+		}
+		label {
+			display: block;
+			font-size: 18px;
+			font-weight: bold;
+			margin: 20px auto 10px;
+			text-align: center;
+		}
+		input[type="text"] {
+			border: 2px solid #ccc;
+			border-radius: 5px;
+			font-size: 16px;
+			margin: 0 auto;
+			padding: 10px;
+			width: 300px;
+		}
+                div{
+                     align: center;
+                }
+		button {
+			background-color: #333;
+                        order: none;           
+                        border-radius: 5px;
+                        color: #fff;
+                        cursor: pointer;
+                        display: inline;
+			font-size: 16px;
+                        margin: 10px auto;
+                        padding: 10px;
+                        width: 300px;
+		}
+		button:hover {
+			background-color: #555;
+		}
+	</style>
+</head>
+<body>
+     <h1>Project Dork : Github</h1>
+	<h2>Sensitive File Search For Bug Bounty Hunters</h2>
+	<label for="searchTerm">Enter a domain /subdomain /custom word to search:</label>
+        <center><input type="text" id="searchTerm" placeholder="target.com"></center>
+	<br><br>
+	<h2>Search Options : GiHub Dorks for Finding API Keys, Tokens and Passwords</h2>
+	<!--
+     api_key 
+     authorization_bearer:
+     oauth 
+     auth 
+     authentication 
+     client secret 
+     api_token:
+     client id
+     ОТР
+     password
+     HOMEBREW_GITHUB_API_ TOKEN 
+     user_password
+     SF USERNAME
+     user pass
+     HEROKU API KEY
+     passcode
+     JEKYLL_ GITHUB_TOKEN
+     client secret secret
+     shodan_api_key
+     api.forecast.io
+     password hash 
+     user auth
+     -->
+        <div><center>
+        <button onclick="search('api_key')">api_key</button>
+	   <button onclick="search('authorization_bearer:')">authorization_bearer:</button>
+ 	   <button onclick="search('auth')">auth</button>
+        <button onclick="search('authentication')">authentication</button>
+        </div></center>
+        <div><center>
+        <button onclick="search('client secret')">client secret</button>
+        <button onclick="search('api_token:')">api_token:</button>
+        <button onclick="search('client id')">client id</button>
+        <button onclick="search('ОТР')">ОТР</button>
+        </div></center>
+        <div><center>
+        <button onclick="search('password')">password</button>
+        <button onclick="search('HOMEBREW_GITHUB_API_ TOKEN')">HOMEBREW_GITHUB_API_ TOKEN</button>
+        <button onclick="search('user_password')">user_password</button>
+        <button onclick="search('SF USERNAME')">SF USERNAME</button>
+        </div></center>
+        <div><center>
+        <button onclick="search('user pass')">user pass</button>
+        <button onclick="search('HEROKU API KEY')">HEROKU API KEY</button>
+        <button onclick="search('passcode')">passcode</button>
+        <button onclick="search('JEKYLL_ GITHUB_TOKEN')">JEKYLL_ GITHUB_TOKEN</button>
+        </div></center>
+        <div><center>        
+        <button onclick="search('client secret secret')">client secret secret</button>
+        <button onclick="search('shodan_api_key')">shodan_api_key</button>
+        <button onclick="search('api.forecast.io')">api.forecast.io</button>
+        <button onclick="search('password hash')">password hash</button>
+        </div></center>
+        <div><center>
+        <button onclick="search('user auth')">user auth</button>
+        </div></center>
+        <script>
+		function search(searchTerm) {
+			let customWord = document.getElementById('searchTerm').value;
+			let url = "https://github.com/search?q=" + searchTerm + " " +  encodeURIComponent(customWord);
+			window.open(url);
+		}
+	</script>
+</body>
+</html>
+
