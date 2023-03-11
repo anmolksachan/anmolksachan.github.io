@@ -84,7 +84,32 @@ function closeNav() {
 <footer>
   <hr>
   <p style="text-align:center">Author : <a href="https://twitter.com/fr13nd0x7f">@FR13ND0x7F</a> <!--<a href="https://anmolksachan.github.io">Profile</a>--> <br>© 2023 Dork Search Tools. All rights reserved.</p>
-</footer>
+<script>
+  // Define a function to get the visit count from localStorage or initialize it to 0
+function getVisitCount() {
+  let visitCount = localStorage.getItem("visitCount");
+  if (!visitCount) {
+    visitCount = 0;
+  } else {
+    visitCount = parseInt(visitCount);
+  }
+  return visitCount;
+}
+
+// Define a function to increment the visit count and display it
+function incrementVisitCount() {
+  let visitCount = getVisitCount() + 1;
+  localStorage.setItem("visitCount", visitCount);
+  document.getElementById("visit-count").innerHTML = visitCount;
+}
+
+// Call the incrementVisitCount function to increment and display the visit count
+incrementVisitCount();
+
+  </script>
+  <div>Visit count: <span id="visit-count"></span></div>
+  </footer>
+
 </body>
 </html> 
 
