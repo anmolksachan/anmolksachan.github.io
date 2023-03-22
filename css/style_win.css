@@ -1,0 +1,35 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0078D7; /* Change to the desired background color */
+  font-family: Arial, sans-serif;
+}
+
+#resuming-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #FFF; /* Change to the desired text color */
+}
+
+#loading-bar {
+  width: 50%;
+  height: 15px;
+  margin: 20px auto;
+  background-color: #FFF; /* Change to the desired loading bar color */
+  animation: loading-bar 2s ease-in-out infinite;
+}
+
+@keyframes loading-bar {
+  0% {
+    width: 0%;
+  }
+  50% {
+    width: 100%;
+  }
+  100% {
+    width: 0%;
+  }
+}
