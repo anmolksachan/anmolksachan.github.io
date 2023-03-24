@@ -1,0 +1,72 @@
+/* Add styles to improve the appearance of the page */
+
+/* Style the header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #24292e;
+  color: #fff;
+  padding: 20px;
+}
+
+/* Style the site title */
+.site-title {
+  font-size: 24px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* Style the GitHub link */
+.github-link {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Style the article */
+article {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+/* Style the headings */
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 36px;
+}
+
+h2 {
+  font-size: 30px;
+}
+
+h3 {
+  font-size: 24px;
+}
+
+h4 {
+  font-size: 18px;
+}
+
+h5 {
+  font-size: 16px;
+}
+
+h6 {
+  font-size: 14px;
+}
+
+/* Style the links */
+a {
+  color: #0366d6;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
