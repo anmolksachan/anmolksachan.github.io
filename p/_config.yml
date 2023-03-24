@@ -1,0 +1,53 @@
+remote_theme: CaptainIRS/hacker-plus-theme
+
+title:
+author:
+description: 
+disqus_forum_shortname:
+google_site_verification_content: # The 'content' tag for site verification
+google_analytics: # Your Google Analytics Tracking ID
+
+# Usernames and badges
+htb_badge_no: # Go to the HackTheBox site and copy your ID
+thm_badge_no: # Go to https://tryhackme.com/profile -> Public Profile -> Get Badge ID
+show_thm_htb_badges_in_nav: false
+github_username: 
+gitlab:
+medium:
+stackoverflow:
+hacker_news:
+linkedin:
+twitch:
+youtube:
+twitter: 
+facebook:
+instagram:
+reddit:
+pinterest:
+telegram:
+steam:
+
+# -------DO NOT ALTER -------#
+markdown: kramdown
+kramdown:
+   syntax_highlighter_opts:
+      disable : true
+exclude: [
+   /*/*/_problems/*,
+   scripts
+]
+plugins:
+   - jekyll-seo-tag
+   - jemoji
+   - jekyll-sitemap
+   - jekyll-github-metadata
+collections:
+   pages:
+      output: true
+      permalink: /:name
+   writeups:
+      output: true
+   solutions:
+      output: true
+   blog:
+      output: true
