@@ -21,3 +21,29 @@ This repository/ page contains the code used in a presentation for a security me
 The `Alexa` directory contains additional code related to integrating the ESP8266 with Amazon Alexa.
 
 Feel free to use and modify the code as needed for your own projects.
+
+# Code Used
+
+### `0-LED_On_D1.ino`: A basic program to turn on the built-in LED on pin D1 of the ESP8266.
+```arduino
+void setup() {
+  pinMode(D1, OUTPUT); // set pin D1 as output
+}
+
+void loop() {
+  digitalWrite(D1, HIGH); // turn on LED
+}
+```
+
+### `1-Hello_Jarvis.ino`: A simple program to print "Hello Jarvis" to the serial monitor.
+```arduino
+void setup() {
+   Serial.begin(9600);
+   delay(5000);
+   Serial.print("Hello JARVIS!");
+}
+void loop() {
+}
+```
+## Link to All Code
+[Repository](https://github.com/anmolksachan/anmolksachan.github.io/tree/main/p/microcontrollers)
