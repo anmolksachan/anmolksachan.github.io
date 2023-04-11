@@ -217,6 +217,19 @@
       "payload": {
         "query": "query{post(id:\"999\"){title}}"
       }
+    },
+    {
+      "name": "Malformed query",
+      "description": "Attempt to execute a malformed query",
+      "payload": {
+        "query": "query{post(id:\"1\"){title, content}}"
+    },
+    {
+      "name": "Subquery depth limit exceeded",
+      "description": "Attempt to execute a query with too many nested subqueries",
+      "payload": {
+        "query": "query{post(id:\"1\"){title, comments{content, user{posts{content}}}}}"
+      }
     }
   ]
 }
