@@ -48,6 +48,48 @@
       "payload": {
         "query": "query{secretData}"
       }
+    },
+    {
+      "name": "SQL Injection - UNION attack",
+      "description": "Attempt to perform a SQL injection using UNION",
+      "payload": {
+        "query": "query{users(where:{name:{_eq:\"' UNION SELECT * FROM users WHERE '1'='1\"}}){id,name}}"
+      }
+    },
+    {
+      "name": "XSS - Script tag bypass",
+      "description": "Attempt to perform a cross-site scripting attack using script tag bypass",
+      "payload": {
+        "query": "query{users(where:{name:{_neq:\"<script>alert(1)</script>\"}, name:{_contains:\"<script>alert(1)</script>\"}}){id,name}}"
+      }
+    },
+    {
+      "name": "Path Traversal - Absolute path",
+      "description": "Attempt to perform path traversal using an absolute path",
+      "payload": {
+        "query": "query{file(path:\"/etc/passwd\"){name}}"
+      }
+    },
+    {
+      "name": "Command Injection - Arbitrary command execution",
+      "description": "Attempt to execute an arbitrary command using command injection",
+      "payload": {
+        "query": "query{runCommand(command:\"cat /etc/passwd\")}"
+      }
+    },
+    {
+      "name": "Authentication Bypass - SQL Injection",
+      "description": "Attempt to bypass authentication using SQL Injection",
+      "payload": {
+        "query": "query{user(where:{email:{_eq:\"admin'--\"}, password:{_eq:\"' OR '1'='1\"}}){id,name,email}}"
+      }
+    },
+    {
+      "name": "Authorization Bypass - Forced browsing",
+      "description": "Attempt to bypass authorization using forced browsing",
+      "payload": {
+        "query": "query{file(path:\"/secret.txt\"){name, content}}"
+      }
     }
   ]
 }
