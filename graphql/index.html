@@ -58,12 +58,17 @@
       margin-bottom: 20px;
       white-space: pre-wrap;
     }
+
+    .checkbox {
+      text-align: center;
+    }
   </style>
 </head>
 <body>
   <h1>GraphQL Test Cases</h1>
   <table>
     <tr>
+      <th class="checkbox"><input type="checkbox" id="check-all"></th>
       <th>Name</th>
       <th>Description</th>
       <th>Payload</th>
@@ -75,14 +80,22 @@
           for (var i = 0; i < data.test_cases.length; i++) {
             var testCase = data.test_cases[i];
             var row = document.createElement("tr");
+            var checkboxCell = document.createElement("td");
             var nameCell = document.createElement("td");
             var descriptionCell = document.createElement("td");
             var payloadCell = document.createElement("td");
+
+            var checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.name = "test-case";
+            checkbox.value = testCase.name;
+            checkboxCell.appendChild(checkbox);
 
             nameCell.innerHTML = testCase.name;
             descriptionCell.innerHTML = "<div class='description'>" + testCase.description + "</div>";
             payloadCell.innerHTML = "<div class='payload'>" + JSON.stringify(testCase.payload, null, 4) + "</div>";
 
+            row.appendChild(checkboxCell);
             row.appendChild(nameCell);
             row.appendChild(descriptionCell);
             row.appendChild(payloadCell);
