@@ -1,0 +1,53 @@
+{
+  "test_cases": [
+    {
+      "name": "Introspection query",
+      "description": "Verify that the introspection query is disabled",
+      "payload": {
+        "query": "{__schema{types{name}}}"
+      }
+    },
+    {
+      "name": "SQL Injection",
+      "description": "Attempt to perform SQL injection",
+      "payload": {
+        "query": "query{users(where:{name:{_eq:\"' or 1=1 --\"}}){id,name}}"
+      }
+    },
+    {
+      "name": "Cross-site scripting (XSS)",
+      "description": "Attempt to perform a cross-site scripting attack",
+      "payload": {
+        "query": "query{users(where:{name:{_contains:\"<script>alert(1)</script>\"}}){id,name}}"
+      }
+    },
+    {
+      "name": "Path Traversal",
+      "description": "Attempt to perform path traversal",
+      "payload": {
+        "query": "query{file(path:\"../etc/passwd\"){name}}"
+      }
+    },
+    {
+      "name": "Command Injection",
+      "description": "Attempt to perform command injection",
+      "payload": {
+        "query": "query{runCommand(command:\"ls -la\")}"
+      }
+    },
+    {
+      "name": "Authentication Bypass",
+      "description": "Attempt to bypass authentication",
+      "payload": {
+        "query": "query{user(id:\"1\"){id,name,email}}"
+      }
+    },
+    {
+      "name": "Authorization Bypass",
+      "description": "Attempt to bypass authorization",
+      "payload": {
+        "query": "query{secretData}"
+      }
+    }
+  ]
+}
