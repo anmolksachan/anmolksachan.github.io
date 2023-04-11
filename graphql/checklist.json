@@ -217,12 +217,6 @@
       "payload": {
         "query": "query{post(id:\"999\"){title}}"
       }
-    },
-    {
-      "name": "Malformed query",
-      "description": "Attempt to execute a malformed query",
-      "payload": {
-        "query": "query{post(id:\"1\"){title, content}}"
     }
   ]
 }
