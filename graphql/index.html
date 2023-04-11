@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GraphQL Test Cases</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    table {
+      margin: auto;
+      border-collapse: collapse;
+      width: 80%;
+      background-color: #fff;
+      box-shadow: 0px 0px 10px #888888;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    tr:hover {
+      background-color: #ddd;
+    }
+
+    .description {
+      font-style: italic;
+      color: #888;
+    }
+
+    .payload {
+      font-family: monospace;
+      color: #333;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      box-shadow: 0px 0px 5px #ccc;
+      margin-bottom: 20px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>GraphQL Test Cases</h1>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Payload</th>
+    </tr>
+    <script>
+      fetch('checklist.json')
+        .then(response => response.json())
+        .then(data => {
+          for (var i = 0; i < data.test_cases.length; i++) {
+            var testCase = data.test_cases[i];
+            var row = document.createElement("tr");
+            var nameCell = document.createElement("td");
+            var descriptionCell = document.createElement("td");
+            var payloadCell = document.createElement("td");
+
+            nameCell.innerHTML = testCase.name;
+            descriptionCell.innerHTML = "<div class='description'>" + testCase.description + "</div>";
+            payloadCell.innerHTML = "<div class='payload'>" + JSON.stringify(testCase.payload, null, 4) + "</div>";
+
+            row.appendChild(nameCell);
+            row.appendChild(descriptionCell);
+            row.appendChild(payloadCell);
+
+            document.querySelector("table").appendChild(row);
+          }
+        })
+        .catch(error => console.error(error));
+    </script>
+  </table>
+</body>
+</html>
