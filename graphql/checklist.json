@@ -231,6 +231,13 @@
       "payload": {
         "query": "query{post(id:\"1\"){title, comments{content, user{posts{content}}}}}"
       }
+    },
+    {
+      "name": "Query with long execution time",
+      "description": "Attempt to execute a query that takes a long time to complete",
+      "payload": {
+        "query": "query{longRunningQuery}"
+      }
     }
   ]
 }
