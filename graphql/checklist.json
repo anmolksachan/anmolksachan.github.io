@@ -90,6 +90,98 @@
       "payload": {
         "query": "query{file(path:\"/secret.txt\"){name, content}}"
       }
+    },
+        {
+      "name": "No query",
+      "description": "Attempt to send a request without a query parameter",
+      "payload": {
+        "variables": {}
+      }
+    },
+    {
+      "name": "Empty query",
+      "description": "Attempt to send an empty query parameter",
+      "payload": {
+        "query": "",
+        "variables": {}
+      }
+    },
+    {
+      "name": "Invalid query parameter",
+      "description": "Attempt to send an invalid query parameter",
+      "payload": {
+        "query": "invalidquery",
+        "variables": {}
+      }
+    },
+    {
+      "name": "Invalid variable type",
+      "description": "Attempt to send a variable with an invalid type",
+      "payload": {
+        "query": "query{users(where:{name:{_eq:$name}}){id,name}}",
+        "variables": {
+          "name": {"invalid": "type"}
+        }
+      }
+    },
+    {
+      "name": "Missing required variable",
+      "description": "Attempt to send a request without a required variable",
+      "payload": {
+        "query": "query{user(where:{email:{_eq:$email}}){id,name,email}}",
+        "variables": {
+          "name": "testuser"
+        }
+      }
+    },
+    {
+      "name": "Numeric SQL injection",
+      "description": "Attempt to perform numeric SQL injection",
+      "payload": {
+        "query": "query{users(where:{id:{_eq:\"1' or 1=1 --\"}}){id,name}}"
+      }
+    },
+    {
+      "name": "Blind SQL injection",
+      "description": "Attempt to perform blind SQL injection",
+      "payload": {
+        "query": "query{users(where:{name:{_eq:\"admin\"},password:{_like:\"%$password%\"}}){id,name}}"
+      }
+    },
+    {
+      "name": "Server-side request forgery (SSRF)",
+      "description": "Attempt to perform server-side request forgery",
+      "payload": {
+        "query": "query{fetchUrl(url:\"https://example.com\")}"
+      }
+    },
+    {
+      "name": "Denial of Service (DoS)",
+      "description": "Attempt to perform a DoS attack",
+      "payload": {
+        "query": "query{users{...largeFragment}}fragment largeFragment on User{name}}"
+      }
+    },
+    {
+      "name": "GraphQL injection",
+      "description": "Attempt to perform GraphQL injection",
+      "payload": {
+        "query": "mutation{addUser(input:{name:\"testuser\",email:\"testuser@example.com\"}){user{id,name,email}}}"
+      }
+    },
+    {
+      "name": "Information disclosure",
+      "description": "Attempt to access sensitive information",
+      "payload": {
+        "query": "query{user(id:\"2\"){id,name,email,password}}"
+      }
+    },
+    {
+      "name": "Cross-site request forgery (CSRF)",
+      "description": "Attempt to perform cross-site request forgery",
+      "payload": {
+        "query": "mutation{updateUser(id:\"1\",input:{name:\"hacked\"}){user{id,name,email}}}"
+      }
     }
   ]
 }
