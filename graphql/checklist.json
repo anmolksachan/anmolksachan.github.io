@@ -182,6 +182,61 @@
       "payload": {
         "query": "mutation{updateUser(id:\"1\",input:{name:\"hacked\"}){user{id,name,email}}}"
       }
+    },
+        {
+      "name": "Mutation without authentication",
+      "description": "Attempt to execute a mutation without authentication",
+      "payload": {
+        "query": "mutation{createPost(title:\"New Post\", content:\"Content of the post\"){id,title,content}}"
+      }
+    },
+    {
+      "name": "Mutation with insufficient permissions",
+      "description": "Attempt to execute a mutation with insufficient permissions",
+      "payload": {
+        "query": "mutation{deletePost(id:\"1\"){id,title,content}}"
+      }
+    },
+    {
+      "name": "Query with invalid argument",
+      "description": "Attempt to execute a query with an invalid argument",
+      "payload": {
+        "query": "query{post(id:\"not_an_integer\"){id,title,content}}"
+      }
+    },
+    {
+      "name": "Query with too many results",
+      "description": "Attempt to execute a query with too many results",
+      "payload": {
+        "query": "query{posts{title}}"
+      }
+    },
+    {
+      "name": "Query with too few results",
+      "description": "Attempt to execute a query with too few results",
+      "payload": {
+        "query": "query{post(id:\"999\"){title}}"
+      }
+    },
+    {
+      "name": "Query with long execution time",
+      "description": "Attempt to execute a query that takes a long time to complete",
+      "payload": {
+        "query": "query{longRunningQuery}"
+      }
+    },
+    {
+      "name": "Malformed query",
+      "description": "Attempt to execute a malformed query",
+      "payload": {
+        "query": "query{post(id:\"1\"){title, content}}"
+    },
+    {
+      "name": "Subquery depth limit exceeded",
+      "description": "Attempt to execute a query with too many nested subqueries",
+      "payload": {
+        "query": "query{post(id:\"1\"){title, comments{content, user{posts{content}}}}}"
+      }
     }
   ]
 }
