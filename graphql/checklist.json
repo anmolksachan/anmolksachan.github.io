@@ -183,7 +183,7 @@
         "query": "mutation{updateUser(id:\"1\",input:{name:\"hacked\"}){user{id,name,email}}}"
       }
     },
-        {
+    {
       "name": "Mutation without authentication",
       "description": "Attempt to execute a mutation without authentication",
       "payload": {
