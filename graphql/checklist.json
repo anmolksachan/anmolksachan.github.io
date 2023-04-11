@@ -223,6 +223,7 @@
       "description": "Attempt to execute a malformed query",
       "payload": {
         "query": "query{post(id:\"1\"){title, content}}"
+      }
     },
     {
       "name": "Subquery depth limit exceeded",
