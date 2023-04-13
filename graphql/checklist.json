@@ -1,10 +1,28 @@
 {
   "test_cases": [
     {
-      "name": "Introspection query",
-      "description": "Verify that the introspection query is disabled",
+      "name": "GraphQL API endpoint",
+      "description": "Common endpoint for GraphQL APIs",
       "payload": {
-        "query": "{__schema{types{name}}}"
+        "query": [
+        "/graphql",
+        "/api/graphql",
+        "/api/v1/graphql",
+        "/graphql-server",
+        "/graphql-service",
+        "/graphql-api",
+        "/graphql-endpoint",
+        "/graphql-console",
+        "/graphql-explorer",
+        "/graphql-playground",
+        "/graphql-dev",
+        "/graphqld",
+        "/gql",
+        "/graphql/schema",
+        "/graphql/query",
+        "/graphql/mutation",
+        "/graphql/subscriptions"
+      ]
       }
     },
     {
