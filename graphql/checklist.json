@@ -273,35 +273,25 @@
       }
     },
     {
-      "name": "Vulnerability scanner - GraphCrawler",
-      "description": "Toolkit that can be used to grab schemas and search for sensative data, test authorization, brute force schemas, and find paths to a given type.",
+      "name": "Vulnerability scanner - GraphQLmap",
+      "description": "Can be used as a CLI client also to automate attacks.",
       "payload": {
-        "query": "https://github.com/gsmith257-cyber/GraphCrawler"
+        "query": "https://github.com/swisskyrepo/GraphQLmap"
       }
     },
     {
-      "name": "Vulnerability scanner - GraphCrawler",
-      "description": "Toolkit that can be used to grab schemas and search for sensative data, test authorization, brute force schemas, and find paths to a given type.",
+      "name": "Vulnerability scanner - graphql-path-enum",
+      "description": "Tool that lists the different ways of reaching a given type in a GraphQL schema.",
       "payload": {
-        "query": "https://github.com/gsmith257-cyber/GraphCrawler"
+        "query": "https://gitlab.com/dee-see/graphql-path-enum"
       }
     },
     {
-      "name": "Vulnerability scanner - GraphCrawler",
-      "description": "Toolkit that can be used to grab schemas and search for sensative data, test authorization, brute force schemas, and find paths to a given type.",
-      "payload": {
-        "query": "https://github.com/gsmith257-cyber/GraphCrawler"
-      }
-    },
-    {
-      "name": "Tools",
-      "description": "Vulnerability scanners",
+      "name": "Blogs/ Resources",
+      "description": "Resources",
       "payload": {
         "query" : [
-        "https://github.com/gsmith257-cyber/GraphCrawler: Toolkit that can be used to grab schemas and search for sensative data, test authorization, brute force schemas, and find paths to a given type.",
-        "https://blog.doyensec.com/2020/03/26/graphql-scanner.html: Can be used as standalone or Burp extension.",
-        "https://github.com/swisskyrepo/GraphQLmap: Can be used as a CLI client also to automate attacks",
-        "https://gitlab.com/dee-see/graphql-path-enum: Tool that lists the different ways of reaching a given type in a GraphQL schema."
+        "https://github.com/swisskyrepo/GraphQLmap: Can be used as a CLI client also to automate attacks"
       ]
      }
     }
