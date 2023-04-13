@@ -2,7 +2,6 @@
 <html>
 <head>
   <title>GraphQL Test Cases</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <link rel="icon" type="image/gif" href="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZGNhNTcwZmFlYzFhMzU0OGRhODllMzhkM2Y5OGZlMWZiYmFlODE1YSZjdD1n/nvb74G5HEcQhoah9Hv/giphy.gif">
   <meta name="description" content="This page contains GraphQL test cases.">
   <meta name="description" content="This page contains GraphQL test cases. These test cases cover various scenarios and can be used to validate the functionality of your GraphQL API.">
@@ -67,30 +66,12 @@
   </style>
 </head>
 <body>
-  <script>
-  function generatePdf() {
-  const doc = new jsPDF();
-  const cards = document.querySelectorAll('.card');
-  cards.forEach((card, index) => {
-    // Add the card title and description to the PDF
-    const title = card.querySelector('.card-title').textContent;
-    const description = card.querySelector('.card-description').textContent;
-    doc.text(title, 10, (index + 1) * 30);
-    doc.text(description, 10, (index + 1) * 30 + 10);
-    // Add a link to the PDF
-    const link = card.querySelector('.read-more').getAttribute('href');
-    doc.textWithLink('Read More', 10, (index + 1) * 30 + 20, {url: link});
-  });
-  doc.save('hacker-resources.pdf');
-  }
-  </script>
   <div style="position: fixed; right: 20px; top: 50%; transform: translateY(-50%);">
     <a href="https://twitter.com/fr13nd0x7f" target="_blank"><img src="https://abs.twimg.com/responsive-web/client-web/icon-svg.168b89da.svg" alt="Twitter" style="display: block; width: 30px; margin-bottom: 5px;"></a>
     <a href="https://www.linkedin.com/in/anmolksachan/" target="_blank"><img src="https://www.treasurers.org/ACTmedia/linkedin-icon-1-logo-png-transparent.png" alt="LinkedIn" style="display: block; width: 30px; margin-bottom: 5px;"></a>
     <a href="https://github.com/anmolksachan/" target="_blank"><img src="https://github.com/fluidicon.png" alt="GitHub" style="display: block; width: 30px; margin-bottom: 5px;"></a>
   </div>
   <h1>GraphQL Test Cases</h1>
-  <button onclick="generatePdf()">Download PDF</button>
   <table>
     <tr>
       <th class="checkbox"><input type="checkbox" id="check-all"></th>
