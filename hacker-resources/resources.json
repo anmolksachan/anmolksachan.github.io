@@ -6,14 +6,14 @@
       "link": "https://anmolksachan.github.io/"
     },
     {
-      "title": "q",
-      "description": "A technology news and information website.",
-      "link": "https://arstechnica.com/"
+      "title": "GraphQL Test Cases",
+      "description": "GraphQL test cases for testing your API's functionality. Our test suite covers a wide range of scenarios, from simple queries to complex mutations, and can be used to identify any issues or bugs in your API.",
+      "link": "https://anmolksachan.github.io/graphql/"
     },
     {
-      "title": "OWASP Top Ten Project",
-      "description": "A project that identifies the most critical web application security risks.",
-      "link": "https://owasp.org/www-project-top-ten/#"
+      "title": "Medium Blog",
+      "description": "My Blog",
+      "link": "https://anmolksachan.medium.com/#"
     }
   ]
 }
