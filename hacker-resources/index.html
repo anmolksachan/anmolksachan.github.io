@@ -4,52 +4,75 @@
 	<title>Hacker Resources</title>
 	<style>
 		body {
-			background-color: #222;
+			background-color: #000;
 			color: #fff;
 			font-family: 'Courier New', Courier, monospace;
-			font-size: 18px;
+			font-size: 16px;
 			line-height: 1.5;
 			margin: 0;
 			padding: 0;
 		}
 		.container {
-			display: flex;
-			flex-wrap: wrap;
-			justify-content: center;
-			padding: 20px;
+			margin: 50px auto;
+			max-width: 800px;
+		}
+		.title {
+			font-size: 36px;
+			margin-bottom: 20px;
 		}
 		.card {
 			background-color: #444;
-			border-radius: 5px;
-			box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-			margin: 10px;
+			border-radius: 10px;
+			margin-bottom: 20px;
 			padding: 20px;
-			text-align: center;
-			width: 300px;
 		}
-		.card a {
-			color: #fff;
+		.card-title {
+			font-size: 24px;
+			margin-bottom: 10px;
+		}
+		.card-description {
+			font-size: 16px;
+			margin-bottom: 10px;
+		}
+		.read-more {
+			display: block;
+			font-size: 16px;
+			margin-top: 10px;
 			text-decoration: none;
+			text-transform: uppercase;
 		}
-		.card h2 {
-			margin-top: 0;
+		.read-more:hover {
+			color: #ff0;
 		}
 	</style>
 </head>
 <body>
-	<h1 style="text-align: center;">Hacker Resources</h1>
 	<div class="container">
-		<!-- Fetch data from JSON file and loop through it -->
-		{% for item in data %}
-			<div class="card">
-				<img src="{{ item.image }}" alt="{{ item.title }}" width="200" height="200">
-				<h2>{{ item.title }}</h2>
-				<p>{{ item.description }}</p>
-				<a href="{{ item.link }}">Read More</a>
-			</div>
-		{% endfor %}
+		<h1 class="title">Hacker Resources</h1>
+		<div id="cards"></div>
 	</div>
-	<!-- Include the JSON file -->
-	<script src="resources.json"></script>
+
+	<script>
+		// Make an AJAX call to the JSON file
+		const xhr = new XMLHttpRequest();
+		xhr.open('GET', 'resources.json', true);
+		xhr.onload = function() {
+			if (this.status === 200) {
+				const data = JSON.parse(this.responseText);
+				let output = '';
+				data.forEach(function(item) {
+					output += `
+						<div class="card">
+							<h2 class="card-title">${item.title}</h2>
+							<p class="card-description">${item.description}</p>
+							<a href="${item.url}" class="read-more" target="_blank">Read More</a>
+						</div>
+					`;
+				});
+				document.getElementById('cards').innerHTML = output;
+			}
+		}
+		xhr.send();
+	</script>
 </body>
 </html>
