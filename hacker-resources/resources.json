@@ -14,6 +14,31 @@
       "title": "Medium Blog",
       "description": "My Blog",
       "link": "https://anmolksachan.medium.com/#"
+    },
+    {
+      "title": "Project DORK",
+      "description": "The Dork Search Tools are designed to help bug bounty hunters and penetration testers find sensitive information and vulnerabilities on web applications. The tools consist of two separate search engines, one for Google and one for GitHub, that allow users to search for specific keywords, known as dorks, that can reveal sensitive information such as API keys, passwords, and authentication tokens.",
+      "link": "https://anmolksachan.github.io/ProjectDork/"
+    },
+    {
+      "title": "Tool - The Time Machine",
+      "description": "The Time Machine - Weaponizing WaybackUrls for Recon, BugBounties , OSINT, Sensitive Endpoints and what not",
+      "link": "https://github.com/anmolksachan/TheTimeMachine"
+    },
+    {
+      "title": "Tool - CrossInjector",
+      "description": "CrossInjector is a Python tool to scan a list of URLs for Cross-Site Scripting (XSS) vulnerabilities. It uses Selenium WebDriver and ChromeDriver to execute JavaScript code and identify if a given URL is vulnerable to XSS attacks.",
+      "link": "https://github.com/anmolksachan/CrossInjector"
+    },
+    {
+      "title": "Tool - What The Cipher",
+      "description": "Cipher Suite Checker - This is a Python script that checks the cipher suite of a domain or IP address and generates a report on its security status. It uses Nmap and ciphersuite.info to perform the analysis.",
+      "link": "https://github.com/anmolksachan/WhatTheCipher"
+    },
+    {
+      "title": "Tool - JIRA'YA - JIRA Yet Another vulnerability Analyzer",
+      "description": "This script is designed to help security analysts check for vulnerabilities on JIRA instances by running a series of tests against it.",
+      "link": "https://github.com/anmolksachan/JIRAya"
     }
   ]
 }
