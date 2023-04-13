@@ -58,14 +58,14 @@
 		xhr.open('GET', 'resources.json', true);
 		xhr.onload = function() {
 			if (this.status === 200) {
-				const data = JSON.parse(this.responseText);
+				const data = JSON.parse(this.responseText).resources;
 				let output = '';
 				data.forEach(function(item) {
 					output += `
 						<div class="card">
 							<h2 class="card-title">${item.title}</h2>
 							<p class="card-description">${item.description}</p>
-							<a href="${item.url}" class="read-more" target="_blank">Read More</a>
+							<a href="${item.link}" class="read-more" target="_blank">Read More</a>
 						</div>
 					`;
 				});
