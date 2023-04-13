@@ -8,6 +8,13 @@
       }
     },
     {
+      "name": "Introspection query",
+      "description": "Verify that the introspection query is disabled",
+      "payload": {
+        "query": "{__schema{types{name}}}"
+      }
+    },
+    {
       "name": "SQL Injection",
       "description": "Attempt to perform SQL injection",
       "payload": {
