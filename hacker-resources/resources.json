@@ -1,0 +1,6 @@
+[	
+  {		"title": "Hacker News",		"description": "The latest news and articles about hacking and cybersecurity.",		"link": "https://news.ycombinator.com/",		"image": "https://picsum.photos/id/1018/200/200"	},	
+  {		"title": "Exploit Database",		"description": "A collection of exploits, vulnerabilities, and security issues.",		"link": "https://www.exploit-db.com/",		"image": "https://picsum.photos/id/1033/200/200"	},	
+  {		"title": "Hackaday",		"description": "A blog about hacking hardware and software.",		"link": "https://hackaday.com/",		"image": "https://picsum.photos/id/1047/200/200"	},	
+  {		"title": "SecurityTube",		"description": "A website with videos and courses about hacking and security.",		"link": "https://www.securitytube.net/",		"image": "https://picsum.photos/id/1070/200/200"	}
+]
