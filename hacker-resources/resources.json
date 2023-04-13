@@ -1,6 +1,19 @@
-[	
-  {		"title": "Hacker News",		"description": "The latest news and articles about hacking and cybersecurity.",		"link": "https://news.ycombinator.com/",		"image": "https://picsum.photos/id/1018/200/200"	},	
-  {		"title": "Exploit Database",		"description": "A collection of exploits, vulnerabilities, and security issues.",		"link": "https://www.exploit-db.com/",		"image": "https://picsum.photos/id/1033/200/200"	},	
-  {		"title": "Hackaday",		"description": "A blog about hacking hardware and software.",		"link": "https://hackaday.com/",		"image": "https://picsum.photos/id/1047/200/200"	},	
-  {		"title": "SecurityTube",		"description": "A website with videos and courses about hacking and security.",		"link": "https://www.securitytube.net/",		"image": "https://picsum.photos/id/1070/200/200"	}
-]
+{
+  "resources": [
+    {
+      "title": "Hacker News",
+      "description": "A social news website focused on computer science and entrepreneurship.",
+      "link": "https://news.ycombinator.com/"
+    },
+    {
+      "title": "Ars Technica",
+      "description": "A technology news and information website.",
+      "link": "https://arstechnica.com/"
+    },
+    {
+      "title": "OWASP Top Ten Project",
+      "description": "A project that identifies the most critical web application security risks.",
+      "link": "https://owasp.org/www-project-top-ten/"
+    }
+  ]
+}
