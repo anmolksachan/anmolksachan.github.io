@@ -1,12 +1,12 @@
 {
   "resources": [
     {
-      "title": "Hacker News",
-      "description": "A social news website focused on computer science and entrepreneurship.",
-      "link": "https://news.ycombinator.com/"
+      "title": "Portfolio",
+      "description": "My Portfolio.",
+      "link": "https://anmolksachan.github.io/"
     },
     {
-      "title": "Ars Technica",
+      "title": "q",
       "description": "A technology news and information website.",
       "link": "https://arstechnica.com/"
     },
