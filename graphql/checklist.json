@@ -21,9 +21,15 @@
         "/graphql/schema",
         "/graphql/query",
         "/graphql/mutation",
-        "/graphql/subscriptions",
-        "List is here - https://raw.githubusercontent.com/anmolksachan/anmolksachan.github.io/main/graphql/graphql-common.txt"
+        "/graphql/subscriptions"
       ]
+      }
+    },
+    {
+      "name": "GraphQL API endpoint - Extended List",
+      "description": "Possible endpoint for GraphQL APIs",
+      "payload": {
+        "query": "https://raw.githubusercontent.com/anmolksachan/anmolksachan.github.io/main/graphql/graphql-common.txt"
       }
     },
     {
@@ -287,11 +293,11 @@
       }
     },
     {
-      "name": "Blogs/ Resources",
-      "description": "Resources",
+      "name": "GraphQLmap",
+      "description": "Can be used as a CLI client also to automate attacks",
       "payload": {
         "query" : [
-        "https://github.com/swisskyrepo/GraphQLmap: Can be used as a CLI client also to automate attacks"
+        "https://github.com/swisskyrepo/GraphQLmap"
       ]
      }
     }
