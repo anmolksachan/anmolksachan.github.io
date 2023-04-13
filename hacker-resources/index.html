@@ -5,6 +5,101 @@
 	<style>
 		body {
 			background-color: #000;
+			color: #0f0;
+			font-family: 'Courier New', Courier, monospace;
+			font-size: 16px;
+			line-height: 1.5;
+			margin: 0;
+			padding: 0;
+		}
+		.container {
+			margin: 50px auto;
+			max-width: 800px;
+		}
+		.title {
+			font-size: 48px;
+			margin-bottom: 20px;
+			text-align: center;
+			text-transform: uppercase;
+		}
+		.card {
+			background-color: #222;
+			border-radius: 10px;
+			margin-bottom: 20px;
+			padding: 20px;
+		}
+		.card-title {
+			font-size: 24px;
+			margin-bottom: 10px;
+			color: #0f0;
+			text-shadow: 2px 2px #444;
+			text-transform: uppercase;
+		}
+		.card-description {
+			font-size: 16px;
+			margin-bottom: 10px;
+			color: #fff;
+		}
+		.read-more {
+			display: block;
+			font-size: 16px;
+			margin-top: 10px;
+			text-decoration: none;
+			text-transform: uppercase;
+			color: #0f0;
+			text-shadow: 2px 2px #444;
+			border: 2px solid #0f0;
+			padding: 10px;
+			border-radius: 10px;
+			width: 150px;
+			text-align: center;
+			margin: 20px auto;
+		}
+		.read-more:hover {
+			color: #000;
+			background-color: #0f0;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1 class="title">Hacker Resources</h1>
+		<div id="cards"></div>
+		<a href="#" class="read-more">Show me more</a>
+	</div>
+
+	<script>
+		// Make an AJAX call to the JSON file
+		const xhr = new XMLHttpRequest();
+		xhr.open('GET', 'resources.json', true);
+		xhr.onload = function() {
+			if (this.status === 200) {
+				const data = JSON.parse(this.responseText).resources;
+				let output = '';
+				data.forEach(function(item) {
+					output += `
+						<div class="card">
+							<h2 class="card-title">${item.title}</h2>
+							<p class="card-description">${item.description}</p>
+							<a href="${item.link}" class="read-more" target="_blank">Read More</a>
+						</div>
+					`;
+				});
+				document.getElementById('cards').innerHTML = output;
+			}
+		}
+		xhr.send();
+	</script>
+</body>
+</html>
+
+<!--<!DOCTYPE html>
+<html>
+<head>
+	<title>Hacker Resources</title>
+	<style>
+		body {
+			background-color: #000;
 			color: #fff;
 			font-family: 'Courier New', Courier, monospace;
 			font-size: 16px;
@@ -76,3 +171,4 @@
 	</script>
 </body>
 </html>
+-->
