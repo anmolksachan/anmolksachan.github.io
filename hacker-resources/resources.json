@@ -39,6 +39,16 @@
       "title": "Tool - JIRA'YA : JIRA Yet Another vulnerability Analyzer",
       "description": "This script is designed to help security analysts check for vulnerabilities on JIRA instances by running a series of tests against it.",
       "link": "https://github.com/anmolksachan/JIRAya"
+    },
+    {
+      "title": "Google Hacking Database",
+      "description": "Google Dorks published by me.",
+      "link": "https://www.exploit-db.com/google-hacking-database?author=10367"
+    },
+    {
+      "title": "Hmmmm.... Still need to be updated.",
+      "description": "Thanks for visiting :P",
+      "link": "https://anmolksachan.github.io/"
     }
   ]
 }
