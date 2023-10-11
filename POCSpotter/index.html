@@ -1,50 +1,5 @@
-<input type="text" id="search" placeholder="Search for CVEs">
-<button onclick="search()">Search</button>
+The project was discontinued and migrated from the web to the terminal interface.
 
-<script>
-function search() {
-  // Get the search term from the input field.
-  var searchTerm = document.getElementById("search").value;
+-> ThreatTracer - http://github.com/anmolksachan/ThreatTracer
 
-  // Make a request to the GitHub API to get the list of CVEs that match the search term.
-  var xhr = new XMLHttpRequest();
-  xhr.open("GET", "https://api.github.com/search/cve?q=" + searchTerm);
-  xhr.onload = function() {
-    if (xhr.status === 200) {
-      // The request was successful.
-      var cveResults = JSON.parse(xhr.responseText);
 
-      // Loop through the CVE results and display them on the page.
-      for (var i = 0; i < cveResults.items.length; i++) {
-        var cve = cveResults.items[i];
-
-        // Create a new div element to display the CVE information.
-        var div = document.createElement("div");
-        div.className = "cve";
-
-        // Add the CVE ID to the div element.
-        var cveId = document.createElement("span");
-        cveId.textContent = cve.id;
-        div.appendChild(cveId);
-
-        // Add the CVE title to the div element.
-        var cveTitle = document.createElement("span");
-        cveTitle.textContent = cve.title;
-        div.appendChild(cveTitle);
-
-        // Add the CVE description to the div element.
-        var cveDescription = document.createElement("span");
-        cveDescription.textContent = cve.description;
-        div.appendChild(cveDescription);
-
-        // Add the div element to the page.
-        document.getElementById("cve-list").appendChild(div);
-      }
-    } else {
-      // The request failed.
-      alert("An error occurred.");
-    }
-  };
-  xhr.send();
-}
-</script>  
