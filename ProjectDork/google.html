@@ -124,8 +124,28 @@
         </div></center>
         <div><center>
         <button onclick="search('filename:settings.py')">settings.py</button>
-	<button onclick="search('filename:id dsa')">id dsa</button>
-	<button onclick="search('filename:credentials.xmi')">credentials.xmi</button>
+	   <button onclick="search('filename:id dsa')">id dsa</button>
+	   <button onclick="search('filename:credentials.xmi')">credentials.xmi</button>
+        <button onclick="search('site:http://blob.core.windows.net “keyword”')">site:http://blob.core.windows.net</button>
+        </div></center>
+
+        <div><center>
+          <button onclick="search('site:http://blob.core.windows.net intext:\"CONFIDENTIAL\"')">site:http://blob.core.windows.net + CONFIDENTIAL</button>
+          <button onclick="search('site:*.http://core.windows.net intext:\"TLP:RED\"')">site:*.http://core.windows.net + TLP:RED</button>
+          <button onclick="search('site:*.http://core.windows.net')">site:*.http://core.windows.net</button>
+          <button onclick="search('site:*.http://core.windows.net +blob')">site:*.http://core.windows.net +blob</button>
+          <button onclick="search('site:*.http://core.windows.net +files -web -blob')">site:*.http://core.windows.net +files -web -blob</button>
+          <button onclick="search('site:*.http://core.windows.net -web')">site:*.http://core.windows.net -web</button>
+          <button onclick="search('site:*.http://core.windows.net -web -blob -files')">site:*.http://core.windows.net -web -blob -files</button>
+          <button onclick="search('site:*.http://core.windows.net inurl:dsts.dsts')">site:*.http://core.windows.net inurl:dsts.dsts</button>
+          <button onclick="search('site:*.http://core.windows.net inurl:\"term\" -web')">site:*.http://core.windows.net inurl:"term" -web</button>
+          <button onclick="search('site:*.http://blob.core.windows.net ext:xls | ext:xlsx (login | password | username)')">site:*.http://blob.core.windows.net ext:xls | ext:xlsx (login | password | username)</button>
+          <button onclick="search('intext:connectionstring blob filetype:config')">intext:connectionstring blob filetype:config</button>
+          <button onclick="search('intext:accountkey http://windows.net filetype:xml')">intext:accountkey http://windows.net filetype:xml</button>
+          <button onclick="search('intext:storageaccountkey http://windows.net filetype:txt')">intext:storageaccountkey http://windows.net filetype:txt</button>
+        </div></center>
+
+
         <script>
 		function search(searchTerm) {
 			let customWord = document.getElementById('searchTerm').value;
@@ -135,4 +155,3 @@
 	</script>
 </body>
 </html>
-
