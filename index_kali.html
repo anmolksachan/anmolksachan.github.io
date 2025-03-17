@@ -2,285 +2,272 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anmol K Sachan - Cyber Security Portfolio</title>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono&display=swap" rel="stylesheet">
     <style>
-        /* styles.css */
-body {
-    font-family: 'Ubuntu Mono', monospace;
-    background-color: #2d2d2d;
-    color: #ffffff;
-    margin: 0;
-    padding: 0;
-}
+        :root {
+            --bg: #1a1a1a;
+            --fg: #00ff00;
+            --accent: #3399ff;
+            --font: 'Ubuntu Mono', monospace;
+        }
 
-.container {
-    display: flex;
-}
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--fg);
+            font-family: var(--font);
+            height: 100vh;
+            overflow: hidden;
+        }
 
-.sidebar {
-    width: 200px;
-    background-color: #444;
-    padding: 20px;
-}
+        /* Kali-style top panel */
+        .top-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #2d2d2d;
+            padding: 8px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--accent);
+        }
 
-.sidebar ul {
-    list-style-type: none;
-    padding: 0;
-}
+        .panel-button {
+            background: var(--bg);
+            border: 1px solid var(--accent);
+            padding: 4px 12px;
+            margin: 0 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
 
-.sidebar li {
-    margin-bottom: 10px;
-}
+        .panel-button:hover {
+            background: var(--accent);
+            color: var(--bg);
+        }
 
-.sidebar a {
-    color: #fff;
-    text-decoration: none;
-}
+        /* Terminal window */
+        .terminal-container {
+            position: fixed;
+            top: 40px;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 40px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-.main-content {
-    flex-grow: 1;
-    padding: 20px;
-}
+        .terminal {
+            background: #2d2d2d;
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            width: 80%;
+            height: 80%;
+            box-shadow: 0 0 20px var(--accent);
+            position: relative;
+            overflow: hidden;
+        }
 
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
+        .terminal-header {
+            background: #1a1a1a;
+            padding: 10px;
+            border-bottom: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+        }
 
-header h1 {
-    margin: 0;
-}
+        .terminal-header i {
+            color: var(--accent);
+            margin-right: 10px;
+        }
 
-nav ul {
-    list-style-type: none;
-    padding: 0;
-    display: flex;
-}
+        .terminal-content {
+            padding: 20px;
+            height: calc(100% - 50px);
+            overflow-y: auto;
+        }
 
-nav li {
-    margin-right: 20px;
-}
+        .command {
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: underline;
+        }
 
-nav a {
-    color: #fff;
-    text-decoration: none;
-}
+        .command:hover {
+            color: #ffff00;
+        }
 
-#content article {
-    margin-bottom: 20px;
-}
+        /* File browser style */
+        .file-browser {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
 
-#content h2 {
-    margin-top: 0;
-}
+        .file {
+            background: #333;
+            padding: 15px;
+            border-radius: 5px;
+            transition: transform 0.2s;
+        }
 
-#content form {
-    display: flex;
-}
+        .file:hover {
+            transform: scale(1.05);
+            background: #444;
+        }
 
-#content input[type="email"] {
-    flex-grow: 1;
-    margin-right: 10px;
-    padding: 10px;
-}
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+        }
 
-#content button {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-}
+        .modal-content {
+            background: #2d2d2d;
+            margin: 15% auto;
+            padding: 20px;
+            width: 70%;
+            border: 2px solid var(--accent);
+            border-radius: 5px;
+        }
 
-#content iframe {
-    width: 100%;
-    height: 315px;
-}
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .terminal {
+                width: 95%;
+                height: 90%;
+            }
+        }
+
+        /* Cursor animation */
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .cursor {
+            animation: blink 1s infinite;
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background: var(--fg);
+            margin-left: 5px;
+        }
     </style>
-<script>
-    /* styles.css */
-body {
-    font-family: 'Ubuntu Mono', monospace;
-    background-color: #2d2d2d;
-    color: #ffffff;
-    margin: 0;
-    padding: 0;
-}
-
-.container {
-    display: flex;
-}
-
-.sidebar {
-    width: 200px;
-    background-color: #444;
-    padding: 20px;
-}
-
-.sidebar ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.sidebar li {
-    margin-bottom: 10px;
-}
-
-.sidebar a {
-    color: #fff;
-    text-decoration: none;
-}
-
-.main-content {
-    flex-grow: 1;
-    padding: 20px;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-header h1 {
-    margin: 0;
-}
-
-nav ul {
-    list-style-type: none;
-    padding: 0;
-    display: flex;
-}
-
-nav li {
-    margin-right: 20px;
-}
-
-nav a {
-    color: #fff;
-    text-decoration: none;
-}
-
-#content article {
-    margin-bottom: 20px;
-}
-
-#content h2 {
-    margin-top: 0;
-}
-
-#content form {
-    display: flex;
-}
-
-#content input[type="email"] {
-    flex-grow: 1;
-    margin-right: 10px;
-    padding: 10px;
-}
-
-#content button {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-}
-
-#content iframe {
-    width: 100%;
-    height: 315px;
-}
-    // scripts.js
-document.addEventListener('DOMContentLoaded', function() {
-    // Add any necessary JavaScript functionality here
-});
-</script>
-    
 </head>
 <body>
-    <div class="container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <ul>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#github">GitHub</a></li>
-                <li><a href="#youtube">YouTube</a></li>
-                <li><a href="#twitter">Twitter</a></li>
-                <li><a href="#email">Email Me</a></li>
-            </ul>
+    <!-- Kali-style top panel -->
+    <div class="top-panel">
+        <div class="panel-group">
+            <div class="panel-button" onclick="showSection('about')">About</div>
+            <div class="panel-button" onclick="showSection('experience')">Experience</div>
+            <div class="panel-button" onclick="showSection('skills')">Skills</div>
+            <div class="panel-button" onclick="showSection('projects')">Projects</div>
+            <div class="panel-button" onclick="showSection('contact')">Contact</div>
         </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <header>
-                <h1>Anmol K Sachan</h1>
-                <nav>
-                    <ul>
-                        <li><a href="#projects">Projects</a></li>
-                        <li><a href="#github">GitHub</a></li>
-                        <li><a href="#youtube">YouTube</a></li>
-                        <li><a href="#twitter">Twitter</a></li>
-                        <li><a href="#press">Press</a></li>
-                        <li><a href="#about">About</a></li>
-                    </ul>
-                </nav>
-            </header>
-
-            <section id="content">
-                <article>
-                    <h2>Latest Research</h2>
-                    <p>Subscribe for updates on my latest research, access to unpublished videos, and learn how to keep yourself safer, online and off.</p>
-                    <form>
-                        <input type="email" placeholder="Enter your email">
-                        <button type="submit">Subscribe</button>
-                    </form>
-                </article>
-
-                <article>
-                    <h2>Projects</h2>
-                    <ul>
-                        <li><a href="#">Project 1</a></li>
-                        <li><a href="#">Project 2</a></li>
-                        <li><a href="#">Project 3</a></li>
-                    </ul>
-                </article>
-
-                <article>
-                    <h2>GitHub</h2>
-                    <p>Check out my GitHub repositories:</p>
-                    <ul>
-                        <li><a href="#">Repo 1</a></li>
-                        <li><a href="#">Repo 2</a></li>
-                        <li><a href="#">Repo 3</a></li>
-                    </ul>
-                </article>
-
-                <article>
-                    <h2>YouTube</h2>
-                    <p>Watch my latest videos:</p>
-                    <iframe width="560" height="315" src="https://www.youtube.com/embed/your-video-id" frameborder="0" allowfullscreen></iframe>
-                </article>
-
-                <article>
-                    <h2>Twitter</h2>
-                    <p>Follow me on Twitter:</p>
-                    <a href="https://twitter.com/your-twitter-handle">@your-twitter-handle</a>
-                </article>
-
-                <article>
-                    <h2>Email Me</h2>
-                    <p>Contact me at:</p>
-                    <a href="mailto:your-email@example.com">your-email@example.com</a>
-                </article>
-            </section>
+        <div class="panel-group">
+            <div class="panel-button" onclick="toggleTheme()"><i class="fas fa-adjust"></i></div>
         </div>
     </div>
 
-    <script src="scripts.js"></script>
+    <!-- Terminal container -->
+    <div class="terminal-container">
+        <div class="terminal">
+            <div class="terminal-header">
+                <i class="fas fa-terminal"></i> root@anmolksachan: ~
+            </div>
+            <div class="terminal-content" id="terminalContent">
+                <div class="neofetch">
+                    <pre>
+ _  _     _ _      __  __            _            
+| || |___| | |___ |  \/  | __ _ _ __| | _____ _ __
+| __ / -_) | / -_)| |\/| |/ _` | '__| |/ / _ \ '__|
+|_||_\___|_|_\___||_|  |_|\__,_|_|  |___/\___/_|   
+                                                    
+Cyber Security Professional | Bug Bounty Hunter | OSINT Specialist
+                    </pre>
+                </div>
+
+                <div class="command-list">
+                    <div class="command" onclick="showSection('about')">> about-me</div>
+                    <div class="command" onclick="showSection('experience')">> work-experience</div>
+                    <div class="command" onclick="showSection('skills')">> skills</div>
+                    <div class="command" onclick="showSection('projects')">> projects</div>
+                    <div class="command" onclick="showSection('contact')">> contact</div>
+                </div>
+
+                <div class="file-browser" id="projectsSection">
+                    <div class="file" onclick="window.open('https://github.com/anmolksachan/TheTimeMachine')">
+                        <i class="fas fa-clock"></i> TheTimeMachine<br>
+                        <small>Time-based vulnerability scanner</small>
+                    </div>
+                    <div class="file" onclick="window.open('https://github.com/anmolksachan/CrossInjector')">
+                        <i class="fas fa-syringe"></i> CrossInjector<br>
+                        <small>XSS payload injector</small>
+                    </div>
+                    <div class="file" onclick="window.open('https://github.com/anmolksachan/WhatTheCipher')">
+                        <i class="fas fa-lock"></i> WhatTheCipher<br>
+                        <small>Encryption analysis tool</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <h2>About Me</h2>
+            <p>Experienced Cyber Security Professional with expertise in:</p>
+            <ul>
+                <li>Attack Surface Management</li>
+                <li>Penetration Testing</li>
+                <li>Vulnerability Research</li>
+                <li>Tool Development</li>
+                <li>CTF Competitions</li>
+            </ul>
+            <button onclick="closeModal('about')">Close</button>
+        </div>
+    </div>
+
+    <script>
+        function showSection(section) {
+            const sections = ['about', 'experience', 'skills', 'projects', 'contact'];
+            sections.forEach(s => {
+                document.getElementById(`${s}Modal`)?.classList.remove('active');
+            });
+
+            if (section === 'projects') {
+                document.getElementById('projectsSection').style.display = 'grid';
+            } else {
+                const modal = document.getElementById(`${section}Modal`);
+                if (modal) modal.style.display = 'block';
+            }
+        }
+
+        function closeModal(section) {
+            document.getElementById(`${section}Modal`).style.display = 'none';
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            const isLight = document.body.classList.contains('light-theme');
+            document.documentElement.style.setProperty('--bg', isLight ? '#f5f5f5' : '#1a1a1a');
+            document.documentElement.style.setProperty('--fg', isLight ? '#000' : '#00ff00');
+            document.documentElement.style.setProperty('--accent', isLight ? '#007acc' : '#3399ff');
+        }
+
+        // Initialize projects section
+        document.getElementById('projectsSection').style.display = 'grid';
+    </script>
 </body>
 </html>
