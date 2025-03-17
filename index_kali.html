@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anmol K Sachan - Cyber Security Portfolio</title>
-    <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         :root {
-            --bg: #1a1a1a;
-            --fg: #00ff00;
-            --accent: #3399ff;
+            --bg: #2d2d2d;
+            --fg: #ffffff;
+            --accent: #00ff00;
             --font: 'Ubuntu Mono', monospace;
         }
 
@@ -22,252 +23,133 @@
             overflow: hidden;
         }
 
-        /* Kali-style top panel */
-        .top-panel {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .desktop {
+            position: relative;
             width: 100%;
-            background: #2d2d2d;
-            padding: 8px;
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--accent);
-        }
-
-        .panel-button {
-            background: var(--bg);
-            border: 1px solid var(--accent);
-            padding: 4px 12px;
-            margin: 0 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .panel-button:hover {
-            background: var(--accent);
-            color: var(--bg);
-        }
-
-        /* Terminal window */
-        .terminal-container {
-            position: fixed;
-            top: 40px;
-            left: 0;
-            width: 100%;
-            height: calc(100% - 40px);
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        .terminal {
-            background: #2d2d2d;
-            border: 2px solid var(--accent);
-            border-radius: 8px;
-            width: 80%;
-            height: 80%;
-            box-shadow: 0 0 20px var(--accent);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .terminal-header {
-            background: #1a1a1a;
-            padding: 10px;
-            border-bottom: 2px solid var(--accent);
-            display: flex;
-            align-items: center;
-        }
-
-        .terminal-header i {
-            color: var(--accent);
-            margin-right: 10px;
-        }
-
-        .terminal-content {
-            padding: 20px;
-            height: calc(100% - 50px);
-            overflow-y: auto;
-        }
-
-        .command {
-            color: var(--accent);
-            cursor: pointer;
-            text-decoration: underline;
-        }
-
-        .command:hover {
-            color: #ffff00;
-        }
-
-        /* File browser style */
-        .file-browser {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            padding: 20px;
-        }
-
-        .file {
+        .search-bar {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 400px;
             background: #333;
-            padding: 15px;
             border-radius: 5px;
-            transition: transform 0.2s;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
-        .file:hover {
-            transform: scale(1.05);
+        .search-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--fg);
+            font-size: 16px;
+        }
+
+        .search-results {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+            background: #333;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .result-item {
+            padding: 5px 0;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .result-item:hover {
             background: #444;
         }
 
-        /* Modal styling */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
+        .footer {
+            position: absolute;
+            bottom: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            height: 40px;
+            background: #333;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
         }
 
-        .modal-content {
-            background: #2d2d2d;
-            margin: 15% auto;
-            padding: 20px;
-            width: 70%;
-            border: 2px solid var(--accent);
-            border-radius: 5px;
+        .footer-icon {
+            margin-right: 10px;
+            cursor: pointer;
         }
 
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .terminal {
-                width: 95%;
-                height: 90%;
-            }
-        }
-
-        /* Cursor animation */
-        @keyframes blink {
-            50% { opacity: 0; }
-        }
-
-        .cursor {
-            animation: blink 1s infinite;
-            display: inline-block;
-            width: 10px;
-            height: 20px;
-            background: var(--fg);
-            margin-left: 5px;
+        .footer-time {
+            margin-left: auto;
         }
     </style>
 </head>
 <body>
-    <!-- Kali-style top panel -->
-    <div class="top-panel">
-        <div class="panel-group">
-            <div class="panel-button" onclick="showSection('about')">About</div>
-            <div class="panel-button" onclick="showSection('experience')">Experience</div>
-            <div class="panel-button" onclick="showSection('skills')">Skills</div>
-            <div class="panel-button" onclick="showSection('projects')">Projects</div>
-            <div class="panel-button" onclick="showSection('contact')">Contact</div>
+    <div class="desktop">
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Search..." id="searchInput">
+            <div class="search-results" id="searchResults"></div>
         </div>
-        <div class="panel-group">
-            <div class="panel-button" onclick="toggleTheme()"><i class="fas fa-adjust"></i></div>
-        </div>
-    </div>
 
-    <!-- Terminal container -->
-    <div class="terminal-container">
-        <div class="terminal">
-            <div class="terminal-header">
-                <i class="fas fa-terminal"></i> root@anmolksachan: ~
-            </div>
-            <div class="terminal-content" id="terminalContent">
-                <div class="neofetch">
-                    <pre>
- _  _     _ _      __  __            _            
-| || |___| | |___ |  \/  | __ _ _ __| | _____ _ __
-| __ / -_) | / -_)| |\/| |/ _` | '__| |/ / _ \ '__|
-|_||_\___|_|_\___||_|  |_|\__,_|_|  |___/\___/_|   
-                                                    
-Cyber Security Professional | Bug Bounty Hunter | OSINT Specialist
-                    </pre>
-                </div>
-
-                <div class="command-list">
-                    <div class="command" onclick="showSection('about')">> about-me</div>
-                    <div class="command" onclick="showSection('experience')">> work-experience</div>
-                    <div class="command" onclick="showSection('skills')">> skills</div>
-                    <div class="command" onclick="showSection('projects')">> projects</div>
-                    <div class="command" onclick="showSection('contact')">> contact</div>
-                </div>
-
-                <div class="file-browser" id="projectsSection">
-                    <div class="file" onclick="window.open('https://github.com/anmolksachan/TheTimeMachine')">
-                        <i class="fas fa-clock"></i> TheTimeMachine<br>
-                        <small>Time-based vulnerability scanner</small>
-                    </div>
-                    <div class="file" onclick="window.open('https://github.com/anmolksachan/CrossInjector')">
-                        <i class="fas fa-syringe"></i> CrossInjector<br>
-                        <small>XSS payload injector</small>
-                    </div>
-                    <div class="file" onclick="window.open('https://github.com/anmolksachan/WhatTheCipher')">
-                        <i class="fas fa-lock"></i> WhatTheCipher<br>
-                        <small>Encryption analysis tool</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modals -->
-    <div id="aboutModal" class="modal">
-        <div class="modal-content">
-            <h2>About Me</h2>
-            <p>Experienced Cyber Security Professional with expertise in:</p>
-            <ul>
-                <li>Attack Surface Management</li>
-                <li>Penetration Testing</li>
-                <li>Vulnerability Research</li>
-                <li>Tool Development</li>
-                <li>CTF Competitions</li>
-            </ul>
-            <button onclick="closeModal('about')">Close</button>
+        <div class="footer">
+            <i class="fas fa-home footer-icon" onclick="showSection('home')"></i>
+            <i class="fas fa-user footer-icon" onclick="showSection('about')"></i>
+            <i class="fas fa-briefcase footer-icon" onclick="showSection('experience')"></i>
+            <i class="fas fa-code footer-icon" onclick="showSection('projects')"></i>
+            <span class="footer-time" id="footerTime"></span>
         </div>
     </div>
 
     <script>
+        const searchResults = document.getElementById('searchResults');
+        const searchInput = document.getElementById('searchInput');
+
+        const data = [
+            { name: "Kali Bugs", url: "#kaliBugs" },
+            { name: "Kali Docs", url: "#kaliDocs" },
+            { name: "Kali Linux", url: "#kaliLinux" },
+            { name: "Kali Undercover Mode", url: "#kaliUndercover" },
+            { name: "Kali Forums", url: "#kaliForums" },
+            { name: "Kali Tools", url: "#kaliTools" },
+            { name: "Kali Training", url: "#kaliTraining" },
+            { name: "Keyboard", url: "#keyboard" }
+        ];
+
         function showSection(section) {
-            const sections = ['about', 'experience', 'skills', 'projects', 'contact'];
-            sections.forEach(s => {
-                document.getElementById(`${s}Modal`)?.classList.remove('active');
+            window.location.hash = section;
+        }
+
+        function updateSearchResults() {
+            const query = searchInput.value.toLowerCase();
+            const filteredData = data.filter(item => item.name.toLowerCase().includes(query));
+            searchResults.innerHTML = '';
+            filteredData.forEach(item => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                resultItem.textContent = item.name;
+                resultItem.onclick = () => window.location.href = item.url;
+                searchResults.appendChild(resultItem);
             });
-
-            if (section === 'projects') {
-                document.getElementById('projectsSection').style.display = 'grid';
-            } else {
-                const modal = document.getElementById(`${section}Modal`);
-                if (modal) modal.style.display = 'block';
-            }
         }
 
-        function closeModal(section) {
-            document.getElementById(`${section}Modal`).style.display = 'none';
-        }
+        searchInput.addEventListener('input', updateSearchResults);
 
-        function toggleTheme() {
-            document.body.classList.toggle('light-theme');
-            const isLight = document.body.classList.contains('light-theme');
-            document.documentElement.style.setProperty('--bg', isLight ? '#f5f5f5' : '#1a1a1a');
-            document.documentElement.style.setProperty('--fg', isLight ? '#000' : '#00ff00');
-            document.documentElement.style.setProperty('--accent', isLight ? '#007acc' : '#3399ff');
-        }
-
-        // Initialize projects section
-        document.getElementById('projectsSection').style.display = 'grid';
+        setInterval(() => {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('footerTime').textContent = timeString;
+        }, 1000);
     </script>
 </body>
 </html>
