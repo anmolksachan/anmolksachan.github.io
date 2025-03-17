@@ -1,0 +1,35 @@
+{
+  "name": "CVE POC Lookup",
+  "version": "1.0",
+  "manifest_version": 3,
+  "description": "A tool to lookup Proof of Concept (POC) exploits for CVEs.",
+  "permissions": [
+    "https://poc-in-github.motikan2010.net/*",
+    "https://raw.githubusercontent.com/*",
+    "https://www.exploit-db.com/*",
+    "https://security.snyk.io/*"
+  ],
+  "host_permissions": [
+    "https://poc-in-github.motikan2010.net/*",
+    "https://raw.githubusercontent.com/*",
+    "https://www.exploit-db.com/*",
+    "https://security.snyk.io/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "background": {
+    "scripts": ["background.js"],
+    "type": "module"
+  }
+}
