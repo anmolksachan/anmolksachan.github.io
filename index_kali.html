@@ -4,152 +4,283 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anmol K Sachan - Cyber Security Portfolio</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
-        :root {
-            --bg: #2d2d2d;
-            --fg: #ffffff;
-            --accent: #00ff00;
-            --font: 'Ubuntu Mono', monospace;
-        }
+        /* styles.css */
+body {
+    font-family: 'Ubuntu Mono', monospace;
+    background-color: #2d2d2d;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+}
 
-        body {
-            margin: 0;
-            padding: 0;
-            background: var(--bg);
-            color: var(--fg);
-            font-family: var(--font);
-            height: 100vh;
-            overflow: hidden;
-        }
+.container {
+    display: flex;
+}
 
-        .desktop {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+.sidebar {
+    width: 200px;
+    background-color: #444;
+    padding: 20px;
+}
 
-        .search-bar {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 400px;
-            background: #333;
-            border-radius: 5px;
-            padding: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        }
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
 
-        .search-input {
-            width: 100%;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--fg);
-            font-size: 16px;
-        }
+.sidebar li {
+    margin-bottom: 10px;
+}
 
-        .search-results {
-            max-height: 300px;
-            overflow-y: auto;
-            margin-top: 10px;
-            background: #333;
-            border-radius: 5px;
-            padding: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        }
+.sidebar a {
+    color: #fff;
+    text-decoration: none;
+}
 
-        .result-item {
-            padding: 5px 0;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+}
 
-        .result-item:hover {
-            background: #444;
-        }
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
 
-        .footer {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 40px;
-            background: #333;
-            display: flex;
-            align-items: center;
-            padding: 0 10px;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
-        }
+header h1 {
+    margin: 0;
+}
 
-        .footer-icon {
-            margin-right: 10px;
-            cursor: pointer;
-        }
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+}
 
-        .footer-time {
-            margin-left: auto;
-        }
+nav li {
+    margin-right: 20px;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+}
+
+#content article {
+    margin-bottom: 20px;
+}
+
+#content h2 {
+    margin-top: 0;
+}
+
+#content form {
+    display: flex;
+}
+
+#content input[type="email"] {
+    flex-grow: 1;
+    margin-right: 10px;
+    padding: 10px;
+}
+
+#content button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+#content iframe {
+    width: 100%;
+    height: 315px;
+}
     </style>
+<script>
+    /* styles.css */
+body {
+    font-family: 'Ubuntu Mono', monospace;
+    background-color: #2d2d2d;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #444;
+    padding: 20px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin-bottom: 10px;
+}
+
+.sidebar a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+}
+
+nav li {
+    margin-right: 20px;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+}
+
+#content article {
+    margin-bottom: 20px;
+}
+
+#content h2 {
+    margin-top: 0;
+}
+
+#content form {
+    display: flex;
+}
+
+#content input[type="email"] {
+    flex-grow: 1;
+    margin-right: 10px;
+    padding: 10px;
+}
+
+#content button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+#content iframe {
+    width: 100%;
+    height: 315px;
+}
+    // scripts.js
+document.addEventListener('DOMContentLoaded', function() {
+    // Add any necessary JavaScript functionality here
+});
+</script>
+    
 </head>
 <body>
-    <div class="desktop">
-        <div class="search-bar">
-            <input type="text" class="search-input" placeholder="Search..." id="searchInput">
-            <div class="search-results" id="searchResults"></div>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <ul>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#github">GitHub</a></li>
+                <li><a href="#youtube">YouTube</a></li>
+                <li><a href="#twitter">Twitter</a></li>
+                <li><a href="#email">Email Me</a></li>
+            </ul>
         </div>
 
-        <div class="footer">
-            <i class="fas fa-home footer-icon" onclick="showSection('home')"></i>
-            <i class="fas fa-user footer-icon" onclick="showSection('about')"></i>
-            <i class="fas fa-briefcase footer-icon" onclick="showSection('experience')"></i>
-            <i class="fas fa-code footer-icon" onclick="showSection('projects')"></i>
-            <span class="footer-time" id="footerTime"></span>
+        <!-- Main Content -->
+        <div class="main-content">
+            <header>
+                <h1>Anmol K Sachan</h1>
+                <nav>
+                    <ul>
+                        <li><a href="#projects">Projects</a></li>
+                        <li><a href="#github">GitHub</a></li>
+                        <li><a href="#youtube">YouTube</a></li>
+                        <li><a href="#twitter">Twitter</a></li>
+                        <li><a href="#press">Press</a></li>
+                        <li><a href="#about">About</a></li>
+                    </ul>
+                </nav>
+            </header>
+
+            <section id="content">
+                <article>
+                    <h2>Latest Research</h2>
+                    <p>Subscribe for updates on my latest research, access to unpublished videos, and learn how to keep yourself safer, online and off.</p>
+                    <form>
+                        <input type="email" placeholder="Enter your email">
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </article>
+
+                <article>
+                    <h2>Projects</h2>
+                    <ul>
+                        <li><a href="#">Project 1</a></li>
+                        <li><a href="#">Project 2</a></li>
+                        <li><a href="#">Project 3</a></li>
+                    </ul>
+                </article>
+
+                <article>
+                    <h2>GitHub</h2>
+                    <p>Check out my GitHub repositories:</p>
+                    <ul>
+                        <li><a href="#">Repo 1</a></li>
+                        <li><a href="#">Repo 2</a></li>
+                        <li><a href="#">Repo 3</a></li>
+                    </ul>
+                </article>
+
+                <article>
+                    <h2>YouTube</h2>
+                    <p>Watch my latest videos:</p>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/your-video-id" frameborder="0" allowfullscreen></iframe>
+                </article>
+
+                <article>
+                    <h2>Twitter</h2>
+                    <p>Follow me on Twitter:</p>
+                    <a href="https://twitter.com/your-twitter-handle">@your-twitter-handle</a>
+                </article>
+
+                <article>
+                    <h2>Email Me</h2>
+                    <p>Contact me at:</p>
+                    <a href="mailto:your-email@example.com">your-email@example.com</a>
+                </article>
+            </section>
         </div>
     </div>
 
-    <script>
-        const searchResults = document.getElementById('searchResults');
-        const searchInput = document.getElementById('searchInput');
-
-        const data = [
-            { name: "Kali Bugs", url: "#kaliBugs" },
-            { name: "Kali Docs", url: "#kaliDocs" },
-            { name: "Kali Linux", url: "#kaliLinux" },
-            { name: "Kali Undercover Mode", url: "#kaliUndercover" },
-            { name: "Kali Forums", url: "#kaliForums" },
-            { name: "Kali Tools", url: "#kaliTools" },
-            { name: "Kali Training", url: "#kaliTraining" },
-            { name: "Keyboard", url: "#keyboard" }
-        ];
-
-        function showSection(section) {
-            window.location.hash = section;
-        }
-
-        function updateSearchResults() {
-            const query = searchInput.value.toLowerCase();
-            const filteredData = data.filter(item => item.name.toLowerCase().includes(query));
-            searchResults.innerHTML = '';
-            filteredData.forEach(item => {
-                const resultItem = document.createElement('div');
-                resultItem.className = 'result-item';
-                resultItem.textContent = item.name;
-                resultItem.onclick = () => window.location.href = item.url;
-                searchResults.appendChild(resultItem);
-            });
-        }
-
-        searchInput.addEventListener('input', updateSearchResults);
-
-        setInterval(() => {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('footerTime').textContent = timeString;
-        }, 1000);
-    </script>
+    <script src="scripts.js"></script>
 </body>
 </html>
