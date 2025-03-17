@@ -1,47 +1,70 @@
-<!--TESTING-->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberSec Portfolio - Anmol K Sachan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Anmol K Sachan - Cyber Security Portfolio</title>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #1a1a1a;
-            --secondary: #2d2d2d;
-            --accent: #00ff00;
+            --bg: #1a1a1a;
+            --fg: #00ff00;
+            --accent: #3399ff;
             --font: 'Ubuntu Mono', monospace;
         }
 
         body {
             margin: 0;
             padding: 0;
-            background: var(--primary);
-            color: var(--accent);
+            background: var(--bg);
+            color: var(--fg);
             font-family: var(--font);
             height: 100vh;
             overflow: hidden;
         }
 
-        .terminal {
+        /* Kali-style top panel */
+        .top-panel {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: #2d2d2d;
+            padding: 8px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--accent);
+        }
+
+        .panel-button {
+            background: var(--bg);
+            border: 1px solid var(--accent);
+            padding: 4px 12px;
+            margin: 0 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .panel-button:hover {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        /* Terminal window */
+        .terminal-container {
+            position: fixed;
+            top: 40px;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 40px);
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        .terminal-window {
-            background: var(--secondary);
+        .terminal {
+            background: #2d2d2d;
             border: 2px solid var(--accent);
-            border-radius: 10px;
+            border-radius: 8px;
             width: 80%;
             height: 80%;
             box-shadow: 0 0 20px var(--accent);
@@ -49,57 +72,56 @@
             overflow: hidden;
         }
 
-        .terminal-bar {
-            background: var(--primary);
-            padding: 15px;
+        .terminal-header {
+            background: #1a1a1a;
+            padding: 10px;
             border-bottom: 2px solid var(--accent);
             display: flex;
             align-items: center;
         }
 
-        .terminal-bar i {
+        .terminal-header i {
             color: var(--accent);
             margin-right: 10px;
         }
 
         .terminal-content {
             padding: 20px;
-            height: calc(100% - 60px);
+            height: calc(100% - 50px);
             overflow-y: auto;
         }
 
         .command {
             color: var(--accent);
             cursor: pointer;
-            transition: color 0.3s;
+            text-decoration: underline;
         }
 
         .command:hover {
             color: #ffff00;
         }
 
-        .neofetch {
-            margin: 20px 0;
+        /* File browser style */
+        .file-browser {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
         }
 
-        .neofetch span {
-            display: inline-block;
-            margin: 5px 0;
-        }
-
-        .project-card {
-            background: var(--primary);
-            border: 1px solid var(--accent);
-            border-radius: 5px;
+        .file {
+            background: #333;
             padding: 15px;
-            margin: 10px 0;
-            transition: transform 0.3s;
+            border-radius: 5px;
+            transition: transform 0.2s;
         }
 
-        .project-card:hover {
-            transform: scale(1.02);
+        .file:hover {
+            transform: scale(1.05);
+            background: #444;
         }
 
+        /* Modal styling */
         .modal {
             display: none;
             position: fixed;
@@ -111,7 +133,7 @@
         }
 
         .modal-content {
-            background: var(--secondary);
+            background: #2d2d2d;
             margin: 15% auto;
             padding: 20px;
             width: 70%;
@@ -119,6 +141,15 @@
             border-radius: 5px;
         }
 
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .terminal {
+                width: 95%;
+                height: 90%;
+            }
+        }
+
+        /* Cursor animation */
         @keyframes blink {
             50% { opacity: 0; }
         }
@@ -128,53 +159,64 @@
             display: inline-block;
             width: 10px;
             height: 20px;
-            background: var(--accent);
+            background: var(--fg);
             margin-left: 5px;
         }
     </style>
 </head>
 <body>
-    <div class="terminal">
-        <div class="terminal-window">
-            <div class="terminal-bar">
-                <i class="fas fa-terminal"></i> root@portfolio: ~
-                <div class="buttons">
-                    <span class="btn-close"></span>
-                    <span class="btn-minimize"></span>
-                    <span class="btn-maximize"></span>
-                </div>
+    <!-- Kali-style top panel -->
+    <div class="top-panel">
+        <div class="panel-group">
+            <div class="panel-button" onclick="showSection('about')">About</div>
+            <div class="panel-button" onclick="showSection('experience')">Experience</div>
+            <div class="panel-button" onclick="showSection('skills')">Skills</div>
+            <div class="panel-button" onclick="showSection('projects')">Projects</div>
+            <div class="panel-button" onclick="showSection('contact')">Contact</div>
+        </div>
+        <div class="panel-group">
+            <div class="panel-button" onclick="toggleTheme()"><i class="fas fa-adjust"></i></div>
+        </div>
+    </div>
+
+    <!-- Terminal container -->
+    <div class="terminal-container">
+        <div class="terminal">
+            <div class="terminal-header">
+                <i class="fas fa-terminal"></i> root@anmolksachan: ~
             </div>
-            <div class="terminal-content">
+            <div class="terminal-content" id="terminalContent">
                 <div class="neofetch">
-                    <span> _________  _______   ________  _______   ________</span>
-                    <span>|  ___|  \/  |  ___| |  ___|  \/  |  ___|</span>
-                    <span>| |__ | .  . | |__   | |__ | .  . | |__</span>
-                    <span>|  __|| |\/| |  __|  |  __|| |\/| |  __|</span>
-                    <span>| |___| |  | | |___  | |___| |  | | |___</span>
-                    <span>\____/\_|  |/\____/  \____/\_|  |/\____/</span>
-                    <span>Cyber Security Professional | Bug Bounty Hunter | OSINT Specialist</span>
-                </div>
-                
-                <div class="commands">
-                    <div class="command" onclick="showModal('about')">> about-me</div>
-                    <div class="command" onclick="showModal('experience')">> work-experience</div>
-                    <div class="command" onclick="showModal('skills')">> skills</div>
-                    <div class="command" onclick="showModal('projects')">> projects</div>
-                    <div class="command" onclick="showModal('contact')">> contact</div>
+                    <pre>
+ _  _     _ _      __  __            _            
+| || |___| | |___ |  \/  | __ _ _ __| | _____ _ __
+| __ / -_) | / -_)| |\/| |/ _` | '__| |/ / _ \ '__|
+|_||_\___|_|_\___||_|  |_|\__,_|_|  |___/\___/_|   
+                                                    
+Cyber Security Professional | Bug Bounty Hunter | OSINT Specialist
+                    </pre>
                 </div>
 
-                <div class="project-grid">
-                    <div class="project-card" onclick="window.open('https://github.com/anmolksachan/TheTimeMachine')">
-                        <i class="fas fa-clock"></i> TheTimeMachine
-                        <p>Time-based vulnerability scanner for web apps</p>
+                <div class="command-list">
+                    <div class="command" onclick="showSection('about')">> about-me</div>
+                    <div class="command" onclick="showSection('experience')">> work-experience</div>
+                    <div class="command" onclick="showSection('skills')">> skills</div>
+                    <div class="command" onclick="showSection('projects')">> projects</div>
+                    <div class="command" onclick="showSection('contact')">> contact</div>
+                </div>
+
+                <div class="file-browser" id="projectsSection">
+                    <div class="file" onclick="window.open('https://github.com/anmolksachan/TheTimeMachine')">
+                        <i class="fas fa-clock"></i> TheTimeMachine<br>
+                        <small>Time-based vulnerability scanner</small>
                     </div>
-                    <div class="project-card" onclick="window.open('https://github.com/anmolksachan/CrossInjector')">
-                        <i class="fas fa-syringe"></i> CrossInjector
-                        <p>Advanced XSS payload injector</p>
+                    <div class="file" onclick="window.open('https://github.com/anmolksachan/CrossInjector')">
+                        <i class="fas fa-syringe"></i> CrossInjector<br>
+                        <small>XSS payload injector</small>
                     </div>
-                    <div class="project-card" onclick="window.open('https://github.com/anmolksachan/WhatTheCipher')">
-                        <i class="fas fa-lock"></i> WhatTheCipher
-                        <p>Encryption analysis tool</p>
+                    <div class="file" onclick="window.open('https://github.com/anmolksachan/WhatTheCipher')">
+                        <i class="fas fa-lock"></i> WhatTheCipher<br>
+                        <small>Encryption analysis tool</small>
                     </div>
                 </div>
             </div>
@@ -184,13 +226,13 @@
     <!-- Modals -->
     <div id="aboutModal" class="modal">
         <div class="modal-content">
-            <h2>about-me</h2>
-            <p>Experienced Cyber Security Professional with expertise in Attack Surface Management, Ethical Hacking, and Penetration Testing. Skilled in:</p>
+            <h2>About Me</h2>
+            <p>Experienced Cyber Security Professional with expertise in:</p>
             <ul>
-                <li>External Pentest (PTaaS)</li>
-                <li>Vulnerability Assessment</li>
-                <li>Network Security</li>
-                <li>Tool Automation</li>
+                <li>Attack Surface Management</li>
+                <li>Penetration Testing</li>
+                <li>Vulnerability Research</li>
+                <li>Tool Development</li>
                 <li>CTF Competitions</li>
             </ul>
             <button onclick="closeModal('about')">Close</button>
@@ -198,23 +240,34 @@
     </div>
 
     <script>
-        function showModal(modalId) {
-            document.getElementById(modalId + 'Modal').style.display = 'block';
+        function showSection(section) {
+            const sections = ['about', 'experience', 'skills', 'projects', 'contact'];
+            sections.forEach(s => {
+                document.getElementById(`${s}Modal`)?.classList.remove('active');
+            });
+
+            if (section === 'projects') {
+                document.getElementById('projectsSection').style.display = 'grid';
+            } else {
+                const modal = document.getElementById(`${section}Modal`);
+                if (modal) modal.style.display = 'block';
+            }
         }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId + 'Modal').style.display = 'none';
+        function closeModal(section) {
+            document.getElementById(`${section}Modal`).style.display = 'none';
         }
 
-        // Add more interactive features here
-        document.querySelectorAll('.project-card').forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                card.style.borderColor = '#ffff00';
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.borderColor = 'var(--accent)';
-            });
-        });
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            const isLight = document.body.classList.contains('light-theme');
+            document.documentElement.style.setProperty('--bg', isLight ? '#f5f5f5' : '#1a1a1a');
+            document.documentElement.style.setProperty('--fg', isLight ? '#000' : '#00ff00');
+            document.documentElement.style.setProperty('--accent', isLight ? '#007acc' : '#3399ff');
+        }
+
+        // Initialize projects section
+        document.getElementById('projectsSection').style.display = 'grid';
     </script>
 </body>
 </html>
