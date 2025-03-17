@@ -1,5 +1,150 @@
-The project was discontinued and migrated from the web to the terminal interface.
-
--> ThreatTracer - http://github.com/anmolksachan/ThreatTracer
-
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CVE POC Lookup</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    header {
+      text-align: center;
+      padding: 20px 0;
+      font-size: 1.8em;
+      font-weight: bold;
+      color: #4CAF50;
+      background-color: transparent;
+      width: 100%;
+      position: relative;
+    }
+    header::after {
+      content: '';
+      display: block;
+      width: 100px;
+      height: 3px;
+      background: #4CAF50;
+      margin: 10px auto 20px;
+      border-radius: 5px;
+    }
+    .extension-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #ff7e5f, #feb47b);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 0.9em;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .extension-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    .search-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 30px;
+    }
+    #cveInput {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 25px;
+      font-size: 1em;
+      outline: none;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      background: #fff;
+    }
+    #cveInput:focus {
+      border-color: #4CAF50;
+      box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+    }
+    #searchButton {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #4CAF50, #81c784);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+    #searchButton:hover {
+      transform: scale(1.02);
+      background: linear-gradient(135deg, #45a049, #66bb6a);
+    }
+    #results {
+      width: 100%;
+      max-width: 600px;
+      margin-top: 20px;
+    }
+    .result {
+      background-color: white;
+      padding: 15px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 0.9em;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .result:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    .result a {
+      color: #4CAF50;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .result a:hover {
+      text-decoration: underline;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.8em;
+      color: #666;
+      margin-top: 30px;
+    }
+    footer span {
+      color: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    CVE POC Lookup
+    <button class="extension-button" onclick="window.open('https://github.com/anmolksachan/CVE-POC-Lookup-Browser-Extension/', '_blank')">
+      Add Extension
+    </button>
+  </header>
+  <div class="search-container">
+    <input type="text" id="cveInput" placeholder="Enter CVE ID (e.g., CVE-2024-4577)" />
+    <button id="searchButton">Search</button>
+  </div>
+  <div id="results"></div>
+  <footer>
+    Coded with <span>&hearts;</span> by Anmol K Sachan<br>@FR13ND0x7F
+  </footer>
+  <script src="popup.js"></script>
+</body>
+</html>
