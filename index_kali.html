@@ -1,0 +1,220 @@
+<!--TESTING-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberSec Portfolio - Anmol K Sachan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #2d2d2d;
+            --accent: #00ff00;
+            --font: 'Ubuntu Mono', monospace;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--primary);
+            color: var(--accent);
+            font-family: var(--font);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .terminal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .terminal-window {
+            background: var(--secondary);
+            border: 2px solid var(--accent);
+            border-radius: 10px;
+            width: 80%;
+            height: 80%;
+            box-shadow: 0 0 20px var(--accent);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .terminal-bar {
+            background: var(--primary);
+            padding: 15px;
+            border-bottom: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+        }
+
+        .terminal-bar i {
+            color: var(--accent);
+            margin-right: 10px;
+        }
+
+        .terminal-content {
+            padding: 20px;
+            height: calc(100% - 60px);
+            overflow-y: auto;
+        }
+
+        .command {
+            color: var(--accent);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .command:hover {
+            color: #ffff00;
+        }
+
+        .neofetch {
+            margin: 20px 0;
+        }
+
+        .neofetch span {
+            display: inline-block;
+            margin: 5px 0;
+        }
+
+        .project-card {
+            background: var(--primary);
+            border: 1px solid var(--accent);
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            transition: transform 0.3s;
+        }
+
+        .project-card:hover {
+            transform: scale(1.02);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .modal-content {
+            background: var(--secondary);
+            margin: 15% auto;
+            padding: 20px;
+            width: 70%;
+            border: 2px solid var(--accent);
+            border-radius: 5px;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .cursor {
+            animation: blink 1s infinite;
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background: var(--accent);
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="terminal-window">
+            <div class="terminal-bar">
+                <i class="fas fa-terminal"></i> root@portfolio: ~
+                <div class="buttons">
+                    <span class="btn-close"></span>
+                    <span class="btn-minimize"></span>
+                    <span class="btn-maximize"></span>
+                </div>
+            </div>
+            <div class="terminal-content">
+                <div class="neofetch">
+                    <span> _________  _______   ________  _______   ________</span>
+                    <span>|  ___|  \/  |  ___| |  ___|  \/  |  ___|</span>
+                    <span>| |__ | .  . | |__   | |__ | .  . | |__</span>
+                    <span>|  __|| |\/| |  __|  |  __|| |\/| |  __|</span>
+                    <span>| |___| |  | | |___  | |___| |  | | |___</span>
+                    <span>\____/\_|  |/\____/  \____/\_|  |/\____/</span>
+                    <span>Cyber Security Professional | Bug Bounty Hunter | OSINT Specialist</span>
+                </div>
+                
+                <div class="commands">
+                    <div class="command" onclick="showModal('about')">> about-me</div>
+                    <div class="command" onclick="showModal('experience')">> work-experience</div>
+                    <div class="command" onclick="showModal('skills')">> skills</div>
+                    <div class="command" onclick="showModal('projects')">> projects</div>
+                    <div class="command" onclick="showModal('contact')">> contact</div>
+                </div>
+
+                <div class="project-grid">
+                    <div class="project-card" onclick="window.open('https://github.com/anmolksachan/TheTimeMachine')">
+                        <i class="fas fa-clock"></i> TheTimeMachine
+                        <p>Time-based vulnerability scanner for web apps</p>
+                    </div>
+                    <div class="project-card" onclick="window.open('https://github.com/anmolksachan/CrossInjector')">
+                        <i class="fas fa-syringe"></i> CrossInjector
+                        <p>Advanced XSS payload injector</p>
+                    </div>
+                    <div class="project-card" onclick="window.open('https://github.com/anmolksachan/WhatTheCipher')">
+                        <i class="fas fa-lock"></i> WhatTheCipher
+                        <p>Encryption analysis tool</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <h2>about-me</h2>
+            <p>Experienced Cyber Security Professional with expertise in Attack Surface Management, Ethical Hacking, and Penetration Testing. Skilled in:</p>
+            <ul>
+                <li>External Pentest (PTaaS)</li>
+                <li>Vulnerability Assessment</li>
+                <li>Network Security</li>
+                <li>Tool Automation</li>
+                <li>CTF Competitions</li>
+            </ul>
+            <button onclick="closeModal('about')">Close</button>
+        </div>
+    </div>
+
+    <script>
+        function showModal(modalId) {
+            document.getElementById(modalId + 'Modal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId + 'Modal').style.display = 'none';
+        }
+
+        // Add more interactive features here
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.borderColor = '#ffff00';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.borderColor = 'var(--accent)';
+            });
+        });
+    </script>
+</body>
+</html>
