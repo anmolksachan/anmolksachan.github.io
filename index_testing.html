@@ -3,34 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FR13ND0x7F | Hacker Portfolio</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css ">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons @1.10.5/font/bootstrap-icons.css">
+    <title>FR13ND0x7F | Kali Portfolio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap @5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             background: #0a0a0a;
             color: #00ff00;
             font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
         }
-        .terminal-window {
+        .terminal {
             background: #1a1a1a;
             border: 2px solid #00ff00;
             padding: 20px;
-            margin: 20px 0;
             border-radius: 5px;
+            margin-bottom: 20px;
         }
-        .neon-text {
-            color: #00ff00;
-            text-shadow: 0 0 5px #00ff00;
+        .kali-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .kali-menu {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            gap: 15px;
+        }
+        .kali-menu li {
+            cursor: pointer;
+            padding: 5px 10px;
+            background: #2a2a2a;
+            border-radius: 3px;
+        }
+        .kali-menu li:hover {
+            background: #3a3a3a;
+        }
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
         }
         .tool-card {
-            background: #1a1a1a;
-            border: 1px solid #00ff00;
-            transition: transform 0.3s;
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 5px;
+            transition: transform 0.2s;
         }
         .tool-card:hover {
             transform: translateY(-5px);
-            border-color: #ff0000;
         }
         .matrix-bg {
             position: fixed;
@@ -38,125 +61,96 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100%" height="100%" fill="rgba(10,10,10,0.9)"/><text x="50%" y="50%" font-family="Courier New" font-size="10" fill="#00ff00" text-anchor="middle">KERNEL PANIC</text></svg>');
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(0,255,0,0.05),
+                rgba(0,255,0,0.05) 10px,
+                transparent 10px,
+                transparent 20px
+            );
             z-index: -1;
         }
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: 200px;
-            background: #0a0a0a;
-            padding: 20px;
-        }
-        .sidebar a {
-            display: block;
-            margin-bottom: 10px;
+        .neon {
             color: #00ff00;
-            text-decoration: none;
+            text-shadow: 0 0 5px #00ff00;
         }
-        .content-area {
-            margin-left: 220px;
-            padding: 20px;
-        }
-        .twitter-widget {
-            position: fixed;
-            right: 20px;
-            top: 200px;
-            max-width: 400px;
+        .console {
+            white-space: pre-wrap;
+            font-family: monospace;
         }
     </style>
 </head>
 <body>
 <div class="matrix-bg"></div>
-<div class="sidebar">
-    <a href="#projects" class="btn btn-success btn-sm"><i class="bi bi-terminal"></i> Projects</a>
-    <a href="#github" class="btn btn-dark btn-sm"><i class="bi bi-github"></i> GitHub</a>
-    <a href="#youtube" class="btn btn-danger btn-sm"><i class="bi bi-youtube"></i> YouTube</a>
-    <a href="#twitter" class="btn btn-primary btn-sm"><i class="bi bi-twitter"></i> Twitter</a>
-    <a href="#press" class="btn btn-info btn-sm"><i class="bi bi-newspaper"></i> Press</a>
-    <a href="#contact" class="btn btn-warning btn-sm"><i class="bi bi-envelope"></i> Contact</a>
-</div>
-
-<div class="content-area">
-    <div class="terminal-window">
-        <h3 class="neon-text">Welcome to FR13ND0x7F's Command Center</h3>
-        <p>This is my digital playground where I hack, explore, and share knowledge about cybersecurity.</p>
-        <div class="d-grid gap-2">
-            <button class="btn btn-success btn-sm" onclick="window.location.href='https://github.com/anmolksachan '">View My Tools</button>
-            <button class="btn btn-primary btn-sm" onclick="window.location.href='https://twitter.com/FR13ND0x7f '">Follow Me</button>
-        </div>
-    </div>
-
-    <div id="projects" class="terminal-window mt-5">
-        <h3 class="neon-text">Featured Projects</h3>
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            <div class="col">
-                <div class="card tool-card">
-                    <div class="card-body">
-                        <h5 class="card-title">The Time Machine</h5>
-                        <p class="card-text">Wayback Machine-based recon tool</p>
-                        <a href="https://github.com/anmolksachan/TheTimeMachine " class="btn btn-sm btn-success">
-                            <img src="https://img.shields.io/github/stars/anmolksachan/TheTimeMachine?style=social " alt="Stars">
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <!-- Add other tools similarly -->
-        </div>
-    </div>
-
-    <div id="cves" class="terminal-window mt-5">
-        <h3 class="neon-text">CVE Contributions</h3>
-        <ul class="list-unstyled">
-            <li>CVE-2021-27539</li>
-            <li>CVE-2022-33041</li>
-            <li>CVE-2021-27295</li>
-            <!-- Add remaining CVEs -->
+<div class="container">
+    <div class="kali-header">
+        <div class="neon">FR13ND0x7F :: Kali Portfolio</div>
+        <ul class="kali-menu">
+            <li onclick="window.location='#tools'">Tools</li>
+            <li onclick="window.location='#cves'">CVEs</li>
+            <li onclick="window.location='#research'">Research</li>
+            <li onclick="window.location='#contact'">Contact</li>
         </ul>
     </div>
 
-    <div id="research" class="terminal-window mt-5">
-        <h3 class="neon-text">Latest Research</h3>
-        <div class="accordion" id="researchAccordion">
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aiResearch">
-                        AI Security Implications
-                    </button>
-                </h2>
-                <div id="aiResearch" class="accordion-collapse collapse">
-                    <div class="accordion-body">
-                        <p>My paper exploring dual-use AI applications...</p>
-                        <a href="https://jetir.org/view?paper=JETIRDQ06013 " class="btn btn-sm btn-success">Read More</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Add other research items -->
+    <div class="terminal">
+        <h3 class="neon">About Me</h3>
+        <div class="console">
+            Security Researcher | Penetration Tester | Bug Bounty Hunter<br>
+            Specializing in: Web/API/AI/ML Security, Network Pentesting<br>
+            Creator of multiple security tools with CVE discoveries for organizations like Nokia, FCC, and Mediatek<br>
+            Follow: <a href="https://twitter.com/FR13ND0x7f " class="neon">@FR13ND0x7f</a>
         </div>
     </div>
 
-    <div id="social" class="terminal-window mt-5">
-        <h3 class="neon-text">Social Presence</h3>
-        <div class="row">
-            <div class="col-md-6">
-                <iframe src="https://ghbtns.com/github-btn.html?user=anmolksachan&type=follow&count=true " frameborder="0" scrolling="0" width="200" height="20" title="GitHub"></iframe>
+    <div class="terminal" id="tools">
+        <h3 class="neon">Featured Tools</h3>
+        <div class="tool-grid">
+            <div class="tool-card">
+                <h5>The Time Machine</h5>
+                <p>Wayback Machine-based recon tool for sensitive endpoint discovery</p>
+                <a href="https://github.com/anmolksachan/TheTimeMachine " class="neon">GitHub <img src="https://img.shields.io/github/stars/anmolksachan/TheTimeMachine?style=social "></a>
             </div>
-            <div class="col-md-6">
-                <a class="twitter-timeline" href="https://twitter.com/FR13ND0x7F?ref_src=twsrc%5Etfw ">Tweets by FR13ND0x7F</a> 
-                <script async src="https://platform.twitter.com/widgets.js " charset="utf-8"></script>
+            <div class="tool-card">
+                <h5>ThreatTracer</h5>
+                <p>CVE checker and exploit enumerator for vulnerability analysis</p>
+                <a href="https://github.com/anmolksachan/ThreatTracer " class="neon">GitHub <img src="https://img.shields.io/github/stars/anmolksachan/ThreatTracer?style=social "></a>
             </div>
+            <!-- Add remaining tools here -->
+        </div>
+    </div>
+
+    <div class="terminal" id="cves">
+        <h3 class="neon">CVE Contributions</h3>
+        <div class="console">
+            CVE-2021-27539<br>
+            CVE-2022-33041<br>
+            CVE-2021-27295<br>
+            CVE-2021-27296<br>
+            CVE-2021-27190<br>
+            ... and more
+        </div>
+    </div>
+
+    <div class="terminal" id="research">
+        <h3 class="neon">Latest Research</h3>
+        <div class="console">
+            "AI: Perilous Threat to Both Physical and Cyber Worlds"<br>
+            Published in JETIR<br>
+            Explores dual-use nature of AI in cybersecurity contexts
+        </div>
+    </div>
+
+    <div class="terminal" id="contact">
+        <h3 class="neon">Connect</h3>
+        <div class="console">
+            Twitter: <a href="https://twitter.com/FR13ND0x7f " class="neon">@FR13ND0x7f</a><br>
+            GitHub: <a href="https://github.com/anmolksachan " class="neon">anmolksachan</a><br>
+            LinkedIn: <a href="https://linkedin.com/in/anmolksachan/ " class="neon">Anmol K Sachan</a><br>
+            Blog: <a href="https://anmolksachan.github.io/blogs/ " class="neon">Read Here</a>
         </div>
     </div>
 </div>
-
-<div class="twitter-widget">
-    <div class="twitter-timeline twitter-timeline-rendered" id="twitter-widget-0" style="position: static; visibility: visible; display: block; transform: rotate(0deg); max-width: 400px;">
-        <iframe allowfullscreen="true" allowtransparency="true" frameborder="0" scrolling="no" src="https://platform.twitter.com/widgets/timeline.html?source_type=profile&screen_name=FR13ND0x7F&created_at=1717651200&max_width=400&hide_media=false&hide_reply_button=false&theme=light&link_color=%232B7BB9&height=600 " title="Twitter Timeline"></iframe>
-    </div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js "></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap @5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
