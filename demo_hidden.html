@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bookmarklet Test</title>
+  <style>
+    .hidden-div { display: none; }
+    .invisible-text { visibility: hidden; }
+    .unclickable { pointer-events: none; opacity: 0.3; }
+  </style>
+</head>
+<body>
+  <h1>Test Hidden Elements</h1>
+
+  <!-- Hidden elements -->
+  <div hidden>This is hidden via `hidden` attribute</div>
+  <div class="hidden-div">This is hidden via CSS display: none</div>
+  <div class="invisible-text">This is hidden via CSS visibility: hidden</div>
+
+  <!-- Disabled and readonly inputs -->
+  <input type="text" value="disabled input" disabled>
+  <input type="text" value="readonly input" readonly>
+
+  <!-- Hidden file input -->
+  <input type="file" hidden id="fileUpload">
+
+  <!-- Unclickable div -->
+  <div class="unclickable">This div is unclickable (pointer-events: none)</div>
+
+  <!-- Collapsed <details> -->
+  <details>
+    <summary>Click to expand</summary>
+    <p>Hidden content inside details tag</p>
+  </details>
+</body>
+</html>
