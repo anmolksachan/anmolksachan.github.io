@@ -1362,5 +1362,46 @@
             return window.confirm(message); // Use native confirm for simplicity
         };
     </script>
+    <button id="playAudioButton" style="
+  background-color: #00ff00; /* Bright green background */
+  color: #000000; /* Black text for contrast */
+  font-family: 'Share Tech Mono', monospace; /* A monospace font for a code-like feel */
+  font-size: 1.2em;
+  padding: 10px 20px;
+  border: 2px solid #00ff00; /* Green border */
+  border-radius: 5px;
+  box-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 20px #00ff00; /* Glowing effect */
+  cursor: pointer;
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+">Click here to `Hack the planet!`</button>
+
+<audio id="myBackgroundAudio" loop muted>
+  <source src="https://ia801200.us.archive.org/1/items/tvtunes_31613/Mr%20Robot.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<script>
+  const playAudioButton = document.getElementById('playAudioButton');
+  const audio = document.getElementById('myBackgroundAudio');
+
+  if (playAudioButton && audio) {
+    playAudioButton.addEventListener('click', function() {
+      if (audio) {
+        audio.muted = false; // Unmute the audio
+        audio.play()
+          .then(() => {
+            // Audio started playing, now hide the button
+            playAudioButton.style.display = 'none';
+          })
+          .catch(e => console.error("Audio playback failed:", e));
+      }
+    });
+
+    // Optional: Hide the button if the audio starts playing by other means (e.g., if autoplay somehow worked)
+    audio.addEventListener('playing', function() {
+        playAudioButton.style.display = 'none';
+    });
+  }
+</script>
 </body>
 </html>
