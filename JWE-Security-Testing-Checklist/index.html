@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JWE Security Testing Checklist</title>
+  <link rel="icon" type="image/gif" href="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZGNhNTcwZmFlYzFhMzU0OGRhODllMzhkM2Y5OGZlMWZiYmFlODE1YSZjdD1n/nvb74G5HEcQhoah9Hv/giphy.gif">
+  <meta name="description" content="Comprehensive JWE Security Testing Checklist covering algorithm confusion, cryptographic flaws, and implementation vulnerabilities.">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    table {
+      margin: auto;
+      border-collapse: collapse;
+      width: 90%;
+      background-color: #fff;
+      box-shadow: 0px 0px 10px #888888;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #0074D9;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    tr:hover {
+      background-color: #ddd;
+    }
+
+    .description {
+      font-style: italic;
+      color: #444;
+    }
+
+    .payload {
+      font-family: monospace;
+      color: #333;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      box-shadow: 0px 0px 5px #ccc;
+      white-space: pre-wrap;
+    }
+
+    .checkbox {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div style="position: fixed; right: 20px; top: 50%; transform: translateY(-50%);">
+    <a href="https://twitter.com/fr13nd0x7f" target="_blank"><img src="https://abs.twimg.com/responsive-web/client-web/icon-svg.168b89da.svg" alt="Twitter" style="display: block; width: 30px; margin-bottom: 5px;"></a>
+    <a href="https://www.linkedin.com/in/anmolksachan/" target="_blank"><img src="https://www.treasurers.org/ACTmedia/linkedin-icon-1-logo-png-transparent.png" alt="LinkedIn" style="display: block; width: 30px; margin-bottom: 5px;"></a>
+    <a href="https://github.com/anmolksachan/" target="_blank"><img src="https://github.com/fluidicon.png" alt="GitHub" style="display: block; width: 30px; margin-bottom: 5px;"></a>
+  </div>
+
+  <h1>🛡️ JWE Security Testing Checklist</h1>
+  <table>
+    <tr>
+      <th class="checkbox"><input type="checkbox" id="check-all" onclick="toggleAll(this)"></th>
+      <th>Test Case</th>
+      <th>Description</th>
+      <th>Example / Payload</th>
+    </tr>
+    <tbody id="checklist-body"></tbody>
+  </table> 
+
+  <footer>
+    <div style="text-align:center; margin-top: 30px;">
+      <p><u>Developed with ❤️ by Anmol K Sachan | Follow <a href="https://twitter.com/fr13nd0x7f/" target="_blank">@FR13ND0x7f</a> &copy; 2025</u></p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleAll(source) {
+      const checkboxes = document.querySelectorAll("input[name='test-case']");
+      checkboxes.forEach(cb => cb.checked = source.checked);
+    }
+
+    fetch('jwe_checklist.json')
+      .then(response => response.json())
+      .then(data => {
+        const tableBody = document.getElementById("checklist-body");
+        data.test_cases.forEach(testCase => {
+          const row = document.createElement("tr");
+
+          const checkboxCell = document.createElement("td");
+          checkboxCell.classList.add("checkbox");
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.name = "test-case";
+          checkboxCell.appendChild(checkbox);
+
+          const nameCell = document.createElement("td");
+          nameCell.textContent = testCase.name;
+
+          const descriptionCell = document.createElement("td");
+          descriptionCell.innerHTML = `<div class='description'>${testCase.description}</div>`;
+
+          const payloadCell = document.createElement("td");
+          payloadCell.innerHTML = `<div class='payload'>${testCase.payload || "-"}</div>`;
+
+          row.appendChild(checkboxCell);
+          row.appendChild(nameCell);
+          row.appendChild(descriptionCell);
+          row.appendChild(payloadCell);
+          tableBody.appendChild(row);
+        });
+      })
+      .catch(error => console.error("Error loading checklist:", error));
+  </script>
+</body>
+</html>
