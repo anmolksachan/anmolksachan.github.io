@@ -2,9 +2,23 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <iframe width="0" height="0" src="https://www.youtube.com/embed/7nQ2oiVqKHw?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     <title>Resuming Windows</title>
     <link rel="stylesheet" type="text/css" href="css/style_win.css">
+    <script type="text/javascript">
+      // JavaScript for redirection based on screen size
+      window.onload = function() {
+        const desktopWidthThreshold = 1024; // You can adjust this value
+        const currentWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+        if (currentWidth > desktopWidthThreshold) {
+          // Desktop/PC larger screen
+          window.location.href = "index_kali.html";
+        } else {
+          // Phone/small device UI
+          window.location.href = "/mobile/";
+        }
+      };
+    </script>
   </head>
   <body>
     <div id="resuming-message">
