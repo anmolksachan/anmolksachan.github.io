@@ -69,9 +69,7 @@
       "name": "Token replay (missing nonce/exp)",
       "description": "Without proper replay protection ('exp','jti', or nonce), a valid JWE can be reused. Try resending a previously valid (or expired) JWE to ensure the server rejects replayed tokens.",
       "payload": ""
-    }
-  ],
-  "resources": [
+    },
     {
       "name": "RFC 7516 - JSON Web Encryption (JWE)",
       "type": "RFC",
