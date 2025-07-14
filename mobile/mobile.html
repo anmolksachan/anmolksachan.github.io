@@ -197,7 +197,7 @@
             box-sizing: border-box;
             padding: 2vh 2vw;
             white-space: pre-wrap;
-            overflow-y: auto; /* ENABLED SCROLLING */
+            overflow-y: scroll; /* Changed from auto to scroll to try and force visibility */
             line-height: 1.5;
             display: none;
             overflow-wrap: break-word;
@@ -205,13 +205,25 @@
             opacity: 0;
             transition: opacity 0.8s ease-in;
             position: relative; /* For positioning controls */
-            /* Crucial for scrolling: Ensure the terminal has a defined height to scroll within */
-            height: 100%; /* Make sure it takes the full height available from its flex parent */
-            min-height: 0; /* Allow it to shrink if needed, but primarily use full height */
+            min-height: 0;
+
+            /* New flex properties for its children */
+            display: flex; /* Make terminal a flex container */
+            flex-direction: column; /* Stack children vertically */
         }
 
         .terminal.active {
             opacity: 1;
+        }
+
+        #terminal-header {
+            /* Style for the date/time header if needed */
+            margin-bottom: 1vh; /* Space between header and typed content */
+            flex-shrink: 0; /* Prevent it from shrinking */
+        }
+
+        #typed-content {
+            flex: 1; /* Make typed content fill remaining space */
         }
 
         .cursor {
@@ -229,24 +241,24 @@
 
         /* --- Custom Scrollbar Styling (for WebKit browsers like Chrome/Safari) --- */
         .terminal::-webkit-scrollbar {
-            width: 8px; /* width of the scrollbar */
-            background-color: #1a1a1a; /* Track color */
+            width: 15px !important; /* Make it wider for visibility */
+            background-color: red !important; /* Make track color obvious for testing */
         }
 
         .terminal::-webkit-scrollbar-thumb {
-            background-color: #00ff99; /* Color of the scrollbar thumb */
-            border-radius: 4px; /* Rounded corners for the thumb */
-            border: 1px solid #00cc88; /* Slightly darker border */
+            background-color: blue !important; /* Make thumb color obvious for testing */
+            border-radius: 4px !important; /* Rounded corners for the thumb */
+            border: 1px solid darkblue !important; /* Slightly darker border */
         }
 
         .terminal::-webkit-scrollbar-thumb:hover {
-            background-color: #00cc88; /* Darker green on hover */
+            background-color: lightblue !important;
         }
 
         /* For Firefox (different properties) */
         .terminal {
-            scrollbar-width: thin; /* "auto" or "none" */
-            scrollbar-color: #00ff99 #1a1a1a; /* thumb color track color */
+            scrollbar-width: auto !important; /* "auto", "thin", or "none" - trying auto */
+            scrollbar-color: blue red !important; /* thumb color track color */
         }
 
 
@@ -372,6 +384,45 @@
             color: #ff0000;
         }
 
+        /* --- Scroll Controls --- */
+        .scroll-controls {
+            position: fixed; /* Changed from absolute to fixed */
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+            display: none; /* Hidden by default */
+        }
+
+        .terminal.active .scroll-controls {
+            display: flex; /* Show when terminal is active */
+        }
+
+        .scroll-button {
+            background: rgba(0, 255, 153, 0.2);
+            border: 1px solid #00ff99;
+            color: #00ff99;
+            width: 45px; /* Slightly larger */
+            height: 45px; /* Slightly larger */
+            border-radius: 50%;
+            font-size: 1.4em; /* Larger icon */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 255, 153, 0.3);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        .scroll-button:hover {
+            background: rgba(0, 255, 153, 0.4);
+            box-shadow: 0 0 15px rgba(0, 255, 153, 0.5);
+        }
+
 
         /* Media Queries for Responsiveness */
         @media (max-width: 768px) {
@@ -381,10 +432,18 @@
             .overlay-content {
                 width: 85vw; /* More width on smaller screens */
             }
+            .scroll-controls {
+                bottom: 80px; /* Adjust position for mobile, below existing button */
+                right: 20px;
+            }
         }
         @media (min-width: 769px) {
             .mobile-menu-button {
                 display: none; /* Hide on larger screens */
+            }
+            .scroll-controls {
+                bottom: 20px; /* Default desktop position */
+                right: 20px;
             }
         }
 
@@ -396,7 +455,6 @@
     </div>
 
     <div class="boot-screen" id="boot-screen">
-        <!--<img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Kali-dragon-icon.svg" alt="Kali Logo">-->
         <ul class="boot-messages" id="boot-messages"></ul>
         <div class="boot-messages progress-bar">
             <div class="progress-bar-fill" id="progress-bar-fill"></div>
@@ -406,7 +464,16 @@
 
     <div class="terminal" id="terminal">
         <div class="mobile-menu-button" id="mobileMenuButton">☰</div>
-        <div id="terminal-date-time"></div> </div>
+        <div id="terminal-header">
+            <span id="current-terminal-date-time"></span>
+        </div>
+        <div id="typed-content"></div>
+
+        <div class="scroll-controls">
+            <button id="scrollUpButton" class="scroll-button">⬆</button>
+            <button id="scrollDownButton" class="scroll-button">⬇</button>
+        </div>
+    </div>
 
     <div class="mobile-menu-overlay" id="mobileMenuOverlay">
         <div class="overlay-content">
@@ -427,7 +494,7 @@
         const bootMessages = document.getElementById("boot-messages");
         const bootTime = document.getElementById("boot-time"); // For the initial boot screen
         const progressBarFill = document.getElementById("progress-bar-fill");
-        const terminalDateTime = document.getElementById("terminal-date-time"); // New: for date/time in terminal
+        const typedContentDiv = document.getElementById("typed-content"); // For dynamically typed content
 
         // Mobile UI elements
         const mobileMenuButton = document.getElementById("mobileMenuButton");
@@ -437,15 +504,16 @@
         const overlayAboutButton = document.getElementById("overlayAboutButton");
         const overlayExitButton = document.getElementById("overlayExitButton");
 
+        // Scroll control buttons
+        const scrollUpButton = document.getElementById('scrollUpButton');
+        const scrollDownButton = document.getElementById('scrollDownButton');
 
         const terminalContent = [
-            // Placeholder for date/time, will be updated dynamically
-            "<span id='current-terminal-date-time'></span>",
             "┌──(anmol㉿nethunter)-[~/profile]",
             "└─$ cat about_me.txt",
             "👋 Hey there, I'm Anmol K Sachan (FR13ND0x7F)",
             "I’m a seasoned Security Researcher, Penetration Tester, and Bug Bounty Hunter with a passion for uncovering vulnerabilities and securing systems.",
-            "My approach to hacking is rooted in curiosity, creativity, and persistence. I believe that security isn’t just about mastering tools—it’s about understanding systems, thinking like an attacker, and crafting solutions that make a difference.\n",
+            "My approach to hacking is rooted in curiosity, creativity, and persistence. I believe that security isn’t just about mastering tools—it’s about understanding systems, thinking like an attacker, and crafting solutions that make a difference.\\n",
 
             "┌──(anmol㉿nethunter)-[~/about_details]",
             "└─$ cat details.txt",
@@ -453,14 +521,14 @@
             "- 🔍 Skilled Penetration Tester: Specializing in Web, Mobile, API, AI/ML, and Network Security.",
             "- 🛡️ Security Advocate: Passionate about ethical hacking, vulnerability research, and contributing to a safer digital world.",
             "- 💻 Builder & Developer: Crafting custom exploits, tools, and automation scripts to solve complex problems.",
-            "- 🧠 Lifelong Learner: Always exploring new technologies, techniques, and methodologies to stay ahead in the ever-evolving cybersecurity landscape.\n",
+            "- 🧠 Lifelong Learner: Always exploring new technologies, techniques, and methodologies to stay ahead in the ever-evolving cybersecurity landscape.\\n",
 
             "┌──(anmol㉿nethunter)-[~/achievements]",
             "└─$ cat recognitions.txt",
             "🏆 Achievements & Recognitions:",
             "- Reported critical vulnerabilities to organizations like Nokia, Federal Communications Commission (USA Gov), Mediatek, Healthy Supplies, and Wageningen University & Research.",
             "- Acknowledged with Hall of Fame (HOF) entries and official recognition letters for responsible disclosures.",
-            "- Identified multiple CVEs, including CVE-2021-27539 and CVE-2022-33041.\n",
+            "- Identified multiple CVEs, including CVE-2021-27539 and CVE-2022-33041.\\n",
 
             "┌──(anmol㉿nethunter)-[~/cves]",
             "└─$ ls -l CVEs_Reported",
@@ -470,13 +538,13 @@
             "- CVE-2021-27295",
             "- CVE-2021-27296",
             "- CVE-2021-27190",
-            "- And more!\n",
+            "- And more!\\n",
 
             "┌──(anmol㉿nethunter)-[~/skills]",
             "└─$ cat my_skillset.sh",
             "🛠️ My Skillset:",
             "✔️ Web Application Penetration Testing",
-            "✔️ Mobile Application Penetration Testing",
+            "✔️ Mobile Application Penettration Testing",
             "✔️ API Penetration Testing",
             "✔️ AI/ML Penetration Testing",
             "✔️ Network Pentesting",
@@ -488,13 +556,13 @@
             "✔️ Reverse Engineering",
             "✔️ Source Code Review",
             "✔️ Video Editing & Content Creation",
-            "✔️ Community Building\n",
+            "✔️ Community Building\\n",
 
             "⚙️ Proficient Security Tools:",
             "- Metasploit, Burp Suite, Nmap, SQLMap, OWASP ZAP",
             "- Wireshark, tcpdump, John the Ripper, Hydra, DirBuster, Nikto",
             "- Postman, Nessus",
-            "- Custom scripts & frameworks\n",
+            "- Custom scripts & frameworks\\n",
 
             "┌──(anmol㉿nethunter)-[~/tools]",
             "└─$ ./list_community_tools.sh",
@@ -508,26 +576,26 @@
             "- What The Cipher: <a href='https://github.com/anmolksachan/WhatTheCipher' target='_blank'>Cipher analysis for CTF challenges</a>",
             "- Project Dork: <a href='https://anmolksachan.github.io/ProjectDork/' target='_blank'>Curated Google Dorks for OSINT</a>",
             "- JIRA\"YA: <a href='https://github.com/anmolksachan/JIRAya' target='_blank'>JIRA vulnerability analyzer</a>",
-            "- DKIM Lookup: <a href='https://github.com/anmolksachan/dkim-lookup' target='_blank'>Verify DKIM records for email security</a>\n",
-            "Note: These tools are intended for educational purposes only. Use responsibly and within authorized boundaries.\n",
+            "- DKIM Lookup: <a href='https://github.com/anmolksachan/dkim-lookup' target='_blank'>Verify DKIM records for email security</a>\\n",
+            "Note: These tools are intended for educational purposes only. Use responsibly and within authorized boundaries.\\n",
 
             "┌──(anmol㉿nethunter)-[~/research]",
             "└─$ cat published_research.txt",
             "📄 Published Research:",
             "- \"AI: Perilous Threat to Both Physical and Cyber Worlds\"",
             "  Published in the <a href='https://www.jetir.org/view?paper=JETIRDQ06013' target='_blank'>Journal of Emerging Technologies and Innovative Research (JETIR)</a>.",
-            "  Explores the dual-use nature of AI in cybersecurity and its implications for both defenders and attackers.\n",
+            "  Explores the dual-use nature of AI in cybersecurity and its implications for both defenders and attackers.\\n",
 
             "┌──(anmol㉿nethunter)-[~/competitions]",
             "└─$ cat ctf_summary.txt",
             "🏅 CTF & Competitions:",
             "- Member of Warlock_RootX CTF Team, ranked 2nd in India until 2021.",
-            "- Top performances in Defcon CTF, HACK-A-SAT, and Amrita InCTF.\n",
+            "- Top performances in Defcon CTF, HACK-A-SAT, and Amrita InCTF.\\n",
 
             "┌──(anmol㉿nethunter)-[~/speaking]",
             "└─$ cat conferences.txt",
             "🎤 Conferences & Public Speaking:",
-            "- Attended Nullcon conferences via Bug Bounty Scholarship and CFP participation.\n",
+            "- Attended Nullcon conferences via Bug Bounty Scholarship and CFP participation.\\n",
 
             "┌──(anmol㉿nethunter)-[~/socials]",
             "└─$ echo Connect With Me",
@@ -535,7 +603,7 @@
             "Twitter: <a href='https://twitter.com/FR13ND0x7f' target='_blank'>Follow for insights, tools, and updates</a>",
             "LinkedIn: <a href='https://www.linkedin.com/in/anmolksachan/' target='_blank'>Connect professionally</a>",
             "Blog: <a href='https://anmolksachan.github.io/blogs/' target='_blank'>Read articles on cybersecurity, tools, and practices</a>",
-            "Instagram: <a href='https://instagram.com/the_guy_that_hacks' target='_blank'>Sneak peeks into my hacking journey</a>\n",
+            "Instagram: <a href='https://instagram.com/the_guy_that_hacks' target='_blank'>Sneak peeks into my hacking journey</a>\\n",
 
             "┌──(anmol㉿nethunter)-[~/next_steps]",
             "└─$ cat whats_next.md",
@@ -545,20 +613,20 @@
             "- 👯 Looking to collaborate on open-source security projects and tools.",
             "- 🤔 Seeking feedback and ideas for improving existing tools.",
             "- 💬 Feel free to ask me about anything related to cybersecurity, tools, or research!",
-            "- 📫 Reach out via <a href='https://twitter.com/FR13ND0x7f' target='_blank'>Twitter DMs</a> or <a href='https://www.linkedin.com/in/anmolksachan/' target='_blank'>LinkedIn</a>.\n",
+            "- 📫 Reach out via <a href='https://twitter.com/FR13ND0x7f' target='_blank'>Twitter DMs</a> or <a href='https://www.linkedin.com/in/anmolksachan/' target='_blank'>LinkedIn</a>.\\n",
 
             "┌──(anmol㉿nethunter)-[~/misc]",
             "└─$ cat fun_facts.txt",
             "⚡ Fun Fact:",
-            "I once spent 48 hours straight debugging a single line of code—and yes, it was worth it! 😄\n",
+            "I once spent 48 hours straight debugging a single line of code—and yes, it was worth it! 😄\\n",
 
             "┌──(anmol㉿nethunter)-[~/licensing]",
             "└─$ cat license.txt",
             "📜 License:",
             "All tools and content are released under the MIT License unless otherwise specified.",
-            "Contributions are welcome—fork, modify—and submit pull requests to help improve these projects!\n",
+            "Contributions are welcome—fork, modify—and submit pull requests to help improve these projects!\\n",
 
-            "\n[✓] Portfolio loaded successfully. Press ESC or tap the '☰' icon for options. Have a nice day!"
+            "\\n[✓] Portfolio loaded successfully. Press ESC or tap the '☰' icon for options. Have a nice day!"
         ];
 
         const bootSequence = [
@@ -580,6 +648,9 @@
         let timeInterval; // For boot screen time
         let terminalTimeInterval; // For terminal time
 
+        let currentTypingLineIndex = 0;
+        const typingSpeed = 30; // Milliseconds delay between lines for typing effect
+
         function updateBootScreenTime() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -599,9 +670,45 @@
             const formattedTime = `${hours}:${minutes}:${seconds} IST`;
 
             const dateTimeString = `[ ${formattedDate} ${formattedTime} ]`;
-            document.getElementById('current-terminal-date-time').innerHTML = `<span style="color: #00ff99;">${dateTimeString}</span>\n`;
+            document.getElementById('current-terminal-date-time').innerHTML = `<span style="color: #00ff99;">${dateTimeString}</span>\\n`;
         }
 
+        function typeNextLine() {
+            if (currentTypingLineIndex < terminalContent.length) {
+                let line = terminalContent[currentTypingLineIndex];
+
+                const lineElement = document.createElement('div');
+                lineElement.innerHTML = line; // Use innerHTML to parse any HTML tags (like <a>)
+                typedContentDiv.appendChild(lineElement);
+
+                // Scroll the newly added line into view to keep content at the bottom
+                lineElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+
+                currentTypingLineIndex++;
+                setTimeout(typeNextLine, typingSpeed); // Schedule the next line
+            } else {
+                // All lines typed, append the cursor at the very end
+                const cursorElement = document.createElement('span');
+                cursorElement.classList.add('cursor');
+                typedContentDiv.appendChild(cursorElement);
+
+                // Ensure cursor is visible at the very end after all content is added
+                cursorElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }
+        }
+
+        function startTypingEffect() {
+            // Clear existing content in the *typed content div*
+            typedContentDiv.innerHTML = "";
+
+            // Set initial date/time and start updating it
+            updateTerminalDateTime();
+            if (terminalTimeInterval) clearInterval(terminalTimeInterval); // Clear any previous interval
+            terminalTimeInterval = setInterval(updateTerminalDateTime, 1000);
+
+            currentTypingLineIndex = 0; // Reset typing index
+            typeNextLine();
+        }
 
         function runBootSequence() {
             if (bootMessageIndex < bootSequence.length) {
@@ -623,28 +730,23 @@
                     bootScreen.classList.add('hidden');
                     setTimeout(() => {
                         bootScreen.style.display = 'none';
-                        terminal.style.display = 'block';
+                        terminal.style.display = 'flex'; // Change to flex to enable column layout for its children
                         terminal.classList.add('active');
                         mobileMenuButton.style.display = 'flex'; // Show mobile menu button after terminal loads
 
-                        // Initialize terminal content including dynamic date/time
-                        terminal.innerHTML = terminalContent.join('\n') + '\n<span class="cursor"></span>';
+                        // Start the typing effect instead of setting innerHTML directly
+                        startTypingEffect();
 
-                        // Start updating time in the terminal
-                        updateTerminalDateTime(); // Initial call
-                        terminalTimeInterval = setInterval(updateTerminalDateTime, 1000); // Update every second
-
-                        terminal.scrollTop = terminal.scrollHeight; // Ensure scroll to bottom on load
                     }, 1000);
                 }, 800);
             }
         }
 
         function initializePortfolioDisplay() {
-            // Clear any active terminal time intervals on re-initialization
-            if (terminalTimeInterval) {
-                clearInterval(terminalTimeInterval);
-            }
+            // Clear any active intervals on re-initialization
+            if (terminalTimeInterval) clearInterval(terminalTimeInterval);
+            if (bootInterval) clearInterval(bootInterval);
+            if (timeInterval) clearInterval(timeInterval);
 
             // Hide mobile menu button during boot process
             mobileMenuButton.style.display = 'none';
@@ -661,12 +763,9 @@
 
             // Set up initial boot screen time
             updateBootScreenTime();
-            if (timeInterval) {
-                clearInterval(timeInterval);
-            }
             timeInterval = setInterval(updateBootScreenTime, 1000);
 
-            // --- IMPORTANT CHANGE FOR KALI LOGO DURATION ---
+            // Duration of pre-boot logo (5.5 seconds) then fade out (0.5 seconds)
             setTimeout(() => {
                 preBootScreen.classList.add('hidden');
                 setTimeout(() => {
@@ -692,9 +791,6 @@
         // Desktop Reboot functionality on Escape key press
         document.addEventListener("keydown", (e) => {
             if (e.key === "Escape") {
-                clearInterval(bootInterval);
-                clearInterval(timeInterval);
-                clearInterval(terminalTimeInterval); // Stop terminal time update
                 initializePortfolioDisplay();
             }
         });
@@ -712,9 +808,6 @@
         // Overlay Reboot Button
         overlayRebootButton.addEventListener('click', () => {
             mobileMenuOverlay.classList.remove('active'); // Close overlay first
-            clearInterval(bootInterval);
-            clearInterval(timeInterval);
-            clearInterval(terminalTimeInterval); // Stop terminal time update
             initializePortfolioDisplay();
         });
 
@@ -745,6 +838,22 @@
                 mobileMenuOverlay.classList.remove('active');
             }
         });
+
+        // Scroll button event listeners
+        scrollUpButton.addEventListener('click', () => {
+            terminal.scrollBy({
+                top: -terminal.clientHeight * 0.2, // Scroll up by 20% of terminal height
+                behavior: 'smooth'
+            });
+        });
+
+        scrollDownButton.addEventListener('click', () => {
+            terminal.scrollBy({
+                top: terminal.clientHeight * 0.2, // Scroll down by 20% of terminal height
+                behavior: 'smooth'
+            });
+        });
+
     </script>
 </body>
 </html>
