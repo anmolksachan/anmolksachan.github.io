@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C1PH3R-FSOCITEY</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Orbitron:wght@400;700&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Space Mono', monospace; /* Modern monospace font */
+            background-color: #050505; /* Deep dark background */
+            color: #00ee00; /* Vibrant green for text */
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Top Banner Styles */
+        #top-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 50, 0, 0.95); /* Dark green, slightly transparent */
+            color: #00ff00;
+            padding: 8px 20px; /* Adjusted padding for better height control */
+            text-align: center;
+            font-size: 1em;
+            font-family: 'Space Mono', monospace;
+            z-index: 10000; /* Higher than other modals/overlays */
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px; /* Space between message and close button */
+            animation: slideInDown 0.5s ease-out forwards; /* Entry animation */
+        }
+
+        #top-banner p {
+            margin: 0;
+            flex-grow: 1; /* Allow paragraph to take up space */
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+        }
+
+        #top-banner a {
+            color: #39ff14; /* Brighter green for links */
+            text-decoration: underline;
+            transition: color 0.3s ease;
+        }
+
+        #top-banner a:hover {
+            color: #ffffff; /* White on hover */
+        }
+
+        .close-banner {
+            color: #00ff00;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+            padding: 0 5px; /* Add some padding for easier clicking */
+        }
+
+        .close-banner:hover {
+            color: #ff0000; /* Red on hover to signify close */
+            transform: scale(1.1);
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            filter: blur(0.5px); /* Slight blur for matrix background */
+            opacity: 0.8; /* Subtle transparency */
+        }
+
+        #overlay-gradient { /* New: for depth over matrix */
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle at center, rgba(0,255,0,0.05) 0%, rgba(0,0,0,0.8) 70%, rgba(0,0,0,0.95) 100%);
+            z-index: 0;
+            pointer-events: none; /* Allows clicks to pass through */
+        }
+
+        #cart-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2;
+            display: flex;
+            flex-direction: column; /* Stack clock and cart vertically */
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        #clock-display { /* New: for clock and date */
+            background-color: rgba(10, 20, 10, 0.7);
+            border: 1px solid #00ff00;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            color: #00ff00;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+            box-shadow: 0 0 8px rgba(0, 255, 0, 0.4);
+            font-family: 'Orbitron', sans-serif; /* Techy font for clock */
+            transition: all 0.3s ease;
+        }
+        #clock-display:hover {
+            box-shadow: 0 0 15px #00ff00;
+            transform: scale(1.02);
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            margin-top: 50px; /* Adjusted to push content below the fixed banner */
+            backdrop-filter: blur(3px); /* Subtle blur for main content area */
+            background-color: rgba(5, 5, 5, 0.6); /* Slightly more opaque background */
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+            transition: all 0.5s ease;
+        }
+
+        .product {
+            border: 1px solid #00ff00;
+            padding: 20px;
+            margin-bottom: 30px; /* More space between products */
+            border-radius: 12px;
+            background-color: rgba(10, 10, 10, 0.8);
+            display: flex;
+            align-items: flex-start;
+            gap: 30px; /* More space between image/video and text */
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.6), inset 0 0 5px rgba(0, 255, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            position: relative; /* For the pseudo-elements */
+            overflow: hidden; /* Ensure content stays within borders */
+        }
+
+        .product::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, #00ff00, #39ff14, #00ff00);
+            z-index: -1;
+            filter: blur(4px); /* Reduced blur for less light spread */
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .product:hover::before {
+            opacity: 0.9; /* Slightly reduced opacity */
+        }
+
+        .product:hover {
+            transform: translateY(-8px);
+            /* Reduced intensity of the outer glow */
+            box-shadow: 0 0 18px #00ff00, inset 0 0 8px #00ff00;
+            border-color: #00ff00;
+        }
+
+        /* Text color change on product hover */
+        .product:hover h3,
+        .product:hover p {
+            color: #ffffff; /* Change to pure white for maximum readability */
+            text-shadow: none; /* Remove text shadow on hover for clarity */
+            transition: color 0.3s ease, text-shadow 0.3s ease; /* Smooth transition */
+        }
+
+        .product-image, .product-video {
+            width: 300px;
+            height: auto;
+            border-radius: 8px;
+            border: 2px solid #00ff00; /* Thicker, vibrant border */
+            box-shadow: 0 0 12px rgba(0, 255, 0, 0.8); /* Stronger shadow */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            object-fit: cover; /* Ensures videos/images fill the space */
+        }
+        .product-image:hover, .product-video:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px #00ff00;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif; /* Hacker-style font for title */
+            font-size: 3.5em; /* Larger title */
+            text-shadow: 0 0 20px #00ff00, 0 0 30px rgba(0, 255, 0, 0.7);
+            text-align: center;
+            margin-bottom: 50px;
+            animation: flicker 1.5s infinite alternate;
+            letter-spacing: 3px; /* Spaced out letters */
+        }
+
+        h2 {
+            font-size: 2em; /* Larger section titles */
+            margin-bottom: 20px;
+            color: #00ff00;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+            border-bottom: 1px dashed rgba(0, 255, 0, 0.5); /* Underline effect */
+            padding-bottom: 5px;
+        }
+
+        h3 {
+            font-size: 1.8em; /* Larger product titles */
+            margin-bottom: 15px;
+            color: #00ff00;
+            text-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
+        }
+
+        p {
+            margin-bottom: 12px;
+            line-height: 1.7;
+            color: #d0ffe0; /* Slightly lighter green for body text */
+        }
+
+        /* === Glitch Effect Styles === */
+        .glitch {
+            /* Existing glitch styles are good, no change needed here */
+        }
+
+        .btn, form button, .cart-btn {
+            background-color: #00ff00;
+            color: #050505; /* Dark text on green button */
+            padding: 12px 25px; /* Larger padding */
+            text-decoration: none;
+            border-radius: 8px; /* More rounded corners */
+            display: inline-block;
+            margin-top: 15px;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            font-family: 'Orbitron', sans-serif; /* Techy font for buttons */
+            font-weight: 700; /* Bold */
+            letter-spacing: 1px;
+            box-shadow: 0 0 8px #00ff00;
+            text-transform: uppercase; /* All caps for buttons */
+        }
+
+        .btn:hover, form button:hover, .cart-btn:hover {
+            background-color: #00cc00; /* Darker green on hover */
+            transform: scale(1.08); /* More pronounced scale */
+            box-shadow: 0 0 20px #00ff00; /* Stronger glow */
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* More spacing */
+            margin-top: 15px;
+        }
+
+        .input-group input[type="number"] {
+            width: 70px; /* Slightly wider */
+            padding: 10px; /* More padding */
+            border: 1px solid #00ff00;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #00ff00;
+            border-radius: 6px;
+            font-family: 'Space Mono', monospace;
+            text-align: center;
+            -moz-appearance: textfield;
+            box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .input-group input[type="number"]:focus {
+            outline: none;
+            border-color: #39ff14;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        #search-bar {
+            width: calc(100% - 40px); /* Adjust based on padding */
+            padding: 18px 25px; /* Larger padding */
+            margin: 30px auto; /* Centered with more margin */
+            display: block; /* Ensures centering with margin: auto */
+            background-color: rgba(10, 10, 10, 0.9);
+            border: 2px solid #00ff00; /* More prominent border */
+            color: #00ff00;
+            border-radius: 10px;
+            font-family: 'Space Mono', monospace;
+            font-size: 1.2em; /* Larger font size */
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        #search-bar:focus {
+            outline: none;
+            border-color: #39ff14;
+            box-shadow: 0 0 30px #00ff00;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.95); /* Darker, more opaque overlay */
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px); /* Stronger blur on content behind modal */
+        }
+
+        .modal-content {
+            background: #111111; /* Solid dark background */
+            color: #00ff00;
+            padding: 40px; /* More padding */
+            border-radius: 20px; /* More rounded */
+            box-shadow: 0 0 30px #00ff00, inset 0 0 10px rgba(0, 255, 0, 0.5); /* Enhanced glow */
+            max-width: 800px; /* Wider modal */
+            text-align: center;
+            margin: 20px;
+            position: relative;
+            border: 2px solid #00ff00;
+        }
+
+        .close-button {
+            color: #00ff00;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 35px; /* Larger close button */
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: #39ff14;
+            transform: scale(1.1);
+        }
+
+        #cart-items {
+            text-align: left;
+            margin-top: 25px;
+            padding: 0 25px; /* More padding */
+            max-height: 400px; /* Scrollable if many items */
+            overflow-y: auto;
+            border-bottom: 1px dashed rgba(0, 255, 0, 0.3);
+            padding-bottom: 15px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px dotted rgba(0, 255, 0, 0.2);
+        }
+
+        .cart-item:last-child {
+            border-bottom: none; /* No border for last item */
+        }
+
+        .cart-item span {
+            flex: 1;
+            font-size: 1.1em;
+            color: #d0ffe0;
+        }
+
+        .cart-item .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cart-item .quantity-controls button {
+            background-color: #00ff00;
+            color: black;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-family: 'Space Mono', monospace;
+            box-shadow: 0 0 5px #00ff00;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cart-item .quantity-controls button:hover {
+            background-color: #00cc00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        #cart-total {
+            margin-top: 30px;
+            font-size: 1.5em; /* Larger total */
+            color: #00ff00;
+            text-align: right;
+            border-top: 2px solid #00ff00; /* More prominent separator */
+            padding-top: 15px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+        }
+
+        /* Keyframes */
+        @keyframes glitch {
+            0% { transform: none; }
+            20% { transform: skew(-5deg); }
+            40% { transform: skew(5deg); }
+            60% { transform: skew(-3deg); }
+            80% { transform: skew(3deg); }
+            100% { transform: none; }
+        }
+
+        @keyframes glitchTop {
+            0% { clip: rect(0, 9999px, 0, 0); }
+            10% { clip: rect(0, 9999px, 15px, 0); }
+            20% { clip: rect(0, 9999px, 5px, 0); }
+            30% { clip: rect(0, 9999px, 25px, 0); }
+            40% { clip: rect(0, 9999px, 5px, 0); }
+            100% { clip: rect(0, 9999px, 0, 0); }
+        }
+
+        @keyframes glitchBottom {
+            0% { clip: rect(0, 9999px, 0, 0); }
+            10% { clip: rect(25px, 9999px, 40px, 0); }
+            20% { clip: rect(15px, 9999px, 30px, 0); }
+            30% { clip: rect(40px, 9999px, 60px, 0); }
+            40% { clip: rect(20px, 9999px, 35px, 0); }
+            100% { clip: rect(0, 9999px, 0, 0); }
+        }
+
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow: 0 0 15px #00ff00, 0 0 25px rgba(0, 255, 0, 0.5);
+            }
+            20%, 24%, 55% {
+                text-shadow: none;
+            }
+        }
+
+        /* Keyframe for loading logo pulse */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 15px #00ff00, 0 0 30px rgba(0, 255, 0, 0.7);
+            }
+            100% {
+                transform: scale(1.05);
+                box-shadow: 0 0 25px #00ff00, 0 0 45px rgba(0, 255, 0, 0.9);
+            }
+        }
+
+        /* Keyframe for banner entry */
+        @keyframes slideInDown {
+            0% {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Keyframe for banner exit */
+        @keyframes slideOutUp {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+        }
+
+        /* Styling for the loading logo */
+        #loading-logo {
+            width: 150px;
+            height: 150px;
+            max-width: 50vw; /* Scales down on very small screens */
+            height: auto; /* Maintains aspect ratio */
+            border-radius: 50%;
+            border: 3px solid #00ff00;
+            box-shadow: 0 0 15px #00ff00, 0 0 30px rgba(0, 255, 0, 0.7);
+            margin-bottom: 20px;
+            animation: pulse 2s infinite alternate;
+        }
+
+        /* --- MEDIA QUERIES FOR RESPONSIVE DESIGN --- */
+
+        /* For Tablets and smaller desktops (max-width: 768px) */
+        @media screen and (max-width: 768px) {
+            main {
+                padding: 20px; /* Reduced padding */
+                max-width: 100%; /* Take full width on smaller screens */
+                margin-top: 50px; /* Keep margin-top for banner */
+            }
+
+            #top-banner {
+                font-size: 0.9em; /* Smaller font for banner on tablets */
+                padding: 6px 15px;
+                gap: 10px;
+            }
+            .close-banner {
+                font-size: 1.3em;
+            }
+
+            h1 {
+                font-size: 2.5em; /* Smaller title */
+                margin-bottom: 30px;
+            }
+
+            h2 {
+                font-size: 1.6em; /* Smaller section titles */
+            }
+
+            h3 {
+                font-size: 1.4em; /* Smaller product titles */
+            }
+
+            .product {
+                flex-direction: column; /* Stack image/video and text vertically */
+                gap: 20px; /* Adjust gap for vertical stacking */
+                padding: 15px;
+                align-items: center; /* Center items in column layout */
+            }
+
+            .product-image, .product-video {
+                width: 100%; /* Take full width of the product card */
+                max-width: 350px; /* Limit max width for images/videos */
+                height: auto;
+            }
+
+            .product-info {
+                text-align: center; /* Center text content */
+            }
+
+            .input-group {
+                justify-content: center; /* Center buttons and input */
+            }
+
+            #search-bar {
+                padding: 12px 15px; /* Smaller padding for search bar */
+                font-size: 1em;
+                width: calc(100% - 30px); /* Adjust width for new padding */
+            }
+
+            #cart-container {
+                top: 10px;
+                right: 10px;
+                gap: 5px;
+            }
+
+            #clock-display {
+                font-size: 0.8em;
+                padding: 6px 10px;
+            }
+
+            .btn, form button, .cart-btn {
+                padding: 10px 20px; /* Smaller button padding */
+                font-size: 0.9em;
+            }
+
+            .modal-content {
+                padding: 20px;
+                max-width: 90%;
+            }
+
+            .close-button {
+                font-size: 30px;
+            }
+
+            .cart-item {
+                flex-direction: column; /* Stack item name and quantity controls */
+                align-items: flex-start;
+                gap: 5px;
+            }
+
+            .cart-item .quantity-controls {
+                width: 100%; /* Take full width */
+                justify-content: center; /* Center controls */
+            }
+        }
+
+        /* For Smartphones (max-width: 480px) */
+        @media screen and (max-width: 480px) {
+            main {
+                margin-top: 45px; /* Adjust margin-top for smaller banner on phones */
+            }
+            #top-banner {
+                font-size: 0.75em; /* Even smaller font for banner on phones */
+                padding: 5px 10px;
+                gap: 8px;
+            }
+            .close-banner {
+                font-size: 1.2em;
+            }
+
+            h1 {
+                font-size: 1.8em; /* Even smaller title for phones */
+                letter-spacing: 1px;
+            }
+
+            h2 {
+                font-size: 1.4em;
+            }
+
+            h3 {
+                font-size: 1.2em;
+            }
+
+            .product {
+                padding: 10px;
+                gap: 15px;
+            }
+
+            .product-image, .product-video {
+                max-width: 100%; /* Ensure it fits within the phone screen */
+            }
+
+            .btn, form button, .cart-btn {
+                padding: 8px 15px;
+                font-size: 0.8em;
+            }
+
+            .input-group input[type="number"] {
+                width: 60px;
+                padding: 8px;
+            }
+
+            #search-bar {
+                padding: 10px 12px;
+                font-size: 0.9em;
+                margin: 20px auto;
+            }
+
+            #cart-container {
+                top: 5px;
+                right: 5px;
+                align-items: flex-end;
+            }
+
+            #clock-display {
+                font-size: 0.7em;
+                padding: 5px 8px;
+            }
+
+            .modal-content {
+                padding: 15px;
+                border-radius: 10px;
+            }
+
+            .close-button {
+                font-size: 28px;
+                top: 10px;
+                right: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="top-banner">
+        <p>SYSTEM ALERT: NEW "ZERO-DAY EXPLOIT KIT" ARRIVING SOON! STAY TUNED FOR DEPLOYMENT. | We were at Bsides Mumbai<a href="#" style="color: yellow; text-decoration: underline;">LEARN MORE</a></p>
+        <span class="close-banner" onclick="closeBanner()">&times;</span>
+    </div>
+
+    <canvas id="matrix"></canvas>
+    <div id="overlay-gradient"></div> <div id="disclaimer-modal" class="modal" style="display: flex;"> <div class="modal-content">
+            <h2 style="font-size: 1.8em;">⚠️ DISCLAIMER</h2>
+            <p style="margin: 20px 0; font-size: 1.1em;">
+                All products on <b>C1PH3R-FSOCITEY</b> are to be used for <br> <u>educational purposes only</u>.<br>
+                C1PH3R-FSOCITEY is <u>not responsible</u> for any misuse of the products.
+            </p>
+            <button onclick="acceptDisclaimer()" class="btn">I AGREE</button>
+        </div>
+    </div>
+
+    <div id="loading-screen" style="position:fixed;top:0;left:0;width:100%;height:100%;background:black;color:#00ff00;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;font-family:'Space Mono', monospace; font-size: 1.1em;">
+        <img src="https://avatars.githubusercontent.com/u/109020327?v=4" alt="C1PH3R-FSOCITEY Logo" id="loading-logo">
+        <pre id="loading-text" style="text-align:left;"></pre>
+    </div>
+
+    <div id="cart-container">
+        <div id="clock-display"></div> <button class="btn cart-btn" onclick="openCartModal()">🛒 View Cart (<span id="cart-count">0</span>)</button>
+    </div>
+
+    <main style="display:none;" id="main-content">
+        <h1 class="glitch" data-text="C1PH3R-FSOCITEY">C1PH3R-FSOCITEY</h1>
+
+        <input type="text" id="search-bar" placeholder="> SEARCH DATABASE..." onkeyup="searchProducts()">
+
+        <section id="products" class="products"></section>
+    </main>
+
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeCartModal()">&times;</span>
+            <h2>🛒 Your Cart</h2>
+            <div id="cart-items">
+                </div>
+            <div id="cart-total"></div>
+            <button class="btn" onclick="checkout()">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("matrix");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // More character variety
+        const fontSize = 16; // Slightly larger font for matrix
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.04)"; // More subtle trail
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#00ff00"; // Neon green
+            ctx.font = fontSize + "px 'Space Mono', monospace";
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.97) { // Slightly more frequent resets
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 40); // Slightly slower for better visual
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+
+    <script>
+        const loadingLines = [
+            "> Initializing secure connection...",
+            "> Decrypting data stream...",
+            "> Bypassing network surveillance...",
+            "> Compiling exploit modules...",
+            "> Access granted. Welcome to C1PH3R-FSOCITEY.",
+            "> Starting marketplace interface..."
+        ];
+        const loadingText = document.getElementById("loading-text");
+        let lineIndex = 0;
+
+        function typeLine() {
+            if (lineIndex < loadingLines.length) {
+                loadingText.innerHTML += loadingLines[lineIndex] + "\n";
+                lineIndex++;
+                setTimeout(typeLine, 700);
+            } else {
+                setTimeout(() => {
+                    document.getElementById("loading-screen").style.display = "none";
+                    document.getElementById("main-content").style.display = "block";
+                }, 1500);
+            }
+        }
+        typeLine();
+    </script>
+
+    <script>
+        function updateClockAndDate() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const date = now.toLocaleDateString('en-GB', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+            document.getElementById('clock-display').innerHTML = `SYSTEM TIME: ${time}<br>DATE: ${date}`;
+        }
+        setInterval(updateClockAndDate, 1000);
+        updateClockAndDate();
+    </script>
+
+    <script>
+        // Function to close the top banner
+        function closeBanner() {
+            const banner = document.getElementById('top-banner');
+            banner.style.animation = 'slideOutUp 0.5s ease-in forwards'; // Exit animation
+            setTimeout(() => {
+                banner.style.display = 'none';
+            }, 500); // Hide after animation
+        }
+
+        function acceptDisclaimer() {
+            document.getElementById("disclaimer-modal").style.display = "none";
+        }
+
+        // --- Products Data (with correct full URLs for GitHub Pages) ---
+        // MAKE SURE THESE PATHS ARE ABSOLUTE AND POINT TO YOUR FILES ON GITHUB
+        const products = [
+            {
+                id: 'bleStealthFucker',
+                name: 'BLE Stealth Fucker',
+                price: 1999,
+                description: 'BLE StealthFucker is a highly compact and minimalistic BLE jammer designed to disrupt Bluetooth Low Energy (BLE) signals. Using the ESP32 Wroom32 module, this tool focuses on BLE signal disruption with a streamlined design. Ideal for anyone needing a portable, no-nonsense device for BLE network interference, this tool is both efficient and powerful in jamming BLE communications.',
+                image: 'https://c1ph3r-fsocitey.github.io/bleStealthFucker.jpeg',
+                video: 'https://c1ph3r-fsocitey.github.io/BLE_StealthFucker.mp4'
+            },
+            {
+                id: 'freqFuckerUltra',
+                name: 'FreqFucker Ultra',
+                price: 2499,
+                description: 'FreqFucker Ultra is a powerful multi-functional device designed to analyze, jam, spoof, and disrupt Bluetooth Low Energy (BLE) signals. Based on the ESP32 Wroom32 module, it comes equipped with advanced features to target and attack Bluetooth devices. Whether you\'re performing red team engagements or studying BLE networks, this tool serves multiple purposes — from signal analysis to jamming and spoofing.',
+                image: 'https://c1ph3r-fsocitey.github.io/FreqFuckerUltra.jpeg',
+                video: 'https://c1ph3r-fsocitey.github.io/FreqFucker_Ultra.mp4'
+            },
+            {
+                id: 'blitzFucker',
+                name: 'BlitzFucker - WiFi & BLE Toolkit',
+                price: 3999,
+                description: 'BlitzFucker is a versatile WiFi and BLE hacking tool built on the ESP32 platform. This powerful device allows for network analysis, packet capture, rogue access point creation, beacon manipulation, and various WiFi & BLE attacks. Whether you are a penetration tester, a red teamer, or just a hobbyist looking to explore the wireless landscape, BlitzFucker provides a feature-rich toolkit to perform a wide range of wireless network security tests.',
+                image: 'https://c1ph3r-fsocitey.github.io/Blitz.jpg',
+                video: 'https://c1ph3r-fsocitey.github.io/BlitzFucker.mp4'
+            },
+            {
+                id: 'rfFucker',
+                name: 'RF Fucker: RF Signal Cloner & Generator',
+                price: 2499,
+                description: 'RF Fucker is a versatile RF signal tool designed to clone, analyze, and generate raw RF signals. Built for wireless security testing and penetration, this device is essential for radio frequency analysis, signal manipulation, and testing various RF vulnerabilities. The RF Fucker allows you to simulate RF environments and assess how systems react to different frequencies, making it a powerful tool for RF professionals and researchers.',
+                image: 'https://c1ph3r-fsocitey.github.io/rf_fucker.jpg',
+                video: 'https://c1ph3r-fsocitey.github.io/RF_Fucker.mp4'
+            },
+            {
+                id: 'spectrumSlayer',
+                name: 'Spectrum Slayer: 2.4/5GHz Wi-Fi Disruption',
+                price: 1999,
+                description: 'The Spectrum Slayer is a dual-band Wi-Fi deauther built for maximum network interference. Capable of kicking devices off 2.4 GHz and 5 GHz networks, it disrupts connections with precision. Whether for testing security, stress-testing networks, or controlled Wi-Fi chaos, the Spectrum Slayer ensures total domination over the airwaves.',
+                image: 'https://c1ph3r-fsocitey.github.io/spectrum_slayer4.jpeg',
+                video: 'https://c1ph3r-fsocitey.github.io/SpectrumSlayer.mp4'
+            },
+            {
+                id: 'rfAnnihilator',
+                name: 'RF Annihilator: 433 MHz Domination',
+                price: 2999,
+                description: 'The RF Annihilator is an elite RF hacking tool built for those who demand complete control over the 433 MHz spectrum. Equipped with replay attack capabilities, a raw signal reader, signal analyzer, and a random signal generator, this beast lets you intercept, analyze, and manipulate RF signals with ease. Whether you\'re testing vulnerabilities, reverse-engineering remote signals, or unleashing controlled chaos, the RF Annihilator is your go-to weapon for RF domination.<b>Please Note: This device is battery-free and relies on external power sources.</b>',
+                image: 'https://c1ph3r-fsocitey.github.io/rf.jpeg',
+                video: 'https://c1ph3r-fsocitey.github.io/RF_Annihilator.mp4'
+            },
+            {
+                id: 'chaosInjector',
+                name: 'Chaos Injector: The Ultimate BadUSB Tool',
+                price: 2499,
+                description: 'Chaos Injector is a feature-packed badUSB that merges WiFi capability, NeoPixel LED, a sleek display, navigation buttons, and onboard memory for payload storage. Designed for penetration testers and enthusiasts, it offers seamless navigation, dynamic visual feedback, and the ability to execute complex tasks with precision. Chaos Injector redefines versatility and style in a compact tool, putting the power of controlled disruption at your fingertips.<b>Please Note: This device is battery-free and relies on external power sources.</b>',
+                image: 'https://c1ph3r-fsocitey.github.io/Chaos.png',
+                video: 'https://c1ph3r-fsocitey.github.io/Chaos_Injector.mp4'
+            },
+            {
+                id: 'disruptorX',
+                name: 'DisruptorX: Unleash the Power of Advanced Wireless Disruption',
+                price: 2499,
+                description: 'DisruptorX is your ultimate tool for scanning, analyzing, and disrupting wireless networks. With features like network jamming, BLE spoofing, and the powerful Sour Apple attack, it’s perfect for security testing and advanced connectivity exploration. Compact, versatile, and powerful, DisruptorX lets you push the boundaries of wireless technology.<b>Please Note: This device is battery-free and relies on external power sources.</b>',
+                image: 'https://c1ph3r-fsocitey.github.io/DisruptorX.png',
+                video: 'https://c1ph3r-fsocitey.github.io/DisruptorX.mp4'
+            },
+            {
+                id: 'meowFi',
+                name: 'Meow-Fi: The Cutest Deauth Detector',
+                price: 1299,
+                description: 'Meet Meow-Fi, your adorable portable companion for network security. Not only can Meow-Fi detect deauthentication attacks, but its cute and handy design also makes it a perfect tech pet!<b>Please Note: This device is battery-free and relies on external power sources. <br> More firmwares would be released soon!</b>',
+                image: 'https://c1ph3r-fsocitey.github.io/meowfi.jpg',
+                video: 'https://c1ph3r-fsocitey.github.io/Meow_fi.mp4'
+            },
+            {
+                id: 'zapNet',
+                name: 'Zap Net - WiFi Deauther Device {Without Battery}',
+                price: 1200,
+                description: 'Take control of your WiFi with the Zap Net, the ultimate WiFi deauther device for network testing.<b>Please Note: This DOES NOT contain Battery.</b><br>Please note: Micro-USB is NOT provided',
+                image: 'https://c1ph3r-fsocitey.github.io/zapnet.jpg',
+                video: 'https://c1ph3r-fsocitey.github.io/ZapNet.mp4'
+            },
+            {
+                id: 'zapNetBatteryMod',
+                name: 'Zap Net with Battery Mod',
+                price: 1600,
+                description: 'This version of the Zap Net comes with an inbuilt battery mod, making it perfect for on-the-go network testing without needing external power.<b>Please Note: This contains Li-Po Battery.</b><br>Please note: Micro-USB is NOT provided',
+                image: 'https://c1ph3r-fsocitey.github.io/zapnet_battery_mod.jpg',
+                video: 'https://c1ph3r-fsocitey.github.io/ZapNet.mp4' // Assuming same video for both Zap Net versions
+            },
+            {
+                id: 'zapNetKit',
+                name: 'Zap Net DIY Kit {Without Battery}',
+                price: 1200,
+                description: 'Build your own DIY Wi-Fi Deauther Zap Net Device! Everything you need is in this Kit! Great especially for beginners in Cyber Security and Electronics! Just solder all the components together, upload the code and it\'s ready to go!Price: ₹ 1200/- for 1 Zap Net Kit containing: 1x Wemos D1 Mini (with header pins), 1x 1.3 inch OLED Display, 1 PCB, 3x Tactile Buttons. <br> Please note: Micro-USB is NOT provided',
+                image: 'https://c1ph3r-fsocitey.github.io/zapnet_kit.png',
+                video: 'https://c1ph3r-fsocitey.github.io/ZapNet.mp4' // Assuming same video
+            }
+        ];
+
+        let cart = {}; // Stores {productId: quantity}
+
+        function renderProducts(filteredProducts = products) {
+            const productsContainer = document.getElementById('products');
+            productsContainer.innerHTML = ''; // Clear existing products
+            filteredProducts.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product';
+                productDiv.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}" class="product-image">
+                    <div style="display: flex; flex-direction: row; gap: 30px; flex: 1; align-items: flex-start;">
+                        <div class="product-info" style="flex: 1;">
+                            <h3>${product.name}</h3>
+                            <p>${product.description}</p>
+                            <p>Price: ₹ ${product.price} for 1 ${product.name}</p>
+                            <div class="input-group">
+                                <input type="number" id="qty-${product.id}" value="1" min="1" onchange="validateQuantity('${product.id}')">
+                                <button class="btn" onclick="addToCart('${product.id}')">Add to Cart</button>
+                            </div>
+                        </div>
+                        <video controls autoplay muted loop class="product-video">
+                            <source src="${product.video}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                `;
+                productsContainer.appendChild(productDiv);
+            });
+        }
+
+        function validateQuantity(productId) {
+            const input = document.getElementById(`qty-${productId}`);
+            if (input.value < 1) {
+                input.value = 1;
+            }
+        }
+
+        function addToCart(productId) {
+            const quantityInput = document.getElementById(`qty-${productId}`);
+            const quantity = parseInt(quantityInput.value);
+
+            if (quantity > 0) {
+                if (cart[productId]) {
+                    cart[productId] += quantity;
+                } else {
+                    cart[productId] = quantity;
+                }
+                updateCartCount();
+                alert(`Added ${quantity} x ${products.find(p => p.id === productId).name} to cart!`);
+            }
+        }
+
+        function updateCartCount() {
+            let totalItems = 0;
+            for (const id in cart) {
+                totalItems += cart[id];
+            }
+            document.getElementById('cart-count').innerText = totalItems;
+        }
+
+        function openCartModal() {
+            const cartModal = document.getElementById('cart-modal');
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartTotalElement = document.getElementById('cart-total');
+            cartItemsContainer.innerHTML = ''; // Clear current items
+            let total = 0;
+
+            if (Object.keys(cart).length === 0) {
+                cartItemsContainer.innerHTML = '<p>Your cart is empty. Time to hack some deals!</p>';
+                cartTotalElement.innerText = '';
+            } else {
+                for (const productId in cart) {
+                    const product = products.find(p => p.id === productId);
+                    if (product) {
+                        const itemQuantity = cart[productId];
+                        const itemTotal = product.price * itemQuantity;
+                        total += itemTotal;
+
+                        const cartItemDiv = document.createElement('div');
+                        cartItemDiv.className = 'cart-item';
+                        cartItemDiv.innerHTML = `
+                            <span>${product.name} (₹ ${product.price})</span>
+                            <div class="quantity-controls">
+                                <button onclick="updateCartQuantity('${productId}', -1)">-</button>
+                                <span>${itemQuantity}</span>
+                                <button style="background-color: #00ff00; color: black; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer; font-family: 'Space Mono', monospace; box-shadow: 0 0 5px #00ff00;" onclick="updateCartQuantity('${productId}', 1)">+</button>
+                                <button style="background-color: #ff0000; margin-left: 10px;" class="btn" onclick="removeFromCart('${productId}')">Remove</button>
+                            </div>
+                        `;
+                        cartItemsContainer.appendChild(cartItemDiv);
+                    }
+                }
+                cartTotalElement.innerText = `Total: ₹ ${total}`;
+            }
+            cartModal.style.display = 'flex';
+        }
+
+        function closeCartModal() {
+            document.getElementById('cart-modal').style.display = 'none';
+        }
+
+        function updateCartQuantity(productId, change) {
+            cart[productId] += change;
+            if (cart[productId] <= 0) {
+                delete cart[productId];
+            }
+            updateCartCount();
+            openCartModal(); // Re-render cart to show changes
+        }
+
+        function removeFromCart(productId) {
+            delete cart[productId];
+            updateCartCount();
+            openCartModal(); // Re-render cart to show changes
+        }
+
+        function checkout() {
+            if (Object.keys(cart).length === 0) {
+                alert('Your cart is empty. Add some items before checking out!');
+                return;
+            }
+
+            let message = "Hello, I would like to order the following items from C1PH3R-FSOCITEY:\n\n";
+            let totalAmount = 0;
+
+            for (const productId in cart) {
+                const product = products.find(p => p.id === productId);
+                if (product) {
+                    const itemQuantity = cart[productId];
+                    const itemTotal = product.price * itemQuantity;
+                    message += `- ${product.name} x ${itemQuantity} (₹ ${itemTotal})\n`;
+                    totalAmount += itemTotal;
+                }
+            }
+            message += `\nTotal amount: ₹ ${totalAmount}\n\nPlease confirm my order.`;
+
+            const phoneNumber = "+919971904547";
+            const whatsappUrl = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
+            window.open(whatsappUrl, "_blank");
+
+            // Optionally clear the cart after checkout
+            cart = {};
+            updateCartCount();
+            closeCartModal();
+        }
+
+        function searchProducts() {
+            const searchTerm = document.getElementById('search-bar').value.toLowerCase();
+            const filteredProducts = products.filter(product =>
+                product.name.toLowerCase().includes(searchTerm) ||
+                product.description.toLowerCase().includes(searchTerm)
+            );
+            renderProducts(filteredProducts);
+        }
+
+        // Initial render of products when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            updateCartCount();
+        });
+    </script>
+</body>
+</html>
