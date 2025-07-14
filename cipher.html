@@ -7,15 +7,31 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Orbitron:wght@400;700&display=swap');
 
-        body, html {
+        /* Global Box Sizing */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        /* Ensure HTML and Body take full height */
+        html {
+            height: 100%;
+        }
+
+        body {
             margin: 0;
             padding: 0;
-            height: 100%;
             font-family: 'Space Mono', monospace; /* Modern monospace font */
             background-color: #050505; /* Deep dark background */
             color: #00ee00; /* Vibrant green for text */
-            overflow-x: hidden;
+            overflow-x: hidden; /* Only hide horizontal overflow */
+            overflow-y: auto;   /* IMPORTANT FIX: Explicitly allow vertical scrolling */
             scroll-behavior: smooth;
+
+            /* Sticky Footer Pattern Setup */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensures body takes at least full viewport height */
+            /* padding-top will be set by JS dynamically based on banner height */
         }
 
         /* Top Banner Styles */
@@ -77,7 +93,7 @@
             width: 100%;
             height: 100%;
             display: block;
-            filter: blur(0.5px); /* Slight blur for matrix background */
+            filter: blur(0.5px); /* Slight blur for matrix */
             opacity: 0.8; /* Subtle transparency */
         }
 
@@ -124,15 +140,140 @@
             padding: 40px;
             max-width: 1200px;
             margin: 0 auto;
-            margin-top: 50px; /* Adjusted to push content below the fixed banner */
+            /* margin-top: handled by body padding-top */
             backdrop-filter: blur(3px); /* Subtle blur for main content area */
             background-color: rgba(5, 5, 5, 0.6); /* Slightly more opaque background */
             border-radius: 15px;
             border: 1px solid rgba(0, 255, 0, 0.3);
             box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
             transition: all 0.5s ease;
+            flex-grow: 1; /* Takes up remaining space for sticky footer */
         }
 
+        /* Product Navigation Header with Dropdown */
+        #product-nav {
+            text-align: center;
+            margin-bottom: 30px; /* Space below nav */
+            padding: 15px 0;
+            border-bottom: 1px dashed rgba(0, 255, 0, 0.4);
+            border-top: 1px dashed rgba(0, 255, 0, 0.4);
+            background-color: rgba(0, 10, 0, 0.7); /* Slightly darker */
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+            position: relative; /* For dropdown positioning */
+            z-index: 10; /* Ensure it's above content */
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex; /* Make menu items horizontal */
+            justify-content: center;
+            gap: 20px; /* Space between menu items */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+
+        .nav-menu li {
+            position: relative; /* For dropdown positioning */
+        }
+
+        .nav-link {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2em;
+            color: #00ff00;
+            text-decoration: none;
+            padding: 10px 20px;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+            display: block; /* Make the whole link clickable area */
+        }
+
+        .nav-link:hover {
+            background-color: #00ff00;
+            color: #050505;
+            text-shadow: none;
+            box-shadow: 0 0 15px #00ff00;
+            transform: scale(1.02); /* Slight scale on hover */
+        }
+
+        /* Dropdown Specific Styles */
+        .dropdown-menu {
+            display: none; /* Hidden by default */
+            position: absolute;
+            top: 100%; /* Position below the dropdown toggle */
+            left: 50%; /* Center dropdown horizontally */
+            transform: translateX(-50%); /* Adjust for centering */
+            background-color: rgba(0, 20, 0, 0.95); /* Darker background for dropdown */
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0, 255, 0, 0.4);
+            list-style: none;
+            padding: 10px 0;
+            z-index: 100; /* Ensure it's on top of other content */
+            backdrop-filter: blur(5px); /* Blur effect for depth */
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        .dropdown-menu li {
+            width: 100%;
+        }
+
+        .dropdown-menu a {
+            color: #00ff00;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left; /* Align text within dropdown */
+            font-family: 'Space Mono', monospace;
+            font-size: 0.95em;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: rgba(0, 255, 0, 0.2);
+            color: #39ff14;
+        }
+
+        .dropdown:hover .dropdown-menu, /* Show on hover for desktop */
+        .dropdown.active .dropdown-menu { /* Show on click for mobile/JS toggle */
+            display: block;
+        }
+
+        /* Nested Dropdown for Product List */
+        .nested-dropdown-menu {
+            display: none; /* Hidden by default, controlled by JS class */
+            position: absolute; /* Position relative to the parent li */
+            left: 100%; /* Position to the right of parent */
+            top: 0;
+            background-color: rgba(0, 30, 0, 0.98); /* Even darker background */
+            border: 1px solid #39ff14; /* Brighter border */
+            border-radius: 5px;
+            min-width: 220px;
+            box-shadow: 0 8px 16px rgba(0, 255, 0, 0.5);
+            list-style: none;
+            padding: 10px 0;
+            z-index: 101; /* Higher than parent dropdown */
+            backdrop-filter: blur(6px);
+            animation: fadeInNested 0.3s ease-out forwards; /* Apply nested animation */
+            max-height: 300px; /* Limit height */
+            overflow-y: auto; /* Make it scrollable */
+        }
+
+        /* Show nested dropdown when parent has 'active-nested' class (managed by JS) */
+        .has-nested.active-nested .nested-dropdown-menu {
+            display: block;
+        }
+
+
+        .nested-dropdown-menu li a {
+            padding: 10px 15px; /* Slightly less padding */
+            font-size: 0.9em;
+        }
+
+        /* Product Card and Hover Effect */
         .product {
             border: 1px solid #00ff00;
             padding: 20px;
@@ -144,7 +285,7 @@
             gap: 30px; /* More space between image/video and text */
             box-shadow: 0 0 15px rgba(0, 255, 0, 0.6), inset 0 0 5px rgba(0, 255, 0, 0.3);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            position: relative; /* For the pseudo-elements */
+            position: relative; /* For the pseudo-elements and hover overlay */
             overflow: hidden; /* Ensure content stays within borders */
         }
 
@@ -165,7 +306,6 @@
 
         .product:hover {
             transform: translateY(-8px);
-            /* Reduced intensity of the outer glow */
             box-shadow: 0 0 18px #00ff00, inset 0 0 8px #00ff00;
             border-color: #00ff00;
         }
@@ -178,6 +318,42 @@
             transition: color 0.3s ease, text-shadow 0.3s ease; /* Smooth transition */
         }
 
+        /* Learn More Overlay */
+        .product-hover-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* Dark transparent overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.3s ease;
+            z-index: 2; /* Above image/video but below product content */
+            pointer-events: none; /* Allow clicks to pass through by default */
+        }
+
+        .product:hover .product-hover-overlay {
+            opacity: 1; /* Show on hover */
+            pointer-events: auto; /* Enable clicks on hover */
+        }
+
+        .product-hover-overlay .btn {
+            padding: 15px 30px; /* Larger button */
+            font-size: 1.2em;
+            box-shadow: 0 0 10px #00ff00; /* Glow */
+            cursor: pointer;
+        }
+        /* Ensure the button within the overlay also changes on hover */
+        .product-hover-overlay .btn:hover {
+            background-color: #00cc00;
+            transform: scale(1.08);
+            box-shadow: 0 0 25px #00ff00;
+        }
+
+
         .product-image, .product-video {
             width: 300px;
             height: auto;
@@ -186,6 +362,8 @@
             box-shadow: 0 0 12px rgba(0, 255, 0, 0.8); /* Stronger shadow */
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             object-fit: cover; /* Ensures videos/images fill the space */
+            position: relative; /* For the overlay to correctly layer */
+            z-index: 1;
         }
         .product-image:hover, .product-video:hover {
             transform: scale(1.02);
@@ -229,7 +407,7 @@
             /* Existing glitch styles are good, no change needed here */
         }
 
-        .btn, form button, .cart-btn {
+        .btn, form button, .cart-btn, .back-btn { /* Added .back-btn */
             background-color: #00ff00;
             color: #050505; /* Dark text on green button */
             padding: 12px 25px; /* Larger padding */
@@ -247,7 +425,7 @@
             text-transform: uppercase; /* All caps for buttons */
         }
 
-        .btn:hover, form button:hover, .cart-btn:hover {
+        .btn:hover, form button:hover, .cart-btn:hover, .back-btn:hover { /* Added .back-btn */
             background-color: #00cc00; /* Darker green on hover */
             transform: scale(1.08); /* More pronounced scale */
             box-shadow: 0 0 20px #00ff00; /* Stronger glow */
@@ -273,6 +451,13 @@
             box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
             transition: box-shadow 0.3s ease, border-color 0.3s ease;
         }
+
+        .input-group input[type="number"]::-webkit-outer-spin-button,
+        .input-group input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
 
         .input-group input[type="number"]:focus {
             outline: none;
@@ -410,6 +595,214 @@
             text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
         }
 
+        /* Product Detail View Styles */
+        #product-detail-view {
+            display: none; /* Hidden by default */
+            background-color: rgba(10, 10, 10, 0.9);
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.8), inset 0 0 8px rgba(0, 255, 0, 0.4);
+            margin-bottom: 30px;
+        }
+
+        #product-detail-view .product-media {
+            width: 100%;
+            max-width: 600px; /* Max width for detail media */
+            height: auto;
+            border-radius: 10px;
+            border: 3px solid #39ff14;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.9);
+            margin-bottom: 25px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #product-detail-view h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        #product-detail-view p {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        /* About Me View Styles */
+        #about-me-view {
+            display: none; /* Hidden by default */
+            background-color: rgba(10, 10, 10, 0.9);
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.8), inset 0 0 8px rgba(0, 255, 0, 0.4);
+            margin-bottom: 30px;
+        }
+
+        #about-me-view h2 {
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+        }
+
+        #about-me-view p {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            line-height: 1.8;
+            text-align: left;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #about-me-view ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: left;
+        }
+
+        #about-me-view ul li {
+            margin-bottom: 10px;
+            font-size: 1em;
+            color: #d0ffe0;
+        }
+
+        #about-me-view .contact-links {
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        #about-me-view .contact-links a {
+            background-color: #00ff00;
+            color: #050505;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 8px #00ff00;
+        }
+
+        #about-me-view .contact-links a:hover {
+            background-color: #00cc00;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #00ff00;
+        }
+
+        /* Legal Pages Styling (Privacy Policy, Full Disclaimer) */
+        .legal-page {
+            display: none; /* Hidden by default */
+            background-color: rgba(10, 10, 10, 0.9);
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: left; /* Align text left for readability */
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.8), inset 0 0 8px rgba(0, 255, 0, 0.4);
+            margin-bottom: 30px;
+        }
+        .legal-page h2 {
+            text-align: center;
+            font-size: 2.2em;
+            margin-bottom: 25px;
+            color: #00ff00;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+            border-bottom: 1px dashed rgba(0, 255, 0, 0.5);
+            padding-bottom: 10px;
+        }
+        .legal-page h3 {
+            font-size: 1.6em;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            color: #39ff14;
+        }
+        .legal-page p, .legal-page ul li {
+            font-size: 1em;
+            line-height: 1.8;
+            color: #d0ffe0;
+            margin-bottom: 10px;
+        }
+        .legal-page ul {
+            list-style: disc; /* Use discs for bullet points */
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        .legal-page a {
+            color: #00ff00;
+            text-decoration: underline;
+            transition: color 0.3s ease;
+        }
+        .legal-page a:hover {
+            color: #39ff14;
+        }
+        .legal-page .warning {
+            color: #ff0000;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px solid #ff0000;
+            border-radius: 8px;
+            background-color: rgba(255, 0, 0, 0.1);
+        }
+
+
+        /* Footer Styles */
+        #main-footer {
+            background-color: rgba(0, 0, 0, 0.9); /* Darker, almost black */
+            color: #00ff00;
+            padding: 30px 20px;
+            text-align: center;
+            font-size: 0.9em;
+            border-top: 1px dashed rgba(0, 255, 0, 0.3);
+            margin-top: 50px; /* Space from main content */
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+            font-family: 'Space Mono', monospace;
+            flex-shrink: 0; /* Prevents footer from shrinking */
+            position: relative; /* Establish a stacking context for z-index */
+            z-index: 10;       /* IMPORTANT FIX: Bring footer to the front */
+        }
+
+        #main-footer p {
+            margin: 5px 0;
+            color: #d0ffe0;
+            /* Ensure footer links inherit these styles or apply explicitly */
+        }
+
+        #main-footer .footer-links a {
+            color: #00ff00;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+        }
+
+        #main-footer .footer-links a:hover {
+            color: #39ff14;
+            text-shadow: 0 0 10px #39ff14;
+        }
+
+        /* Specific style for the "Coded with love" link */
+        #main-footer a.developer-link {
+            color: #00ff00; /* Maintain green color */
+            text-decoration: none; /* No underline by default */
+            transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.5); /* Subtle glow */
+        }
+
+        #main-footer a.developer-link:hover {
+            color: #39ff14; /* Brighter green on hover */
+            text-shadow: 0 0 10px #39ff14; /* Stronger glow on hover */
+            transform: translateY(-2px); /* Slight lift */
+        }
+
+
         /* Keyframes */
         @keyframes glitch {
             0% { transform: none; }
@@ -483,6 +876,17 @@
             }
         }
 
+        /* Animations for dropdown */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px) translateX(-50%); }
+            to { opacity: 1; transform: translateY(0) translateX(-50%); }
+        }
+        @keyframes fadeInNested { /* For nested dropdowns */
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+
         /* Styling for the loading logo */
         #loading-logo {
             width: 150px;
@@ -500,10 +904,12 @@
 
         /* For Tablets and smaller desktops (max-width: 768px) */
         @media screen and (max-width: 768px) {
+            body {
+                padding-top: 45px; /* Adjust padding for smaller banner */
+            }
             main {
                 padding: 20px; /* Reduced padding */
                 max-width: 100%; /* Take full width on smaller screens */
-                margin-top: 50px; /* Keep margin-top for banner */
             }
 
             #top-banner {
@@ -527,6 +933,45 @@
             h3 {
                 font-size: 1.4em; /* Smaller product titles */
             }
+
+            #product-nav {
+                margin-bottom: 20px;
+                padding: 10px 0;
+            }
+            .nav-menu {
+                flex-direction: column; /* Stack menu items vertically */
+                gap: 10px;
+            }
+            .nav-menu li {
+                width: 100%;
+            }
+            .nav-link {
+                font-size: 1em;
+                padding: 8px 15px;
+            }
+            .dropdown-menu {
+                position: relative; /* Position relative on mobile */
+                left: 0;
+                transform: none; /* Remove centering transform */
+                width: 100%;
+                max-height: 200px; /* Limit height if many categories */
+                overflow-y: auto;
+                box-shadow: none; /* Less prominent shadow */
+            }
+            .dropdown-menu a {
+                padding: 10px 20px;
+            }
+            /* Nested dropdown for mobile */
+            .nested-dropdown-menu {
+                position: relative;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none;
+                animation: none; /* Remove fade-in animation for nested on mobile */
+                max-height: 150px;
+            }
+
 
             .product {
                 flex-direction: column; /* Stack image/video and text vertically */
@@ -566,7 +1011,7 @@
                 padding: 6px 10px;
             }
 
-            .btn, form button, .cart-btn {
+            .btn, form button, .cart-btn, .back-btn {
                 padding: 10px 20px; /* Smaller button padding */
                 font-size: 0.9em;
             }
@@ -590,12 +1035,44 @@
                 width: 100%; /* Take full width */
                 justify-content: center; /* Center controls */
             }
+
+            #product-detail-view h2 {
+                font-size: 2em;
+            }
+            #product-detail-view p {
+                font-size: 1em;
+            }
+
+            #main-footer {
+                padding: 20px 10px;
+                font-size: 0.8em;
+            }
+            #main-footer .footer-links a {
+                margin: 0 5px;
+            }
+
+            #about-me-view h2 {
+                font-size: 1.8em;
+            }
+            #about-me-view p, #about-me-view ul li {
+                font-size: 0.95em;
+            }
+            #about-me-view .contact-links a {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+            .legal-page h2 {
+                font-size: 1.8em;
+            }
+            .legal-page p, .legal-page ul li {
+                font-size: 0.9em;
+            }
         }
 
         /* For Smartphones (max-width: 480px) */
         @media screen and (max-width: 480px) {
-            main {
-                margin-top: 45px; /* Adjust margin-top for smaller banner on phones */
+            body {
+                padding-top: 40px; /* Adjust padding for smallest screens */
             }
             #top-banner {
                 font-size: 0.75em; /* Even smaller font for banner on phones */
@@ -619,6 +1096,15 @@
                 font-size: 1.2em;
             }
 
+            #product-nav {
+                margin-bottom: 15px;
+                padding: 8px 0;
+            }
+            .nav-link {
+                font-size: 0.9em;
+                padding: 6px 12px;
+            }
+
             .product {
                 padding: 10px;
                 gap: 15px;
@@ -628,7 +1114,7 @@
                 max-width: 100%; /* Ensure it fits within the phone screen */
             }
 
-            .btn, form button, .cart-btn {
+            .btn, form button, .cart-btn, .back-btn {
                 padding: 8px 15px;
                 font-size: 0.8em;
             }
@@ -670,18 +1156,23 @@
 </head>
 <body>
     <div id="top-banner">
-        <p>SYSTEM ALERT: NEW "ZERO-DAY EXPLOIT KIT" ARRIVING SOON! STAY TUNED FOR DEPLOYMENT. | We were at Bsides Mumbai<a href="#" style="color: yellow; text-decoration: underline;">LEARN MORE</a></p>
-        <span class="close-banner" onclick="closeBanner()">&times;</span>
+        <p>SYSTEM ALERT: NEW "ZERO-DAY EXPLOIT KIT" ARRIVING SOON! STAY TUNED FOR DEPLOYMENT. <a href="#" style="color: yellow; text-decoration: underline;">LEARN MORE</a></p>
+        <span class="close-banner" onclick="closeBanner()">×</span>
     </div>
 
     <canvas id="matrix"></canvas>
     <div id="overlay-gradient"></div> <div id="disclaimer-modal" class="modal" style="display: flex;"> <div class="modal-content">
-            <h2 style="font-size: 1.8em;">⚠️ DISCLAIMER</h2>
+            <h2 style="font-size: 1.8em;">⚠️ IMPORTANT DISCLAIMER - PLEASE READ CAREFULLY ⚠️</h2>
             <p style="margin: 20px 0; font-size: 1.1em;">
-                All products on <b>C1PH3R-FSOCITEY</b> are to be used for <br> <u>educational purposes only</u>.<br>
-                C1PH3R-FSOCITEY is <u>not responsible</u> for any misuse of the products.
+                All products, information, and content on <b>C1PH3R-FSOCITEY</b> are provided strictly for <br> <u>educational and research purposes only</u>.<br><br>
+                **C1PH3R-FSOCITEY, its owner(s), and affiliates (collectively, "We" or "Us") are NOT RESPONSIBLE for any misuse, damage, or illegal activities conducted with the information or products obtained from this site.** This includes, but is not limited to, any form of hacking, unauthorized access, data theft, privacy invasion, or any other violation of applicable laws.<br><br>
+                It is the user's sole responsibility to ensure that their use of these products and information complies with all local, state, national, and international laws and regulations, including but not limited to the **Information Technology Act, 2000 (India)** and relevant cybersecurity laws in your jurisdiction.<br><br>
+                **By proceeding, you acknowledge and agree that you understand and accept this disclaimer in its entirety.** You also confirm that you are of legal age and have the necessary legal authority to enter into this agreement.
             </p>
-            <button onclick="acceptDisclaimer()" class="btn">I AGREE</button>
+            <div class="warning">
+                **LEGAL WARNING:** This disclaimer does not constitute legal advice. For comprehensive legal protection and compliance, it is crucial to consult with a qualified legal professional regarding your specific jurisdiction and activities. We strongly advise seeking independent legal counsel.
+            </div>
+            <button onclick="acceptDisclaimer()" class="btn">I AGREE & UNDERSTAND</button>
         </div>
     </div>
 
@@ -697,14 +1188,172 @@
     <main style="display:none;" id="main-content">
         <h1 class="glitch" data-text="C1PH3R-FSOCITEY">C1PH3R-FSOCITEY</h1>
 
+        <nav id="product-nav">
+            <ul class="nav-menu">
+                <li><a href="#products" onclick="navigateBackToList(); return false;" class="nav-link">ALL PRODUCTS</a></li>
+                <li class="dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" onclick="toggleDropdown(event)">CATEGORIES ▼</a>
+                    <ul class="dropdown-menu" id="category-dropdown-menu">
+                        </ul>
+                </li>
+                <li><a href="#about-me" onclick="showAboutMe(); return false;" class="nav-link">ABOUT</a></li>
+            </ul>
+        </nav>
+
         <input type="text" id="search-bar" placeholder="> SEARCH DATABASE..." onkeyup="searchProducts()">
 
-        <section id="products" class="products"></section>
+        <div id="product-list-view">
+            <section id="products" class="products"></section>
+        </div>
+
+        <div id="product-detail-view">
+            <button class="btn back-btn" onclick="navigateBackToList()">« Back to Products</button>
+            <div id="detail-content">
+                </div>
+        </div>
+
+        <div id="about-me-view">
+            <button class="btn back-btn" onclick="navigateBackToList()">« Back to Products</button>
+            <h2>ABOUT RAHUL THAREJA - Founder & CEO || Hardware Hacker || IIT K || Robotics Engineer</h2>
+            <p>
+                As the Founder & CEO of C1PH3R-FSOCITEY, I am Rahul Thareja. My journey began as an Electronics Engineer, a path that ignited my fascination with the intricate workings of hardware. This curiosity soon evolved into a relentless drive to deconstruct, analyze, and ultimately, innovate within the realm of cybersecurity. I am a dedicated hardware hacker, constantly pushing the boundaries of what's possible, from developing sophisticated hacking gadgets to architecting complex robotic systems. My time at IIT K honed my analytical skills, preparing me for a career dedicated to understanding vulnerabilities and crafting cutting-edge solutions. At C1PH3R-FSOCITEY, we transform theoretical concepts into tangible, powerful tools, driven by a passion for ethical exploration and technological mastery.
+            </p>
+            <ul>
+                <li>🔭 I’m currently working on Python, Robotics and Hacking Projects.</li>
+                <li>👯 I’m looking to collaborate on App Development.</li>
+                <li>🤝 I’m looking for help with ROS and ROS2.</li>
+                <li>🌱 I’m currently learning ROS, ROS2 and C++.</li>
+                <li>💬 Ask me about Electronics.</li>
+                <li>⚡ Fun fact: I Squat 300.</li>
+            </ul>
+
+            <h3>CONNECT WITH ME:</h3>
+            <div class="contact-links">
+                <a href="https://linktr.ee/c1ph3r.fsocitey" target="_blank">Linktree (C1PH3R-FSOCITEY)</a>
+                <a href="https://tr.ee/uOXPyZRwGg" target="_blank">Linktree (Personal)</a>
+                <a href="https://youtube.com/@c1ph3rfsocitey" target="_blank">YouTube (C1PH3R-FSOCITEY)</a>
+                <a href="https://tr.ee/PBA23rdrZt" target="_blank">Instagram</a>
+                <a href="https://tr.ee/p6ZN444fj4" target="_blank">Twitter</a>
+            </div>
+        </div>
+
+        <div id="privacy-policy-view" class="legal-page">
+            <button class="btn back-btn" onclick="navigateBackToList()">« Back to Products</button>
+            <h2>Privacy Policy</h2>
+            <p class="warning">
+                **IMPORTANT LEGAL NOTICE:** This Privacy Policy is a general template and **DOES NOT constitute legal advice**. For a legally binding and comprehensive Privacy Policy compliant with Indian acts (e.g., Digital Personal Data Protection Act, 2023) and other international regulations (e.g., GDPR), you **MUST consult with a qualified legal professional.**
+            </p>
+            <h3>1. Introduction</h3>
+            <p>Welcome to C1PH3R-FSOCITEY. We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy outlines how we collect, use, disclose, and protect your data when you visit our website or interact with our services.</p>
+
+            <h3>2. Information We Collect</h3>
+            <ul>
+                <li>**Personal Information:** We may collect personal information such as your name, email address, phone number, and shipping address when you place an order or contact us.</li>
+                <li>**Payment Information:** We do not directly store your payment information. All payment transactions are processed through secure third-party payment gateways.</li>
+                <li>**Usage Data:** We automatically collect information about your interactions with our website, including IP addresses, browser type, pages viewed, and access times. This helps us improve our services.</li>
+                <li>**Cookies:** We use cookies to enhance your Browse experience, analyze site traffic, and personalize content.</li>
+            </ul>
+
+            <h3>3. How We Use Your Information</h3>
+            <p>We use your information for various purposes, including:</p>
+            <ul>
+                <li>Processing and fulfilling your orders.</li>
+                <li>Communicating with you about your orders, inquiries, and promotions.</li>
+                <li>Improving our website, products, and services.</li>
+                <li>Analyzing trends and user behavior.</li>
+                <li>Protecting against fraudulent or unauthorized transactions.</li>
+                <li>Complying with legal obligations.</li>
+            </ul>
+
+            <h3>4. Disclosure of Your Information</h3>
+            <p>We may share your information with:</p>
+            <ul>
+                <li>**Service Providers:** Third-party vendors who assist us with payment processing, shipping, website hosting, and analytics.</li>
+                <li>**Legal Compliance:** When required by law, court order, or governmental regulation, or to protect our rights, property, or safety.</li>
+                <li>**Business Transfers:** In the event of a merger, acquisition, or sale of assets, your information may be transferred to the new entity.</li>
+            </ul>
+
+            <h3>5. Data Security</h3>
+            <p>We implement reasonable security measures to protect your personal information from unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet or electronic storage is 100% secure, and we cannot guarantee absolute security.</p>
+
+            <h3>6. Your Rights</h3>
+            <p>Depending on your jurisdiction, you may have rights regarding your personal data, including the right to:</p>
+            <ul>
+                <li>Access and obtain a copy of your data.</li>
+                <li>Request correction of inaccurate data.</li>
+                <li>Request deletion of your data.</li>
+                <li>Object to or restrict the processing of your data.</li>
+                <li>Withdraw consent (where processing is based on consent).</li>
+            </ul>
+            <p>To exercise these rights, please contact us using the details provided on our "About Us" or "Contact Support" pages.</p>
+
+            <h3>7. Third-Party Links</h3>
+            <p>Our website may contain links to third-party websites. We are not responsible for the privacy practices or content of these external sites. We encourage you to review their privacy policies.</p>
+
+            <h3>8. Changes to This Privacy Policy</h3>
+            <p>We may update this Privacy Policy from time to time to reflect changes in our practices or legal requirements. We will notify you of any significant changes by posting the updated policy on our website with a revised "Last Updated" date.</p>
+
+            <h3>9. Contact Us</h3>
+            <p>If you have any questions or concerns about this Privacy Policy or our data practices, please contact us through the methods provided on our About Us / Contact Support pages.</p>
+            <p><em>Last Updated: July 14, 2025</em></p>
+            <button class="btn back-btn" onclick="navigateBackToList()">« Back to Products</button>
+        </div>
+
+        <div id="full-disclaimer-view" class="legal-page">
+            <button class="btn back-btn" onclick="navigateBackToList()">« Back to Products</button>
+            <h2>Full Disclaimer</h2>
+            <p class="warning">
+                **CRITICAL LEGAL WARNING:** This is a general disclaimer template and **DOES NOT provide complete legal protection or constitute legal advice**. To avoid responsibility under specific Indian acts (such as the Information Technology Act, 2000, Consumer Protection Act, etc.) and other relevant laws, it is **IMPERATIVE to consult with a qualified legal professional specializing in cybersecurity, e-commerce, and product liability law in India.** They can draft a tailored disclaimer that meets all legal requirements and offers appropriate protection for your specific business model and product offerings.
+            </p>
+            <h3>1. Purpose of Products and Information</h3>
+            <p>All products, tools, software, hardware, and information provided by C1PH3R-FSOCITEY are intended for **STRICTLY EDUCATIONAL, RESEARCH, AND ETHICAL TESTING PURPOSES ONLY.** They are designed to aid in understanding cybersecurity concepts, network vulnerabilities, and hardware functionalities. They are not intended for, nor should they be used for, any illegal, unauthorized, or malicious activities.</p>
+
+            <h3>2. User Responsibility and Compliance</h3>
+            <ul>
+                <li>**Sole Responsibility:** The user of any product or information from C1PH3R-FSOCITEY assumes **full and sole responsibility** for their actions. You are entirely responsible for ensuring that your use of these items complies with all applicable local, state, national, and international laws and regulations, including but not limited to the **Information Technology Act, 2000 (as amended)**, including sections related to hacking, unauthorized access, data theft, and cyber terrorism. Users are also responsible for compliance with the **Indian Penal Code (IPC)** and any other relevant legislation pertaining to cybersecurity, data privacy, and electronic communications.</li>
+                <li>**International Laws:** Users outside India must comply with the laws of their respective jurisdictions.</li>
+                <li>**Ethical Use:** We strongly advocate for ethical hacking and responsible disclosure. Any use that causes harm, disrupts services, or violates privacy without explicit consent is strictly prohibited and is the sole responsibility of the user.</li>
+            </ul>
+
+            <h3>3. Limitation of Liability and Indemnification</h3>
+            <ul>
+                <li>**No Warranty:** All products and information are provided "AS IS" without any warranties, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement. We do not warrant that the products will meet your requirements or that their operation will be uninterrupted or error-free.</li>
+                <li>**Exclusion of Liability:** In no event shall C1PH3R-FSOCITEY, its owner(s), employees, agents, or affiliates be liable for any direct, indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of profits, data, use, goodwill, or other intangible losses, resulting from:
+                    <ul>
+                        <li>Your access to or use of, or inability to access or use, the products or information.</li>
+                        <li>Any conduct or content of any third party on the service.</li>
+                        <li>Any unauthorized access, use, or alteration of your transmissions or content.</li>
+                        <li>Any other matter relating to the products or services.</li>
+                    </ul>
+                </li>
+                <li>**Indemnification:** You agree to indemnify, defend, and hold harmless C1PH3R-FSOCITEY, its owner(s), employees, agents, and affiliates from and against any and all claims, liabilities, damages, losses, and expenses, including reasonable attorney's fees, arising out of or in any way connected with your access to or use of the products or information, or your violation of this Disclaimer.</li>
+            </ul>
+
+            <h3>4. Product Functionality and Risks</h3>
+            <p>Our products are designed for specific technical applications and may interact with wireless networks, electronic devices, and computer systems. Users acknowledge the inherent risks associated with such tools, including but not limited to:</p>
+            <ul>
+                <li>Potential for unintended network disruption.</li>
+                <li>Compatibility issues with certain devices.</li>
+                <li>The requirement of technical knowledge for proper and safe operation.</li>
+                <li>The possibility of legal consequences if used improperly or illegally.</li>
+            </ul>
+
+            <h3>5. Modifications to Disclaimer</h3>
+            <p>We reserve the right to amend this Disclaimer at any time. All changes will be effective immediately upon posting to the website. Your continued use of the website and products constitutes your acceptance of the revised Disclaimer.</p>
+
+            <h3>6. Governing Law</h3>
+            <p>This Disclaimer shall be governed and construed in accordance with the laws of India, without regard to its conflict of law provisions.</p>
+            <p class="warning">
+                **FINAL REMINDER:** This disclaimer is for informational purposes only. It is not a substitute for professional legal advice. Consult a lawyer to draft a disclaimer fully compliant with Indian law and tailored to your specific business operations.
+            </p>
+            <button class="btn back-btn" onclick="navigateBackToList()">« Back to Products</button>
+        </div>
+
     </main>
 
     <div id="cart-modal" class="modal">
         <div class="modal-content">
-            <span class="close-button" onclick="closeCartModal()">&times;</span>
+            <span class="close-button" onclick="closeCartModal()">×</span>
             <h2>🛒 Your Cart</h2>
             <div id="cart-items">
                 </div>
@@ -712,6 +1361,18 @@
             <button class="btn" onclick="checkout()">Proceed to Checkout</button>
         </div>
     </div>
+
+    <footer id="main-footer">
+        <p>Coded with ❤️ by <a href="https://github.com/anmolksachan" class="developer-link" target="_blank">ANMOL K SACHAN (@FR13ND0x7F)</a></p>
+        <p>© 2025 C1PH3R-FSOCITEY. All rights reserved. <span style="color: red;">Educational Use Only.</span></p>
+        <div class="footer-links">
+            <a href="#about-me" onclick="showAboutMe(); return false;">About Us</a> |
+            <a href="#full-disclaimer" onclick="showFullDisclaimer(); return false;">Full Disclaimer</a> |
+            <a href="#privacy-policy" onclick="showPrivacyPolicy(); return false;">Privacy Policy</a> |
+            <a href="#contact-support" onclick="showAboutMe(); return false;">Contact Support</a>
+        </div>
+        <p>Stay Anonymous. Stay Secure.</p>
+    </footer>
 
     <script>
         const canvas = document.getElementById("matrix");
@@ -765,6 +1426,7 @@
                 setTimeout(() => {
                     document.getElementById("loading-screen").style.display = "none";
                     document.getElementById("main-content").style.display = "block";
+                    handleRoute(); // Call handleRoute after content is visible
                 }, 1500);
             }
         }
@@ -789,19 +1451,36 @@
             banner.style.animation = 'slideOutUp 0.5s ease-in forwards'; // Exit animation
             setTimeout(() => {
                 banner.style.display = 'none';
+                // Adjust body padding-top back if banner is dismissed permanently
+                document.body.style.paddingTop = '0px';
             }, 500); // Hide after animation
         }
+
+        // Adjust body padding-top based on banner height
+        function adjustBodyPadding() {
+            const banner = document.getElementById('top-banner');
+            if (banner && banner.offsetHeight > 0 && banner.style.display !== 'none' && banner.style.animationName !== 'slideOutUp') {
+                document.body.style.paddingTop = banner.offsetHeight + 'px';
+            } else {
+                document.body.style.paddingTop = '0px';
+            }
+        }
+
+        // Call adjustBodyPadding on load and resize
+        window.addEventListener('load', adjustBodyPadding);
+        window.addEventListener('resize', adjustBodyPadding);
+
 
         function acceptDisclaimer() {
             document.getElementById("disclaimer-modal").style.display = "none";
         }
 
-        // --- Products Data (with correct full URLs for GitHub Pages) ---
-        // MAKE SURE THESE PATHS ARE ABSOLUTE AND POINT TO YOUR FILES ON GITHUB
+        // --- Products Data (with categories and correct full URLs for GitHub Pages) ---
         const products = [
             {
                 id: 'bleStealthFucker',
                 name: 'BLE Stealth Fucker',
+                category: 'BLE Devices',
                 price: 1999,
                 description: 'BLE StealthFucker is a highly compact and minimalistic BLE jammer designed to disrupt Bluetooth Low Energy (BLE) signals. Using the ESP32 Wroom32 module, this tool focuses on BLE signal disruption with a streamlined design. Ideal for anyone needing a portable, no-nonsense device for BLE network interference, this tool is both efficient and powerful in jamming BLE communications.',
                 image: 'https://c1ph3r-fsocitey.github.io/bleStealthFucker.jpeg',
@@ -810,6 +1489,7 @@
             {
                 id: 'freqFuckerUltra',
                 name: 'FreqFucker Ultra',
+                category: 'BLE Devices',
                 price: 2499,
                 description: 'FreqFucker Ultra is a powerful multi-functional device designed to analyze, jam, spoof, and disrupt Bluetooth Low Energy (BLE) signals. Based on the ESP32 Wroom32 module, it comes equipped with advanced features to target and attack Bluetooth devices. Whether you\'re performing red team engagements or studying BLE networks, this tool serves multiple purposes — from signal analysis to jamming and spoofing.',
                 image: 'https://c1ph3r-fsocitey.github.io/FreqFuckerUltra.jpeg',
@@ -818,6 +1498,7 @@
             {
                 id: 'blitzFucker',
                 name: 'BlitzFucker - WiFi & BLE Toolkit',
+                category: 'Multi-Purpose',
                 price: 3999,
                 description: 'BlitzFucker is a versatile WiFi and BLE hacking tool built on the ESP32 platform. This powerful device allows for network analysis, packet capture, rogue access point creation, beacon manipulation, and various WiFi & BLE attacks. Whether you are a penetration tester, a red teamer, or just a hobbyist looking to explore the wireless landscape, BlitzFucker provides a feature-rich toolkit to perform a wide range of wireless network security tests.',
                 image: 'https://c1ph3r-fsocitey.github.io/Blitz.jpg',
@@ -826,6 +1507,7 @@
             {
                 id: 'rfFucker',
                 name: 'RF Fucker: RF Signal Cloner & Generator',
+                category: 'RF Devices',
                 price: 2499,
                 description: 'RF Fucker is a versatile RF signal tool designed to clone, analyze, and generate raw RF signals. Built for wireless security testing and penetration, this device is essential for radio frequency analysis, signal manipulation, and testing various RF vulnerabilities. The RF Fucker allows you to simulate RF environments and assess how systems react to different frequencies, making it a powerful tool for RF professionals and researchers.',
                 image: 'https://c1ph3r-fsocitey.github.io/rf_fucker.jpg',
@@ -834,6 +1516,7 @@
             {
                 id: 'spectrumSlayer',
                 name: 'Spectrum Slayer: 2.4/5GHz Wi-Fi Disruption',
+                category: 'WiFi Deauthers',
                 price: 1999,
                 description: 'The Spectrum Slayer is a dual-band Wi-Fi deauther built for maximum network interference. Capable of kicking devices off 2.4 GHz and 5 GHz networks, it disrupts connections with precision. Whether for testing security, stress-testing networks, or controlled Wi-Fi chaos, the Spectrum Slayer ensures total domination over the airwaves.',
                 image: 'https://c1ph3r-fsocitey.github.io/spectrum_slayer4.jpeg',
@@ -842,6 +1525,7 @@
             {
                 id: 'rfAnnihilator',
                 name: 'RF Annihilator: 433 MHz Domination',
+                category: 'RF Devices',
                 price: 2999,
                 description: 'The RF Annihilator is an elite RF hacking tool built for those who demand complete control over the 433 MHz spectrum. Equipped with replay attack capabilities, a raw signal reader, signal analyzer, and a random signal generator, this beast lets you intercept, analyze, and manipulate RF signals with ease. Whether you\'re testing vulnerabilities, reverse-engineering remote signals, or unleashing controlled chaos, the RF Annihilator is your go-to weapon for RF domination.<b>Please Note: This device is battery-free and relies on external power sources.</b>',
                 image: 'https://c1ph3r-fsocitey.github.io/rf.jpeg',
@@ -850,6 +1534,7 @@
             {
                 id: 'chaosInjector',
                 name: 'Chaos Injector: The Ultimate BadUSB Tool',
+                category: 'USB Tools',
                 price: 2499,
                 description: 'Chaos Injector is a feature-packed badUSB that merges WiFi capability, NeoPixel LED, a sleek display, navigation buttons, and onboard memory for payload storage. Designed for penetration testers and enthusiasts, it offers seamless navigation, dynamic visual feedback, and the ability to execute complex tasks with precision. Chaos Injector redefines versatility and style in a compact tool, putting the power of controlled disruption at your fingertips.<b>Please Note: This device is battery-free and relies on external power sources.</b>',
                 image: 'https://c1ph3r-fsocitey.github.io/Chaos.png',
@@ -858,14 +1543,16 @@
             {
                 id: 'disruptorX',
                 name: 'DisruptorX: Unleash the Power of Advanced Wireless Disruption',
+                category: 'Multi-Purpose',
                 price: 2499,
-                description: 'DisruptorX is your ultimate tool for scanning, analyzing, and disrupting wireless networks. With features like network jamming, BLE spoofing, and the powerful Sour Apple attack, it’s perfect for security testing and advanced connectivity exploration. Compact, versatile, and powerful, DisruptorX lets you push the boundaries of wireless technology.<b>Please Note: This device is battery-free and relies on external power sources.</b>',
+                description: 'DisruptorX is your ultimate tool for scanning, analyzing, and disrupting wireless networks. With features like network jamming, BLE spoofing, and the powerful Sour Apple attack, it\'s perfect for security testing and advanced connectivity exploration. Compact, versatile, and powerful, DisruptorX lets you push the boundaries of wireless technology.<b>Please Note: This device is battery-free and relies on external power sources.</b>',
                 image: 'https://c1ph3r-fsocitey.github.io/DisruptorX.png',
                 video: 'https://c1ph3r-fsocitey.github.io/DisruptorX.mp4'
             },
             {
                 id: 'meowFi',
                 name: 'Meow-Fi: The Cutest Deauth Detector',
+                category: 'WiFi Deauthers',
                 price: 1299,
                 description: 'Meet Meow-Fi, your adorable portable companion for network security. Not only can Meow-Fi detect deauthentication attacks, but its cute and handy design also makes it a perfect tech pet!<b>Please Note: This device is battery-free and relies on external power sources. <br> More firmwares would be released soon!</b>',
                 image: 'https://c1ph3r-fsocitey.github.io/meowfi.jpg',
@@ -874,6 +1561,7 @@
             {
                 id: 'zapNet',
                 name: 'Zap Net - WiFi Deauther Device {Without Battery}',
+                category: 'WiFi Deauthers',
                 price: 1200,
                 description: 'Take control of your WiFi with the Zap Net, the ultimate WiFi deauther device for network testing.<b>Please Note: This DOES NOT contain Battery.</b><br>Please note: Micro-USB is NOT provided',
                 image: 'https://c1ph3r-fsocitey.github.io/zapnet.jpg',
@@ -882,6 +1570,7 @@
             {
                 id: 'zapNetBatteryMod',
                 name: 'Zap Net with Battery Mod',
+                category: 'WiFi Deauthers',
                 price: 1600,
                 description: 'This version of the Zap Net comes with an inbuilt battery mod, making it perfect for on-the-go network testing without needing external power.<b>Please Note: This contains Li-Po Battery.</b><br>Please note: Micro-USB is NOT provided',
                 image: 'https://c1ph3r-fsocitey.github.io/zapnet_battery_mod.jpg',
@@ -890,6 +1579,7 @@
             {
                 id: 'zapNetKit',
                 name: 'Zap Net DIY Kit {Without Battery}',
+                category: 'DIY Kits',
                 price: 1200,
                 description: 'Build your own DIY Wi-Fi Deauther Zap Net Device! Everything you need is in this Kit! Great especially for beginners in Cyber Security and Electronics! Just solder all the components together, upload the code and it\'s ready to go!Price: ₹ 1200/- for 1 Zap Net Kit containing: 1x Wemos D1 Mini (with header pins), 1x 1.3 inch OLED Display, 1 PCB, 3x Tactile Buttons. <br> Please note: Micro-USB is NOT provided',
                 image: 'https://c1ph3r-fsocitey.github.io/zapnet_kit.png',
@@ -898,29 +1588,42 @@
         ];
 
         let cart = {}; // Stores {productId: quantity}
+        const productListView = document.getElementById('product-list-view');
+        const productDetailView = document.getElementById('product-detail-view');
+        const aboutMeView = document.getElementById('about-me-view'); // New about me view
+        const privacyPolicyView = document.getElementById('privacy-policy-view'); // New privacy policy view
+        const fullDisclaimerView = document.getElementById('full-disclaimer-view'); // New full disclaimer view
+        const detailContent = document.getElementById('detail-content');
+        const productsContainer = document.getElementById('products');
+        const searchBar = document.getElementById('search-bar');
+        const h1Title = document.querySelector('h1');
+        const productNav = document.getElementById('product-nav'); // New reference
 
         function renderProducts(filteredProducts = products) {
-            const productsContainer = document.getElementById('products');
             productsContainer.innerHTML = ''; // Clear existing products
+            if (filteredProducts.length === 0) {
+                productsContainer.innerHTML = '<p style="text-align: center; margin-top: 50px; font-size: 1.2em;">No products found matching your criteria. Try a different search or category!</p>';
+                return;
+            }
             filteredProducts.forEach(product => {
                 const productDiv = document.createElement('div');
                 productDiv.className = 'product';
                 productDiv.innerHTML = `
-                    <img src="${product.image}" alt="${product.name}" class="product-image">
+                    <div style="position: relative; overflow: hidden; border-radius: 8px;">
+                        ${product.video ? `<video controls autoplay muted loop class="product-video"><source src="${product.video}" type="video/mp4">Your browser does not support the video tag.</video>` : `<img src="${product.image}" alt="${product.name}" class="product-image">`}
+                        <div class="product-hover-overlay">
+                            <button class="btn" onclick="navigateToProduct('${product.id}'); event.stopPropagation();">LEARN MORE</button>
+                        </div>
+                    </div>
                     <div style="display: flex; flex-direction: row; gap: 30px; flex: 1; align-items: flex-start;">
                         <div class="product-info" style="flex: 1;">
                             <h3>${product.name}</h3>
-                            <p>${product.description}</p>
-                            <p>Price: ₹ ${product.price} for 1 ${product.name}</p>
+                            <p>${product.description.split('. ')[0]}.</p> <p>Price: ₹ ${product.price}</p>
                             <div class="input-group">
                                 <input type="number" id="qty-${product.id}" value="1" min="1" onchange="validateQuantity('${product.id}')">
                                 <button class="btn" onclick="addToCart('${product.id}')">Add to Cart</button>
                             </div>
                         </div>
-                        <video controls autoplay muted loop class="product-video">
-                            <source src="${product.video}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
                     </div>
                 `;
                 productsContainer.appendChild(productDiv);
@@ -1043,19 +1746,242 @@
             closeCartModal();
         }
 
+        let searchTimeout;
         function searchProducts() {
-            const searchTerm = document.getElementById('search-bar').value.toLowerCase();
-            const filteredProducts = products.filter(product =>
-                product.name.toLowerCase().includes(searchTerm) ||
-                product.description.toLowerCase().includes(searchTerm)
-            );
-            renderProducts(filteredProducts);
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const searchTerm = searchBar.value.toLowerCase();
+                const filteredProducts = products.filter(product =>
+                    product.name.toLowerCase().includes(searchTerm) ||
+                    product.description.toLowerCase().includes(searchTerm)
+                );
+                renderProducts(filteredProducts);
+            }, 300); // Debounce search to prevent excessive re-rendering
         }
 
-        // Initial render of products when the page loads
+        // --- Category and Dropdown Logic ---
+
+        // Function to get unique categories
+        function getUniqueCategories() {
+            const categories = new Set();
+            products.forEach(p => categories.add(p.category));
+            return Array.from(categories).sort();
+        }
+
+        // Function to populate the category dropdown and new product menu
+        function populateCategoryDropdown() {
+            const dropdownMenu = document.getElementById('category-dropdown-menu');
+            dropdownMenu.innerHTML = ''; // Clear existing items
+
+            const categories = getUniqueCategories();
+            categories.forEach(category => {
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="#category-${encodeURIComponent(category)}" onclick="filterProductsByCategory('${category}'); return false;">${category.toUpperCase()}</a>`;
+                dropdownMenu.appendChild(li);
+            });
+
+            // Add "All Products (Menu)" with nested list
+            const allProductsMenuLi = document.createElement('li');
+            allProductsMenuLi.className = 'has-nested'; // Add a class to identify nested parent
+            allProductsMenuLi.innerHTML = `
+                <a href="#" class="nested-dropdown-toggle" onclick="toggleNestedDropdown(event)">ALL PRODUCTS (MENU) ►</a>
+                <ul class="nested-dropdown-menu">
+                    ${products.map(p => `<li><a href="#product-${p.id}" onclick="navigateToProduct('${p.id}'); return false;">${p.name.toUpperCase()}</a></li>`).join('')}
+                </ul>
+            `;
+            dropdownMenu.appendChild(allProductsMenuLi);
+        }
+
+        // Function to toggle nested dropdown
+        function toggleNestedDropdown(event) {
+            event.preventDefault();
+            event.stopPropagation(); // Crucial: Prevent parent dropdown from closing immediately
+            const parentLi = event.target.closest('.has-nested');
+
+            // Close other *nested* dropdowns within the same parent (if any)
+            document.querySelectorAll('.nested-dropdown-menu').forEach(menu => {
+                // Ensure we only close sibling nested menus, not the one being clicked
+                if (menu !== parentLi.querySelector('.nested-dropdown-menu')) {
+                    menu.closest('.has-nested').classList.remove('active-nested');
+                }
+            });
+
+            parentLi.classList.toggle('active-nested'); // Toggle 'active-nested' class
+        }
+
+
+        // Function to filter products by category
+        function filterProductsByCategory(category) {
+            const filtered = products.filter(p => p.category === category);
+            renderProducts(filtered);
+            // Hide dropdown after selection (for mobile/toggle behavior)
+            document.querySelectorAll('.dropdown.active').forEach(dd => dd.classList.remove('active'));
+            // Also close any active nested dropdowns
+            document.querySelectorAll('.has-nested.active-nested').forEach(nl => nl.classList.remove('active-nested'));
+
+            // Update URL hash
+            history.pushState(null, null, `#category-${encodeURIComponent(category)}`);
+            window.scrollTo(0,0);
+        }
+
+        // Toggle dropdown visibility (for click on mobile or accessibility)
+        function toggleDropdown(event) {
+            event.preventDefault(); // Prevent default link behavior
+            const dropdown = event.target.closest('.dropdown');
+            // Close other open dropdowns
+            document.querySelectorAll('.dropdown.active').forEach(dd => {
+                if (dd !== dropdown) {
+                    dd.classList.remove('active');
+                    // Also close any nested dropdowns within other parent dropdowns
+                    dd.querySelectorAll('.has-nested.active-nested').forEach(nl => nl.classList.remove('active-nested'));
+                }
+            });
+            dropdown.classList.toggle('active'); // Toggle 'active' class for the clicked one
+        }
+
+        // Close dropdown if clicked outside
+        window.addEventListener('click', function(event) {
+            // Check if the click is outside any dropdown or its children
+            if (!event.target.closest('.dropdown') && !event.target.closest('.dropdown-menu')) {
+                document.querySelectorAll('.dropdown.active').forEach(dd => dd.classList.remove('active'));
+                // Also close any nested dropdowns
+                document.querySelectorAll('.has-nested.active-nested').forEach(nl => nl.classList.remove('active-nested'));
+            }
+        });
+
+
+        // --- SPA Routing Logic ---
+        function hideAllViews() {
+            productListView.style.display = 'none';
+            productDetailView.style.display = 'none';
+            aboutMeView.style.display = 'none';
+            privacyPolicyView.style.display = 'none'; // Hide privacy policy view
+            fullDisclaimerView.style.display = 'none'; // Hide full disclaimer view
+            searchBar.style.display = 'none';
+            h1Title.style.display = 'none';
+            productNav.style.display = 'none';
+        }
+
+        function navigateToProduct(productId) {
+            hideAllViews();
+            const product = products.find(p => p.id === productId);
+            if (!product) {
+                console.error("Product not found:", productId);
+                navigateBackToList();
+                return;
+            }
+
+            // Populate product detail view
+            detailContent.innerHTML = `
+                ${product.video ? `<video controls autoplay muted loop class="product-media"><source src="${product.video}" type="video/mp4">Your browser does not support the video tag.</video>` : `<img src="${product.image}" alt="${product.name}" class="product-media">`}
+                <h2>${product.name}</h2>
+                <p>${product.description}</p>
+                <p>Price: ₹ ${product.price}</p>
+                <div class="input-group" style="justify-content: center;">
+                    <input type="number" id="qty-detail-${product.id}" value="1" min="1">
+                    <button class="btn" onclick="addToCartFromDetail('${product.id}')">Add to Cart</button>
+                </div>
+            `;
+            // Show product detail view
+            productDetailView.style.display = 'block';
+
+            // Update URL hash without causing a page reload
+            history.pushState(null, null, `#product-${productId}`);
+            window.scrollTo(0,0); // Scroll to top for new view
+        }
+
+        function addToCartFromDetail(productId) {
+            const quantityInput = document.getElementById(`qty-detail-${productId}`);
+            const quantity = parseInt(quantityInput.value);
+            // Create a temporary input element for the main addToCart function
+            const tempQtyInput = document.createElement('input');
+            tempQtyInput.id = `qty-${productId}`; // Match the ID expected by addToCart
+            tempQtyInput.type = 'hidden';
+            tempQtyInput.value = quantity;
+            document.body.appendChild(tempQtyInput); // Append temporarily
+
+            addToCart(productId); // Use the existing addToCart logic
+
+            // Clean up the temporary input
+            if (tempQtyInput && tempQtyInput.parentNode) {
+                tempQtyInput.remove();
+            }
+        }
+
+        function navigateBackToList() {
+            hideAllViews();
+            productListView.style.display = 'block';
+            searchBar.style.display = 'block';
+            h1Title.style.display = 'block'; // Show main title again
+            productNav.style.display = 'block'; // Show product nav again
+            renderProducts(); // Ensure all products are displayed (or re-render based on last filter)
+            history.pushState(null, null, window.location.pathname); // Clear hash
+            window.scrollTo(0,0); // Scroll to top
+        }
+
+        function showAboutMe() {
+            hideAllViews();
+            aboutMeView.style.display = 'block';
+            h1Title.style.display = 'block'; // Keep main title visible if desired on About page
+            productNav.style.display = 'block'; // Keep product nav visible
+            history.pushState(null, null, `#about-me`);
+            window.scrollTo(0,0);
+        }
+
+        function showPrivacyPolicy() {
+            hideAllViews();
+            privacyPolicyView.style.display = 'block';
+            h1Title.style.display = 'block'; // Keep main title visible
+            productNav.style.display = 'block'; // Keep product nav visible
+            history.pushState(null, null, `#privacy-policy`);
+            window.scrollTo(0,0);
+        }
+
+        function showFullDisclaimer() {
+            hideAllViews();
+            fullDisclaimerView.style.display = 'block';
+            h1Title.style.display = 'block'; // Keep main title visible
+            productNav.style.display = 'block'; // Keep product nav visible
+            history.pushState(null, null, `#full-disclaimer`);
+            window.scrollTo(0,0);
+        }
+
+
+        function handleRoute() {
+            const hash = window.location.hash;
+            if (hash.startsWith('#product-')) {
+                const productId = hash.substring(9); // Remove '#product-'
+                navigateToProduct(productId);
+            } else if (hash.startsWith('#category-')) { // Handle category filtering from URL hash
+                const category = decodeURIComponent(hash.substring(10));
+                hideAllViews(); // Hide other views
+                productListView.style.display = 'block'; // Show product list
+                searchBar.style.display = 'block';
+                h1Title.style.display = 'block';
+                productNav.style.display = 'block';
+                filterProductsByCategory(category);
+                window.scrollTo(0,0);
+            } else if (hash === '#about-me') {
+                showAboutMe();
+            } else if (hash === '#privacy-policy') { // Handle privacy policy route
+                showPrivacyPolicy();
+            } else if (hash === '#full-disclaimer') { // Handle full disclaimer route
+                showFullDisclaimer();
+            }
+            else {
+                navigateBackToList(); // Default to product list
+            }
+        }
+
+        // Event listeners for SPA routing
+        window.addEventListener('hashchange', handleRoute);
+
+        // Initial setup when the DOM is fully loaded
         document.addEventListener('DOMContentLoaded', () => {
             renderProducts();
             updateCartCount();
+            populateCategoryDropdown(); // Populate dropdown on load
+            // handleRoute is called in the loading screen script after content is visible
         });
     </script>
 </body>
