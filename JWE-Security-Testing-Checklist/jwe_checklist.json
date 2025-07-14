@@ -2,12 +2,12 @@
   "test_cases": [
     {
       "name": "Missing JWE segments",
-      "description": "The JWE compact serialization should have five parts (header, encrypted key, IV, ciphertext, authentication tag) separated by four dots:contentReference[oaicite:0]{index=0}. A token missing segments (e.g. only header and encrypted key) is malformed. Test truncating the JWE string to ensure the implementation rejects incomplete tokens.",
+      "description": "The JWE compact serialization should have five parts (header, encrypted key, IV, ciphertext, authentication tag) separated by four dots. A token missing segments (e.g. only header and encrypted key) is malformed. Test truncating the JWE string to ensure the implementation rejects incomplete tokens.",
       "payload": "eyJhbGciOiAiUlNBLU9BRVAiLCAiZW5jIjogIkEyNTZHQ00ifQ"
     },
     {
       "name": "Extra JWE segments",
-      "description": "JWE parsers typically split the token on dots. A token with more than five segments (extra dots) can cause resource exhaustion or errors:contentReference[oaicite:1]{index=1}. Construct a JWE with six parts and check if it is rejected or fails safely.",
+      "description": "JWE parsers typically split the token on dots. A token with more than five segments (extra dots) can cause resource exhaustion or errors. Construct a JWE with six parts and check if it is rejected or fails safely.",
       "payload": "eyJhbGciOiAiUlNBLU9BRVAiLCAiZW5jIjogIkEyNTZHQ00ifQ.abc.def.ghi.jkl.mno"
     },
     {
@@ -22,53 +22,105 @@
     },
     {
       "name": "Deprecated RSA1_5 key encryption",
-      "description": "The RSA1_5 key wrapping algorithm (RSAES-PKCS1-v1_5) is deprecated due to padding oracle vulnerabilities:contentReference[oaicite:2]{index=2}. Ensure that tokens with 'alg':'RSA1_5' are not accepted. Try downgrading to RSA1_5 and verify decryption fails.",
+      "description": "The RSA1_5 key wrapping algorithm (RSAES-PKCS1-v1_5) is deprecated due to padding oracle vulnerabilities. Ensure that tokens with 'alg':'RSA1_5' are not accepted. Try downgrading to RSA1_5 and verify decryption fails.",
       "payload": "{\"alg\":\"RSA1_5\",\"enc\":\"A256GCM\"}"
     },
     {
       "name": "CBC content decryption (padding oracle)",
-      "description": "AES-CBC with HMAC (e.g. A128CBC-HS256) can be vulnerable to padding oracle attacks if decryption errors are leaked:contentReference[oaicite:3]{index=3}. Tamper with the ciphertext or tag of such a JWE and observe error differences. The implementation should fail uniformly without revealing padding validity.",
+      "description": "AES-CBC with HMAC (e.g. A128CBC-HS256) can be vulnerable to padding oracle attacks if decryption errors are leaked. Tamper with the ciphertext or tag of such a JWE and observe error differences. The implementation should fail uniformly without revealing padding validity.",
       "payload": "eyJhbGciOiAiUlNBLU9BRVAiLCAiZW5jIjogIkEyNTZDQkMtSFM1MTIifQ.abc.def.ghi.jkl"
     },
     {
       "name": "High-compression JWE (zip bomb)",
-      "description": "A JWE with 'zip':'DEF' and highly compressible plaintext can exhaust memory/CPU:contentReference[oaicite:4]{index=4}. For example, use a plaintext like 'AAAA...'(large repeat). Test decrypting such a token to ensure it does not cause a DoS.",
+      "description": "A JWE with 'zip':'DEF' and highly compressible plaintext can exhaust memory/CPU. For example, use a plaintext like 'AAAA...'(large repeat). Test decrypting such a token to ensure it does not cause a DoS.",
       "payload": "{\"alg\":\"RSA-OAEP\",\"enc\":\"A256GCM\",\"zip\":\"DEF\"}"
     },
     {
       "name": "PBKDF2 iteration parameter DoS (p2c)",
-      "description": "JWE PBES2 encryption allows a 'p2c' (PBKDF2 count) parameter. An attacker can set 'p2c' extremely high to slow decryption massively:contentReference[oaicite:5]{index=5}. Send a token with a very large 'p2c' to ensure the server limits iterations or rejects the request.",
+      "description": "JWE PBES2 encryption allows a 'p2c' (PBKDF2 count) parameter. An attacker can set 'p2c' extremely high to slow decryption massively. Send a token with a very large 'p2c' to ensure the server limits iterations or rejects the request.",
       "payload": "{\"alg\":\"PBES2-HS256+A128KW\",\"enc\":\"A128GCM\",\"p2c\":999999999,\"p2s\":\"AAECAwQ=\"}"
     },
     {
       "name": "JWK Set URL (jku) SSRF",
-      "description": "The 'jku' header is a URL to a JWK Set. If fetched without validation, it can cause SSRF:contentReference[oaicite:6]{index=6}. Test by setting 'jku' to an attacker-controlled or internal URL and see if the server attempts to retrieve it.",
+      "description": "The 'jku' header is a URL to a JWK Set. If fetched without validation, it can cause SSRF. Test by setting 'jku' to an attacker-controlled or internal URL and see if the server attempts to retrieve it.",
       "payload": "{\"alg\":\"RSA-OAEP\",\"enc\":\"A256GCM\",\"jku\":\"http://evil.com/jwks.json\"}"
     },
     {
       "name": "X.509 URL (x5u) SSRF",
-      "description": "The 'x5u' header is a URL to an X.509 certificate. Unchecked fetching can also cause SSRF:contentReference[oaicite:7]{index=7}. Send a token with 'x5u' pointing to a malicious URL to check if the server loads it.",
+      "description": "The 'x5u' header is a URL to an X.509 certificate. Unchecked fetching can also cause SSRF. Send a token with 'x5u' pointing to a malicious URL to check if the server loads it.",
       "payload": "{\"alg\":\"RSA-OAEP\",\"enc\":\"A256GCM\",\"x5u\":\"http://evil.com/cert.pem\"}"
     },
     {
       "name": "KID header injection",
-      "description": "The 'kid' header is used for key lookup. If used unsafely (e.g. as a file path), it can enable attacks:contentReference[oaicite:8]{index=8}. For example, set 'kid':'../../../../../../dev/null' or include shell syntax to test path traversal or command injection in key resolution.",
+      "description": "The 'kid' header is used for key lookup. If used unsafely (e.g. as a file path), it can enable attacks. For example, set 'kid':'../../../../../../dev/null' or include shell syntax to test path traversal or command injection in key resolution.",
       "payload": "{\"alg\":\"RSA-OAEP\",\"enc\":\"A256GCM\",\"kid\":\"../../../../../../dev/null\"}"
     },
     {
       "name": "JWE-JWS confusion (sign/encrypt)",
-      "description": "If a system uses the same key for JWS and JWE, an attacker can confuse them:contentReference[oaicite:9]{index=9}. For example, encrypt a JWE using the public key normally used for signing. Send it to the server expecting a signed token to see if it is incorrectly accepted.",
+      "description": "If a system uses the same key for JWS and JWE, an attacker can confuse them. For example, encrypt a JWE using the public key normally used for signing. Send it to the server expecting a signed token to see if it is incorrectly accepted.",
       "payload": ""
     },
     {
       "name": "Nested JWE with inner JWS",
-      "description": "A JWE might contain a nested JWS inside. Even after decryption, the inner JWS must have its signature verified:contentReference[oaicite:10]{index=10}. Test by creating a JWE whose plaintext is a signed JWT with an invalid signature. The server should reject the token due to the bad signature.",
+      "description": "A JWE might contain a nested JWS inside. Even after decryption, the inner JWS must have its signature verified. Test by creating a JWE whose plaintext is a signed JWT with an invalid signature. The server should reject the token due to the bad signature.",
       "payload": ""
     },
     {
       "name": "Token replay (missing nonce/exp)",
-      "description": "Without proper replay protection ('exp','jti', or nonce), a valid JWE can be reused:contentReference[oaicite:11]{index=11}. Try resending a previously valid (or expired) JWE to ensure the server rejects replayed tokens.",
+      "description": "Without proper replay protection ('exp','jti', or nonce), a valid JWE can be reused. Try resending a previously valid (or expired) JWE to ensure the server rejects replayed tokens.",
       "payload": ""
+    }
+  ],
+  "resources": [
+    {
+      "name": "RFC 7516 - JSON Web Encryption (JWE)",
+      "type": "RFC",
+      "url": "https://tools.ietf.org/html/rfc7516"
+    },
+    {
+      "name": "JWT.io Debugger (with JWE support)",
+      "type": "Tool",
+      "url": "https://jwt.io/"
+    },
+    {
+      "name": "JOSE-JWT Toolkit",
+      "type": "Tool",
+      "url": "https://github.com/dvsekhvalnov/jose-jwt"
+    },
+    {
+      "name": "JWT Tool by ticarpi",
+      "type": "Tool",
+      "url": "https://github.com/ticarpi/jwt_tool"
+    },
+    {
+      "name": "Cure53 Analysis of JOSE Libraries",
+      "type": "Security Research",
+      "url": "https://cure53.de/fp170.pdf"
+    },
+    {
+      "name": "A Study of JWT Vulnerabilities",
+      "type": "Research Paper",
+      "url": "https://arxiv.org/pdf/2002.01894.pdf"
+    },
+    {
+      "name": "PortSwigger – JWT Attacks",
+      "type": "Blog / Lab",
+      "url": "https://portswigger.net/web-security/jwt"
+    },
+    {
+      "name": "Auth0 - JWE Introduction",
+      "type": "Docs",
+      "url": "https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-encryption"
+    },
+    {
+      "name": "Security Ninja – JWT/JWE Attacks Cheat Sheet",
+      "type": "Blog",
+      "url": "https://www.security-ninjas.com/json-web-token-security-checklist/"
+    },
+    {
+      "name": "JWT/JWE Common Vulnerabilities (Slides)",
+      "type": "Presentation",
+      "url": "https://speakerdeck.com/mxchehab/jwt-security"
     }
   ]
 }
