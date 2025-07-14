@@ -1,273 +1,1351 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Anmol K Sachan - Cyber Security Portfolio</title>
-    <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Anmol K Sachan // Kali OS Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #1a1a1a;
-            --fg: #00ff00;
-            --accent: #3399ff;
-            --font: 'Ubuntu Mono', monospace;
-        }
-
-        body {
+        /* Global Styles */
+        html, body {
             margin: 0;
             padding: 0;
-            background: var(--bg);
-            color: var(--fg);
-            font-family: var(--font);
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* Kali-style top panel */
-        .top-panel {
-            position: fixed;
-            top: 0;
-            left: 0;
             width: 100%;
-            background: #2d2d2d;
-            padding: 8px;
+            height: 100%;
+            background: #0d0d0d;
+            color: #00ff99;
+            font-family: 'Fira Code', monospace;
             display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--accent);
+            flex-direction: column;
+            overflow: hidden; /* Prevent global scrollbars */
+            -webkit-overflow-scrolling: touch;
+            font-size: clamp(12px, 0.9vw, 16px); /* Slightly smaller base font for desktop feel */
         }
 
-        .panel-button {
-            background: var(--bg);
-            border: 1px solid var(--accent);
-            padding: 4px 12px;
-            margin: 0 4px;
-            cursor: pointer;
-            transition: all 0.2s;
+        a {
+            color: #00ffff;
+            text-decoration: none;
         }
-
-        .panel-button:hover {
-            background: var(--accent);
-            color: var(--bg);
-        }
-
-        /* Terminal window */
-        .terminal-container {
-            position: fixed;
-            top: 40px;
-            left: 0;
-            width: 100%;
-            height: calc(100% - 40px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .terminal {
-            background: #2d2d2d;
-            border: 2px solid var(--accent);
-            border-radius: 8px;
-            width: 80%;
-            height: 80%;
-            box-shadow: 0 0 20px var(--accent);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .terminal-header {
-            background: #1a1a1a;
-            padding: 10px;
-            border-bottom: 2px solid var(--accent);
-            display: flex;
-            align-items: center;
-        }
-
-        .terminal-header i {
-            color: var(--accent);
-            margin-right: 10px;
-        }
-
-        .terminal-content {
-            padding: 20px;
-            height: calc(100% - 50px);
-            overflow-y: auto;
-        }
-
-        .command {
-            color: var(--accent);
-            cursor: pointer;
+        a:hover {
             text-decoration: underline;
         }
 
-        .command:hover {
-            color: #ffff00;
-        }
-
-        /* File browser style */
-        .file-browser {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            padding: 20px;
-        }
-
-        .file {
-            background: #333;
-            padding: 15px;
-            border-radius: 5px;
-            transition: transform 0.2s;
-        }
-
-        .file:hover {
-            transform: scale(1.05);
-            background: #444;
-        }
-
-        /* Modal styling */
-        .modal {
-            display: none;
+        /* --- Pre-Boot Logo Screen --- */
+        .pre-boot-screen {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
         }
 
-        .modal-content {
-            background: #2d2d2d;
-            margin: 15% auto;
+        .pre-boot-screen img {
+            width: 50vw;
+            max-width: 250px;
+        }
+
+        .pre-boot-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+
+        /* --- Main Boot Screen Section --- */
+        .boot-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            color: #eee;
+            font-size: 0.9em;
+            text-align: center;
             padding: 20px;
-            width: 70%;
-            border: 2px solid var(--accent);
-            border-radius: 5px;
+            box-sizing: border-box;
+            user-select: none;
+            visibility: hidden;
+            pointer-events: none;
         }
 
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .terminal {
-                width: 95%;
-                height: 90%;
+        .boot-screen.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .boot-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .boot-screen img {
+            width: 35vw;
+            max-width: 180px;
+            filter: drop-shadow(0 0 10px #00ff99);
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                transform: scale(1);
+                filter: drop-shadow(0 0 10px #00ff99);
+            }
+            to {
+                transform: scale(1.05);
+                filter: drop-shadow(0 0 18px #00ff99);
             }
         }
 
-        /* Cursor animation */
-        @keyframes blink {
-            50% { opacity: 0; }
+        .boot-messages {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+            width: 80%;
+            max-width: 450px;
+            color: #bbb;
+            font-size: 1.05em;
+            overflow: hidden;
         }
 
-        .cursor {
-            animation: blink 1s infinite;
-            display: inline-block;
-            width: 10px;
+        .boot-messages li {
+            margin-bottom: 8px;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInMessage 0.3s forwards;
+            animation-delay: var(--delay);
+        }
+
+        @keyframes fadeInMessage {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .boot-messages li::before {
+            content: "[ ";
+            color: #00ff99;
+        }
+
+        .boot-messages li::after {
+            content: " ]";
+            color: #00ff99;
+        }
+
+        .boot-messages li.success::after {
+            content: " OK ]";
+            color: #00ff99;
+        }
+
+        .boot-messages li.fail::after {
+            content: " FAIL ]";
+            color: #ff0000;
+        }
+
+        .boot-messages .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: #333;
+            margin-top: 20px;
+            border-radius: 2px;
+            overflow: hidden;
+            box-shadow: 0 0 5px rgba(0, 255, 153, 0.3);
+        }
+
+        .boot-messages .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background-color: #00ff99;
+            transition: width 0.3s ease-out;
+        }
+
+        .boot-time {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #888;
+            font-size: 0.8em;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- Desktop Environment --- */
+        #desktop {
+            display: none; /* Hidden until boot completes */
+            width: 100vw;
+            height: 100vh;
+            background-image: url('https://www.kali.org/wallpapers/legacy/images/legacy/kali-purple-sticker.png'); /* NEW KALI WALLPAPER */
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+            flex-direction: column; /* For flex layout with panel */
+        }
+
+        /* Desktop Icons */
+        .desktop-icons {
+            position: absolute;
+            top: 60px; /* Below top panel */
+            left: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 10px;
+            user-select: none;
+        }
+
+        .desktop-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #eee;
+            font-size: 0.8em;
+            cursor: pointer;
+            width: 80px; /* Fixed width for icon area */
+            text-align: center;
+        }
+
+        .desktop-icon img {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 0 5px rgba(0, 255, 153, 0.3));
+            transition: transform 0.2s;
+        }
+
+        .desktop-icon:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Top Panel */
+        #top-panel {
+            width: 100%;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.7); /* Semi-transparent dark */
+            border-bottom: 1px solid #00ff99;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 10px;
+            box-sizing: border-box;
+            color: #00ff99;
+            font-size: 0.9em;
+            user-select: none;
+            z-index: 50; /* Below windows */
+        }
+
+        .panel-left, .panel-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .kali-menu-button {
+            background: #00ff99;
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .kali-menu-button:hover {
+            background: #00cc77;
+            color: #fff;
+        }
+
+        .system-tray-icon {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .system-tray-icon img {
+            width: 20px;
             height: 20px;
-            background: var(--fg);
-            margin-left: 5px;
+            filter: invert(1) drop-shadow(0 0 3px #00ff99); /* White icon with green glow */
+        }
+
+        .system-tray-time {
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        /* Start Menu (Application Launcher) */
+        #start-menu {
+            position: absolute;
+            top: 40px; /* Below top panel */
+            left: 0;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #00ff99;
+            border-top: none;
+            padding: 10px 0;
+            width: 200px;
+            box-shadow: 0 0 20px rgba(0, 255, 153, 0.5);
+            z-index: 100; /* Above desktop icons, below windows */
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        #start-menu.active {
+            display: flex;
+        }
+
+        .start-menu-item {
+            padding: 8px 15px;
+            color: #eee;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .start-menu-item:hover {
+            background: rgba(0, 255, 153, 0.3);
+            color: #00ff99;
+        }
+
+        .start-menu-item img {
+            width: 20px;
+            height: 20px;
+            filter: invert(1) drop-shadow(0 0 2px #00ffff); /* Light blue glow for menu icons */
+        }
+
+        /* Window Styling */
+        .window {
+            position: absolute;
+            background: rgba(15, 15, 15, 0.95); /* Dark background for windows */
+            border: 1px solid #00ff99;
+            box-shadow: 0 0 25px rgba(0, 255, 153, 0.6);
+            min-width: 300px;
+            min-height: 200px;
+            resize: both; /* Allow resizing */
+            overflow: hidden; /* Hide content overflow within window */
+            display: flex;
+            flex-direction: column;
+            z-index: 10; /* Base z-index */
+        }
+
+        .window-title-bar {
+            background: #005030; /* Darker green for title bar */
+            padding: 5px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: grab; /* Indicates draggable */
+            user-select: none;
+            border-bottom: 1px solid #00ff99;
+            color: #eee;
+            font-size: 0.9em;
+        }
+
+        .window-title-bar .window-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .window-control-button {
+            background: #333;
+            border: 1px solid #555;
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: #eee;
+            font-size: 0.8em;
+            transition: background 0.2s;
+        }
+
+        .window-control-button.close:hover { background: #ff0000; border-color: #ff0000; }
+        .window-control-button.minimize:hover { background: #ffcc00; border-color: #ffcc00; }
+        .window-control-button.maximize:hover { background: #00aaff; border-color: #00aaff; }
+
+        .window-content {
+            flex-grow: 1; /* Takes remaining space */
+            padding: 10px;
+            overflow-y: auto; /* Scrollable content within window */
+            color: #00ff99;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            font-size: 1em; /* Ensure content is readable */
+        }
+
+        /* Terminal Window Specific Styling */
+        .window-content.terminal-content {
+            background: #0d0d0d; /* Darker background for terminal content */
+            border-top: 1px solid #00ff99; /* Separator from title bar */
+            padding: 15px; /* More padding for terminal feel */
+        }
+
+        /* Files Window Specific Styling */
+        .window-content.files-content {
+            background: #1a1a1a; /* Slightly lighter background for file explorer */
+            border-top: 1px solid #00ff99;
+            padding: 10px;
+        }
+        .files-content .path-bar {
+            background: #00331a;
+            padding: 5px 10px;
+            margin-bottom: 10px;
+            border-radius: 3px;
+            color: #eee;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .files-content .path-bar span {
+            color: #00ffff;
+        }
+        .files-content .file-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .files-content .file-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+        .files-content .file-item:hover {
+            background: rgba(0, 255, 153, 0.2);
+        }
+        .files-content .file-item img {
+            width: 24px;
+            height: 24px;
+            filter: drop-shadow(0 0 2px rgba(0, 255, 153, 0.5));
+        }
+        .files-content .file-item.dir img {
+            filter: none; /* No glow for folders, use original icon color */
+        }
+        .files-content .file-item span {
+            color: #eee;
+        }
+        .files-content .file-item.dir span {
+            color: #00ffff; /* Directories are blue */
+        }
+        .files-content .back-button {
+            display: inline-block;
+            background: #005030;
+            color: #eee;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 10px;
+            border: 1px solid #00ff99;
+        }
+        .files-content .back-button:hover {
+            background: #007040;
+        }
+
+
+        /* Cursor within terminal content */
+        .window-content.terminal-content .cursor {
+            display: inline-block;
+            width: 0.5em;
+            height: 1.1em;
+            background: #00ff99;
+            animation: blink 1s step-start infinite;
+            vertical-align: text-bottom;
+        }
+
+        /* --- Custom Scrollbar Styling for Window Content --- */
+        .window-content::-webkit-scrollbar {
+            width: 8px;
+            background-color: #1a1a1a;
+        }
+
+        .window-content::-webkit-scrollbar-thumb {
+            background-color: #00ff99;
+            border-radius: 4px;
+            border: 1px solid #00cc88;
+        }
+
+        .window-content::-webkit-scrollbar-thumb:hover {
+            background-color: #00cc88;
+        }
+
+        .window-content {
+            scrollbar-width: thin;
+            scrollbar-color: #00ff99 #1a1a1a;
+        }
+
+        /* --- Mobile Controls (Hidden on PC) --- */
+        .mobile-menu-button, .mobile-menu-overlay {
+            display: none !important; /* Force hide on PC */
+        }
+
+        /* Hide desktop elements on small screens */
+        @media (max-width: 768px) {
+            #desktop {
+                display: none !important; /* Hide desktop on mobile */
+            }
+            /* You might want a fallback for mobile, e.g., a simple message or a simplified terminal */
+            body::before {
+                content: "This portfolio is optimized for PC. Please view on a larger screen for the full experience.";
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: #000;
+                color: #00ff99;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                padding: 20px;
+                box-sizing: border-box;
+                z-index: 2000;
+                font-size: 1.2em;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Kali-style top panel -->
-    <div class="top-panel">
-        <div class="panel-group">
-            <div class="panel-button" onclick="showSection('about')">About</div>
-            <div class="panel-button" onclick="showSection('experience')">Experience</div>
-            <div class="panel-button" onclick="showSection('skills')">Skills</div>
-            <div class="panel-button" onclick="showSection('projects')">Projects</div>
-            <div class="panel-button" onclick="showSection('contact')">Contact</div>
-        </div>
-        <div class="panel-group">
-            <div class="panel-button" onclick="toggleTheme()"><i class="fas fa-adjust"></i></div>
-        </div>
+    <div class="pre-boot-screen" id="pre-boot-screen">
+        <img src="https://www.kali.org/blog/kali-linux-2020-4-release/images/boot-kali.gif" alt="Kali Linux Boot Logo">
     </div>
 
-    <!-- Terminal container -->
-    <div class="terminal-container">
-        <div class="terminal">
-            <div class="terminal-header">
-                <i class="fas fa-terminal"></i> root@anmolksachan: ~
+    <div class="boot-screen" id="boot-screen">
+        <!--<img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Kali-dragon-icon.svg" alt="Kali Logo">-->
+        <ul class="boot-messages" id="boot-messages"></ul>
+        <div class="boot-messages progress-bar">
+            <div class="progress-bar-fill" id="progress-bar-fill"></div>
+        </div>
+        <div class="boot-time" id="boot-time"></div>
+    </div>
+
+    <div id="desktop">
+        <div id="top-panel">
+            <div class="panel-left">
+                <div class="kali-menu-button" id="kaliMenuButton">Applications</div>
             </div>
-            <div class="terminal-content" id="terminalContent">
-                <div class="neofetch">
-                    <pre>
- _  _     _ _      __  __            _            
-| || |___| | |___ |  \/  | __ _ _ __| | _____ _ __
-| __ / -_) | / -_)| |\/| |/ _` | '__| |/ / _ \ '__|
-|_||_\___|_|_\___||_|  |_|\__,_|_|  |___/\___/_|   
-                                                    
-Cyber Security Professional | Bug Bounty Hunter | OSINT Specialist
-                    </pre>
+            <div class="panel-right">
+                <div class="system-tray-icon">
+                    <img src="https://i.pinimg.com/originals/80/32/6c/80326c84c6e00910f63aa6260372ec25.gif" alt="Wi-Fi">
                 </div>
-
-                <div class="command-list">
-                    <div class="command" onclick="showSection('about')">> about-me</div>
-                    <div class="command" onclick="showSection('experience')">> work-experience</div>
-                    <div class="command" onclick="showSection('skills')">> skills</div>
-                    <div class="command" onclick="showSection('projects')">> projects</div>
-                    <div class="command" onclick="showSection('contact')">> contact</div>
+                <div class="system-tray-icon">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRY5u61Ich2-HvGRBe3hj043ILiPKh6HlmGrw&s" alt="Volume">
                 </div>
-
-                <div class="file-browser" id="projectsSection">
-                    <div class="file" onclick="window.open('https://github.com/anmolksachan/TheTimeMachine')">
-                        <i class="fas fa-clock"></i> TheTimeMachine<br>
-                        <small>Time-based vulnerability scanner</small>
-                    </div>
-                    <div class="file" onclick="window.open('https://github.com/anmolksachan/CrossInjector')">
-                        <i class="fas fa-syringe"></i> CrossInjector<br>
-                        <small>XSS payload injector</small>
-                    </div>
-                    <div class="file" onclick="window.open('https://github.com/anmolksachan/WhatTheCipher')">
-                        <i class="fas fa-lock"></i> WhatTheCipher<br>
-                        <small>Encryption analysis tool</small>
-                    </div>
+                <span class="system-tray-time" id="systemTrayTime"></span>
+                <div class="system-tray-icon" id="powerOffButton">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDqB1yX68-P3a1LaSkvKJTugsvI6cCBwoKbg&s" alt="Power">
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Modals -->
-    <div id="aboutModal" class="modal">
-        <div class="modal-content">
-            <h2>About Me</h2>
-            <p>Experienced Cyber Security Professional with expertise in:</p>
-            <ul>
-                <li>Attack Surface Management</li>
-                <li>Penetration Testing</li>
-                <li>Vulnerability Research</li>
-                <li>Tool Development</li>
-                <li>CTF Competitions</li>
-            </ul>
-            <button onclick="closeModal('about')">Close</button>
+        <div class="desktop-icons">
+            <div class="desktop-icon" id="iconTerminal">
+                <img src="https://cdn.freebiesupply.com/logos/large/2x/terminal-1-logo-png-transparent.png" alt="Terminal">
+                <span>Terminal</span>
+            </div>
+            <div class="desktop-icon" id="iconFiles">
+                <img src="https://icon-library.com/images/directory-icon/directory-icon-5.jpg" alt="Files">
+                <span>Files</span>
+            </div>
+            <div class="desktop-icon" id="iconBrowser">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Mozilla_Firefox_3.5_logo.png" alt="Browser">
+                <span>Browser</span>
+            </div>
+            <div class="desktop-icon" id="iconAbout">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRY5u61Ich2-HvGRBe3hj043ILiPKh6HlmGrw&s" alt="About Me">
+                <span>About Me</span>
+            </div>
         </div>
+
+        <div id="start-menu">
+            <div class="start-menu-item" data-app="terminal">
+                <img src="https://cdn.freebiesupply.com/logos/large/2x/terminal-1-logo-png-transparent.png" alt="Terminal Icon">Terminal
+            </div>
+            <div class="start-menu-item" data-app="files">
+                <img src="https://icon-library.com/images/directory-icon/directory-icon-5.jpg" alt="Files Icon">Files
+            </div>
+            <div class="start-menu-item" data-app="browser">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Mozilla_Firefox_3.5_logo.png" alt="Browser Icon">Browser
+            </div>
+            <div class="start-menu-item" data-app="about">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRY5u61Ich2-HvGRBe3hj043ILiPKh6HlmGrw&s" alt="About Icon">About Me
+            </div>
+            <hr style="border-color: rgba(0,255,153,0.3); margin: 5px 0;">
+            <div class="start-menu-item" id="startMenuReboot">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDqB1yX68-P3a1LaSkvKJTugsvI6cCBwoKbg&s" alt="Reboot Icon">Reboot
+            </div>
+        </div>
+
+        <div id="windows-container">
+            </div>
+
     </div>
 
     <script>
-        function showSection(section) {
-            const sections = ['about', 'experience', 'skills', 'projects', 'contact'];
-            sections.forEach(s => {
-                document.getElementById(`${s}Modal`)?.classList.remove('active');
-            });
+        const preBootScreen = document.getElementById("pre-boot-screen");
+        const bootScreen = document.getElementById("boot-screen");
+        const bootMessages = document.getElementById("boot-messages");
+        const bootTime = document.getElementById("boot-time");
+        const progressBarFill = document.getElementById("progress-bar-fill");
+        const desktop = document.getElementById("desktop");
+        const kaliMenuButton = document.getElementById("kaliMenuButton");
+        const startMenu = document.getElementById("start-menu");
+        const systemTrayTime = document.getElementById("systemTrayTime");
+        const windowsContainer = document.getElementById("windows-container");
+        const powerOffButton = document.getElementById("powerOffButton");
+        const startMenuReboot = document.getElementById("startMenuReboot");
 
-            if (section === 'projects') {
-                document.getElementById('projectsSection').style.display = 'grid';
+        // Desktop Icons
+        const iconTerminal = document.getElementById("iconTerminal");
+        const iconFiles = document.getElementById("iconFiles");
+        const iconBrowser = document.getElementById("iconBrowser");
+        const iconAbout = document.getElementById("iconAbout");
+
+        // Global variables, declared once
+        let bootMessageIndex = 0;
+        let bootInterval;
+        let timeInterval;
+        let desktopTimeInterval;
+        let currentZIndex = 10;
+        let currentPath = '/home/anmol'; // For files explorer
+
+        // --- Portfolio Content for various windows ---
+        const terminalContent = [
+            "┌──(anmol㉿nethunter)-[~]",
+            "└─$ welcome.sh",
+            "Welcome to Anmol K Sachan's Kali Linux Portfolio!",
+            "Type 'help' for a list of commands, or explore the desktop icons.\n",
+            "┌──(anmol㉿nethunter)-[~/profile]",
+            "└─$ cat about_me.txt",
+            "👋 Hey there, I'm Anmol K Sachan (FR13ND0x7F)",
+            "I’m a seasoned Security Researcher, Penetration Tester, and Bug Bounty Hunter with a passion for uncovering vulnerabilities and securing systems.",
+            "My approach to hacking is rooted in curiosity, creativity, and persistence. I believe that security isn’t just about mastering tools—it’s about understanding systems, thinking like an attacker, and crafting solutions that make a difference.\n",
+
+            "┌──(anmol㉿nethunter)-[~/about_details]",
+            "└─$ cat details.txt",
+            "🌟 About Me:",
+            "- 🔍 Skilled Penetration Tester: Specializing in Web, Mobile, API, AI/ML, and Network Security.",
+            "- 🛡️ Security Advocate: Passionate about ethical hacking, vulnerability research, and contributing to a safer digital world.",
+            "- 💻 Builder & Developer: Crafting custom exploits, tools, and automation scripts to solve complex problems.",
+            "- 🧠 Lifelong Learner: Always exploring new technologies, techniques, and methodologies to stay ahead in the ever-evolving cybersecurity landscape.\n",
+
+            "┌──(anmol㉿nethunter)-[~/achievements]",
+            "└─$ cat recognitions.txt",
+            "🏆 Achievements & Recognitions:",
+            "- Reported critical vulnerabilities to organizations like Nokia, Federal Communications Commission (USA Gov), Mediatek, Healthy Supplies, and Wageningen University & Research.",
+            "- Acknowledged with Hall of Fame (HOF) entries and official recognition letters for responsible disclosures.",
+            "- Identified multiple CVEs, including CVE-2021-27539 and CVE-2022-33041.\n",
+
+            "┌──(anmol㉿nethunter)-[~/cves]",
+            "└─$ ls -l CVEs_Reported",
+            "📜 CVEs Reported by Me:",
+            "- CVE-2021-27539",
+            "- CVE-2022-33041",
+            "- CVE-2021-27295",
+            "- CVE-2021-27296",
+            "- CVE-2021-27190",
+            "- And more!\n",
+
+            "┌──(anmol㉿nethunter)-[~/skills]",
+            "└─$ cat my_skillset.sh",
+            "🛠️ My Skillset:",
+            "✔️ Web Application Penetration Testing",
+            "✔️ Mobile Application Penetration Testing",
+            "✔️ API Penetration Testing",
+            "✔️ AI/ML Penetration Testing",
+            "✔️ Network Pentesting",
+            "✔️ Attack Surface Management (ASM)",
+            "✔️ Ethical Hacking & Red Team Operations",
+            "✔️ CTFs & Capture The Flag Challenges",
+            "✔️ OSINT (Open Source Intelligence)",
+            "✔️ Thick Client Pentesting",
+            "✔️ Reverse Engineering",
+            "✔️ Source Code Review",
+            "✔️ Video Editing & Content Creation",
+            "✔️ Community Building\n",
+
+            "⚙️ Proficient Security Tools:",
+            "- Metasploit, Burp Suite, Nmap, SQLMap, OWASP ZAP",
+            "- Wireshark, tcpdump, John the Ripper, Hydra, DirBuster, Nikto",
+            "- Postman, Nessus",
+            "- Custom scripts & frameworks\n",
+
+            "┌──(anmol㉿nethunter)-[~/tools]",
+            "└─$ ./list_community_tools.sh",
+            "🚀 Tools I’ve Built for the Community:",
+            "- The Time Machine (★312): <a href='https://github.com/anmolksachan/TheTimeMachine' target='_blank'>Recon leveraging Wayback Machine</a>",
+            "- ThreatTracer: <a href='https://github.com/anmolksachan/ThreatTracer' target='_blank'>CVE checker & exploit enumerator</a>",
+            "- WayBackLister: <a href='https://github.com/anmolksachan/wayBackLister' target='_blank'>Directory listing from archived URLs</a>",
+            "- WayBackup Finder: <a href='https://github.com/anmolksachan/WayBackupFinder' target='_blank'>Backup file & sensitive data leaks</a>",
+            "- CVE Seeker: <a href='https://github.com/anmolksachan/CVESeeker' target='_blank'>Search for CVEs and related exploits</a>",
+            "- CrossInjector: <a href='https://github.com/anmolksachan/CrossInjector' target='_blank'>Automating XSS payload testing</a>",
+            "- What The Cipher: <a href='https://github.com/anmolksachan/WhatTheCipher' target='_blank'>Cipher analysis for CTF challenges</a>",
+            "- Project Dork: <a href='https://anmolksachan.github.io/ProjectDork/' target='_blank'>Curated Google Dorks for OSINT</a>",
+            "- JIRA\"YA: <a href='https://github.com/anmolksachan/JIRAya' target='_blank'>JIRA vulnerability analyzer</a>",
+            "- DKIM Lookup: <a href='https://github.com/anmolksachan/dkim-lookup' target='_blank'>Verify DKIM records for email security</a>\n",
+            "Note: These tools are intended for educational purposes only. Use responsibly and within authorized boundaries.\n",
+
+            "┌──(anmol㉿nethunter)-[~/research]",
+            "└─$ cat published_research.txt",
+            "📄 Published Research:",
+            "- \"AI: Perilous Threat to Both Physical and Cyber Worlds\"",
+            "  Published in the <a href='https://www.jetir.org/view?paper=JETIRDQ06013' target='_blank'>Journal of Emerging Technologies and Innovative Research (JETIR)</a>.",
+            "  Explores the dual-use nature of AI in cybersecurity and its implications for both defenders and attackers.\n",
+
+            "┌──(anmol㉿nethunter)-[~/competitions]",
+            "└─$ cat ctf_summary.txt",
+            "🏅 CTF & Competitions:",
+            "- Member of Warlock_RootX CTF Team, ranked 2nd in India until 2021.",
+            "- Top performances in Defcon CTF, HACK-A-SAT, and Amrita InCTF.\n",
+
+            "┌──(anmol㉿nethunter)-[~/speaking]",
+            "└─$ cat conferences.txt",
+            "🎤 Conferences & Public Speaking:",
+            "- Attended Nullcon conferences via Bug Bounty Scholarship and CFP participation.\n",
+
+            "┌──(anmol㉿nethunter)-[~/socials]",
+            "└─$ echo Connect With Me",
+            "🌍 Connect With Me:",
+            "Twitter: <a href='https://twitter.com/FR13ND0x7f' target='_blank'>Follow for insights, tools, and updates</a>",
+            "LinkedIn: <a href='https://www.linkedin.com/in/anmolksachan/' target='_blank'>Connect professionally</a>",
+            "Blog: <a href='https://anmolksachan.github.io/blogs/' target='_blank'>Read articles on cybersecurity, tools, and practices</a>",
+            "Instagram: <a href='https://instagram.com/the_guy_that_hacks' target='_blank'>Sneak peeks into my hacking journey</a>\n",
+
+            "┌──(anmol㉿nethunter)-[~/next_steps]",
+            "└─$ cat whats_next.md",
+            "🎯 What’s Next?",
+            "- 🔭 Currently working on advanced AI-driven security tools and research.",
+            "- 🌱 Learning more about cloud security, blockchain vulnerabilities, and quantum cryptography.",
+            "- 👯 Looking to collaborate on open-source security projects and tools.",
+            "- 🤔 Seeking feedback and ideas for improving existing tools.",
+            "- 💬 Feel free to ask me about anything related to cybersecurity, tools, or research!",
+            "- 📫 Reach out via <a href='https://twitter.com/FR13ND0x7f' target='_blank'>Twitter DMs</a> or <a href='https://www.linkedin.com/in/anmolksachan/' target='_blank'>LinkedIn</a>.\n",
+
+            "┌──(anmol㉿nethunter)-[~/misc]",
+            "└─$ cat fun_facts.txt",
+            "⚡ Fun Fact:",
+            "I once spent 48 hours straight debugging a single line of code—and yes, it was worth it! 😄\n",
+
+            "┌──(anmol㉿nethunter)-[~/licensing]",
+            "└─$ cat license.txt",
+            "📜 License:",
+            "All tools and content are released under the MIT License unless otherwise specified.",
+            "Contributions are welcome—fork, modify—and submit pull requests to help improve these projects!\n",
+
+            "\n[✓] Portfolio loaded successfully. Explore the desktop!"
+        ];
+
+        const aboutContent = `
+            <div style="padding: 15px;">
+                <h2 style="color:#00ffff; margin-top:0;">About Anmol K Sachan</h2>
+                <p>I’m a seasoned <b>Security Researcher</b>, <b>Penetration Tester</b>, and <b>Bug Bounty Hunter</b> with a passion for uncovering vulnerabilities and securing systems.</p>
+                <p>My approach to hacking is rooted in curiosity, creativity, and persistence. I believe that security isn’t just about mastering tools—it’s about understanding systems, thinking like an attacker, and crafting solutions that make a difference.</p>
+                <p><b>Specializations:</b> Web, Mobile, API, AI/ML, and Network Security.</p>
+                <p><b>Core Philosophy:</b> Proactive security, threat intelligence, and demonstrating exploit impacts to stakeholders.</p>
+                <p style="margin-top: 20px; color:#aaa;">Version: Kali Portfolio 1.0.0</p>
+            </div>
+        `;
+
+        const projectsContent = `
+            <div style="padding: 15px;">
+                <h2 style="color:#00ffff; margin-top:0;">My Projects & Tools</h2>
+                <ul style="list-style:none; padding:0;">
+                    <li><a href='https://github.com/anmolksachan/TheTimeMachine' target='_blank'>The Time Machine</a> (Recon leveraging Wayback Machine)</li>
+                    <li><a href='https://github.com/anmolksachan/ThreatTracer' target='_blank'>ThreatTracer</a> (CVE checker & exploit enumerator)</li>
+                    <li><a href='https://github.com/anmolksachan/wayBackLister' target='_blank'>WayBackLister</a> (Directory listing from archived URLs)</li>
+                    <li><a href='https://github.com/anmolksachan/WayBackupFinder' target='_blank'>WayBackup Finder</a> (Backup file & sensitive data leaks)</li>
+                    <li><a href='https://github.com/anmolksachan/CVESeeker' target='_blank'>CVE Seeker</a> (Search for CVEs and related exploits)</li>
+                    <li><a href='https://github.com/anmolksachan/CrossInjector' target='_blank'>CrossInjector</a> (Automating XSS payload testing)</li>
+                    <li><a href='https://github.com/anmolksachan/WhatTheCipher' target='_blank'>What The Cipher</a> (Cipher analysis for CTF challenges)</li>
+                    <li><a href='https://anmolksachan.github.io/ProjectDork/' target='_blank'>Project Dork</a> (Curated Google Dorks for OSINT)</li>
+                    <li><a href='https://github.com/anmolksachan/JIRAya' target='_blank'>JIRA"YA</a> (JIRA vulnerability analyzer)</li>
+                    <li><a href='https://github.com/anmolksachan/dkim-lookup' target='_blank'>DKIM Lookup</a> (Verify DKIM records for email security)</li>
+                </ul>
+                <p style="margin-top: 20px; color:#aaa;">Note: These tools are intended for educational purposes only. Use responsibly.</p>
+            </div>
+        `;
+
+        const contactContent = `
+            <div style="padding: 15px;">
+                <h2 style="color:#00ffff; margin-top:0;">Connect With Me</h2>
+                <p>Feel free to reach out for collaborations, discussions, or just to say hello!</p>
+                <ul style="list-style:none; padding:0;">
+                    <li><b>Twitter:</b> <a href='https://twitter.com/FR13ND0x7f' target='_blank'>@FR13ND0x7f</a></li>
+                    <li><b>LinkedIn:</b> <a href='https://www.linkedin.com/in/anmolksachan/' target='_blank'>Anmol K Sachan</a></li>
+                    <li><b>Blog:</b> <a href='https://anmolksachan.github.io/blogs/' target='_blank'>anmolksachan.github.io/blogs/</a></li>
+                    <li><b>Instagram:</b> <a href='https://instagram.com/the_guy_that_hacks' target='_blank'>@the_guy_that_hacks</a></li>
+                </ul>
+                <p style="margin-top: 20px; color:#aaa;">I'm always open to new opportunities and discussions in cybersecurity!</p>
+            </div>
+        `;
+
+        // --- File System Structure for the "Files" App ---
+        const fileSystem = {
+            '/home/anmol': {
+                type: 'directory',
+                contents: {
+                    'Documents': {
+                        type: 'directory',
+                        contents: {
+                            'about_me.txt': { type: 'file', app: 'about', content: aboutContent },
+                            'my_projects.txt': { type: 'file', app: 'projects', content: projectsContent },
+                            'contact.txt': { type: 'file', app: 'contact', content: contactContent },
+                        }
+                    },
+                    'Projects': {
+                        type: 'directory',
+                        contents: {
+                             'README.md': { type: 'file', content: 'This directory contains my open-source projects. See my_projects.txt in Documents for a list.' }
+                        }
+                    },
+                    'Socials': {
+                        type: 'directory',
+                        contents: {
+                            'README.md': { type: 'file', content: 'Connect with me on various social platforms. See contact.txt in Documents for details.' }
+                        }
+                    },
+                    'README.md': { type: 'file', content: 'Welcome to your home directory! Explore the Documents folder.' },
+                    'portfolio_info.txt': { type: 'file', content: 'This file contains general information about the portfolio structure and navigation.' }
+                }
+            }
+        };
+
+        const bootSequence = [
+            "[  OK  ] Started User Login Management.",
+            "[  OK  ] Started Network Manager.",
+            "[  OK  ] Reached target Network is Online.",
+            "[  OK  ] Reached target System Time Synchronized.",
+            "[  OK  ] Started Modem Manager.",
+            "[  OK  ] Started Set console font and keymap.",
+            "[  OK  ] Reached target Basic System.",
+            "[  OK  ] Started Accounts Service.",
+            "[  OK  ] Started Daemon for power management.",
+            "[  OK  ] Started GNOME Display Manager.",
+            "[  OK  ] Started Daily apt download activities.",
+            "[  OK  ] Started Update cron activities.",
+            "[  OK  ] Started Daily apt upgrade and clean activities.",
+            "[  OK  ] Reached target Graphical Interface.",
+            "[  OK  ] Starting User Manager for UID 1000...",
+            "[  OK  ] Started Session c2 of user anmol.",
+            "                               Kali GNU/Linux Rolling",
+            "anmol login: ",
+            "Password: ",
+            "Login successful. Starting desktop environment...",
+            "Loading Kali desktop...",
+            "Initializing panel and icons...",
+            "Desktop environment loaded."
+        ];
+
+
+        function updateBootScreenTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            bootTime.textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        function updateSystemTrayTime() {
+            const now = new Date();
+            const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', weekday: 'short', month: 'short', day: 'numeric' };
+            systemTrayTime.textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        function runBootSequence() {
+            if (bootMessageIndex < bootSequence.length) {
+                const li = document.createElement('li');
+                li.textContent = bootSequence[bootMessageIndex];
+                li.classList.add('success'); // Assume success for all boot messages for now
+                if (bootSequence[bootMessageIndex].includes("FAIL")) { // Add specific check for FAIL messages
+                    li.classList.remove('success');
+                    li.classList.add('fail');
+                }
+                li.style.setProperty('--delay', `${bootMessageIndex * 0.05}s`);
+                bootMessages.appendChild(li);
+                bootMessages.scrollTop = bootMessages.scrollHeight;
+
+                const progress = ((bootMessageIndex + 1) / bootSequence.length) * 100;
+                progressBarFill.style.width = `${progress}%`;
+
+                bootMessageIndex++;
             } else {
-                const modal = document.getElementById(`${section}Modal`);
-                if (modal) modal.style.display = 'block';
+                clearInterval(bootInterval);
+                clearInterval(timeInterval); // Stop boot screen time update
+                setTimeout(() => {
+                    bootScreen.classList.add('hidden');
+                    setTimeout(() => {
+                        bootScreen.style.display = 'none';
+                        desktop.style.display = 'flex'; // Show the desktop
+                        updateSystemTrayTime(); // Initial call for desktop time
+                        desktopTimeInterval = setInterval(updateSystemTrayTime, 1000); // Start desktop time update
+                        // Open terminal by default
+                        openWindow('terminal', 'Terminal', '', { x: 100, y: 80, width: 600, height: 400 });
+
+                    }, 1000); // Fade out boot screen duration
+                }, 800); // Delay after last boot message
             }
         }
 
-        function closeModal(section) {
-            document.getElementById(`${section}Modal`).style.display = 'none';
+        function initializePortfolioDisplay() {
+            // Clear any active intervals on re-initialization
+            if (timeInterval) clearInterval(timeInterval);
+            if (desktopTimeInterval) clearInterval(desktopTimeInterval);
+            if (bootInterval) clearInterval(bootInterval);
+
+            // Reset current path for files explorer
+            currentPath = '/home/anmol';
+
+            // Hide desktop and clear windows
+            desktop.style.display = 'none';
+            windowsContainer.innerHTML = ''; // Clear all open windows
+
+            preBootScreen.classList.remove('hidden');
+            preBootScreen.style.display = 'flex';
+
+            bootScreen.classList.remove('active');
+            bootScreen.classList.add('hidden');
+            bootScreen.style.display = 'none';
+
+            // Set up initial boot screen time
+            updateBootScreenTime();
+            timeInterval = setInterval(updateBootScreenTime, 1000);
+
+            // --- KALI LOGO DURATION ---
+            setTimeout(() => {
+                preBootScreen.classList.add('hidden');
+                setTimeout(() => {
+                    preBootScreen.style.display = 'none';
+                    bootScreen.classList.remove('hidden');
+                    bootScreen.classList.add('active');
+                    bootScreen.style.display = 'flex';
+
+                    bootMessages.innerHTML = '';
+                    bootMessageIndex = 0;
+                    progressBarFill.style.width = '0%';
+
+                    bootInterval = setInterval(runBootSequence, 200);
+                }, 500); // Duration of the pre-boot fade-out
+            }, 5500); // Total duration pre-boot logo is visible
         }
 
-        function toggleTheme() {
-            document.body.classList.toggle('light-theme');
-            const isLight = document.body.classList.contains('light-theme');
-            document.documentElement.style.setProperty('--bg', isLight ? '#f5f5f5' : '#1a1a1a');
-            document.documentElement.style.setProperty('--fg', isLight ? '#000' : '#00ff00');
-            document.documentElement.style.setProperty('--accent', isLight ? '#007acc' : '#3399ff');
+        // --- Window Management Functions ---
+        const windowStates = {}; // Store states for minimize/maximize
+
+        function openWindow(id, title, content, options = {}) {
+            let windowElement = document.getElementById(`window-${id}`);
+            if (windowElement) {
+                // If window already exists, bring to front and restore if minimized
+                bringWindowToFront(windowElement);
+                windowElement.style.display = 'flex'; // Ensure it's visible
+                windowElement.classList.remove('minimized');
+                // Restore original size if it was maximized
+                if (windowStates[id] && windowStates[id].isMaximized) {
+                    toggleMaximize(windowElement, id); // Toggle back to normal
+                }
+                return;
+            }
+
+            windowElement = document.createElement('div');
+            windowElement.id = `window-${id}`;
+            windowElement.classList.add('window');
+            windowElement.setAttribute('data-app-id', id);
+
+            // Set initial position and size
+            windowElement.style.left = `${options.x || Math.random() * (window.innerWidth - 500) + 50}px`;
+            windowElement.style.top = `${options.y || Math.random() * (window.innerHeight - 400) + 50}px`;
+            windowElement.style.width = `${options.width || 600}px`;
+            windowElement.style.height = `${options.height || 400}px`;
+
+            // Store initial state
+            windowStates[id] = {
+                x: windowElement.style.left,
+                y: windowElement.style.top,
+                width: windowElement.style.width,
+                height: windowElement.style.height,
+                isMaximized: false
+            };
+
+
+            windowElement.innerHTML = `
+                <div class="window-title-bar">
+                    <span class="window-title">${title}</span>
+                    <div class="window-controls">
+                        <div class="window-control-button minimize">-</div>
+                        <div class="window-control-button maximize">□</div>
+                        <div class="window-control-button close">x</div>
+                    </div>
+                </div>
+                <div class="window-content ${id}-content"></div>
+            `;
+
+            windowsContainer.appendChild(windowElement);
+            const windowContentElement = windowElement.querySelector('.window-content');
+
+            if (id === 'browser') {
+                windowContentElement.innerHTML = `<iframe src="${content}" style="width:100%; height:100%; border:none; background: #fff;" sandbox="allow-scripts allow-top-navigation allow-popups allow-forms allow-same-origin"></iframe>`;
+                windowContentElement.style.padding = '0'; // Remove padding for iframe
+            } else if (id === 'files') {
+                renderFilesExplorer(windowContentElement, currentPath);
+            } else if (id === 'terminal') {
+                simulateTyping(windowContentElement, terminalContent);
+            } else if (id === 'about') {
+                windowContentElement.innerHTML = aboutContent;
+            } else if (id === 'projects') {
+                windowContentElement.innerHTML = projectsContent;
+            } else if (id === 'contact') {
+                windowContentElement.innerHTML = contactContent;
+            } else if (id === 'text-viewer') { // Handle generic text viewer
+                windowContentElement.innerHTML = `<div style="padding: 10px; color: #eee; white-space: pre-wrap;">${content}</div>`;
+            }
+            else {
+                 windowContentElement.innerHTML = content; // For generic text viewer, fallback if content is directly passed
+            }
+
+
+            // Make window draggable
+            const titleBar = windowElement.querySelector('.window-title-bar');
+            let isDragging = false;
+            let offsetX, offsetY;
+
+            titleBar.addEventListener('mousedown', (e) => {
+                // Prevent drag if maximized
+                if (windowStates[id].isMaximized) return;
+
+                isDragging = true;
+                offsetX = e.clientX - windowElement.getBoundingClientRect().left;
+                offsetY = e.clientY - windowElement.getBoundingClientRect().top;
+                windowElement.style.cursor = 'grabbing';
+                bringWindowToFront(windowElement); // Bring to front on drag start
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                windowElement.style.left = `${e.clientX - offsetX}px`;
+                windowElement.style.top = `${e.clientY - offsetY}px`;
+                // Update stored state
+                windowStates[id].x = windowElement.style.left;
+                windowStates[id].y = windowElement.style.top;
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                windowElement.style.cursor = 'grab';
+            });
+
+            // Close button functionality
+            windowElement.querySelector('.window-control-button.close').addEventListener('click', () => {
+                windowElement.remove();
+                delete windowStates[id]; // Clean up state
+            });
+
+            // Minimize button functionality
+            windowElement.querySelector('.window-control-button.minimize').addEventListener('click', () => {
+                windowElement.style.display = 'none'; // Simply hide for now
+                windowElement.classList.add('minimized');
+            });
+
+            // Maximize button functionality
+            windowElement.querySelector('.window-control-button.maximize').addEventListener('click', () => {
+                toggleMaximize(windowElement, id);
+            });
+
+
+            // Bring window to front on click
+            windowElement.addEventListener('mousedown', (e) => {
+                // Only bring to front if clicking the window, not elements inside it that handle their own clicks
+                // Check if the click target is within the window but not specifically a window control button
+                if (e.target.closest('.window') === windowElement && !e.target.classList.contains('window-control-button')) {
+                    bringWindowToFront(windowElement);
+                }
+            });
+
+            bringWindowToFront(windowElement); // Bring newly opened window to front
         }
 
-        // Initialize projects section
-        document.getElementById('projectsSection').style.display = 'grid';
+        function toggleMaximize(windowElement, id) {
+            if (!windowStates[id]) return; // Should not happen
+
+            if (windowStates[id].isMaximized) {
+                // Restore
+                windowElement.style.left = windowStates[id].x;
+                windowElement.style.top = windowStates[id].y;
+                windowElement.style.width = windowStates[id].width;
+                windowElement.style.height = windowStates[id].height;
+                windowElement.style.transition = 'none'; // Disable transition for instant restore
+                windowElement.style.resize = 'both'; // Enable resize
+                windowStates[id].isMaximized = false;
+            } else {
+                // Save current position and size before maximizing
+                windowStates[id].x = windowElement.style.left;
+                windowStates[id].y = windowElement.style.top;
+                windowStates[id].width = windowElement.style.width;
+                windowStates[id].height = windowElement.style.height;
+
+                // Maximize
+                windowElement.style.left = '0px';
+                windowElement.style.top = '40px'; // Below top panel
+                windowElement.style.width = '100vw';
+                windowElement.style.height = `calc(100vh - 40px)`;
+                windowElement.style.transition = 'none'; // Disable transition for instant maximize
+                windowElement.style.resize = 'none'; // Disable resize when maximized
+                windowStates[id].isMaximized = true;
+            }
+            // Re-enable transition after a short delay for subsequent drags/resizes
+            setTimeout(() => {
+                windowElement.style.transition = '';
+            }, 50);
+        }
+
+        function bringWindowToFront(windowElement) {
+            currentZIndex++;
+            windowElement.style.zIndex = currentZIndex;
+        }
+
+        function simulateTyping(containerElement, contentArray, delay = 10, lineDelay = 300) {
+            containerElement.innerHTML = '<span class="cursor"></span>'; // Start with just the cursor
+            let lineIndex = 0;
+            let charIndex = 0;
+            const cursor = containerElement.querySelector('.cursor');
+
+            function typeChar() {
+                if (lineIndex < contentArray.length) {
+                    const currentLine = contentArray[lineIndex];
+                    if (charIndex < currentLine.length) {
+                        // Use insertAdjacentHTML to correctly render HTML for links
+                        cursor.insertAdjacentHTML('beforebegin', currentLine.charAt(charIndex));
+                        charIndex++;
+                        containerElement.scrollTop = containerElement.scrollHeight; // Auto-scroll
+                        setTimeout(typeChar, delay);
+                    } else {
+                        cursor.insertAdjacentHTML('beforebegin', '<br>'); // New line
+                        lineIndex++;
+                        charIndex = 0;
+                        containerElement.scrollTop = containerElement.scrollHeight; // Auto-scroll
+                        if (lineIndex < contentArray.length) {
+                            setTimeout(typeChar, lineDelay); // Delay before next line
+                        }
+                    }
+                }
+            }
+            typeChar();
+        }
+
+
+        // --- Files Explorer Logic ---
+        function renderFilesExplorer(containerElement, path) {
+            containerElement.innerHTML = ''; // Clear previous content
+
+            const pathBar = document.createElement('div');
+            pathBar.classList.add('path-bar');
+            pathBar.innerHTML = `Current Path: <span>${path}</span>`;
+            containerElement.appendChild(pathBar);
+
+            const fileList = document.createElement('ul');
+            fileList.classList.add('file-list');
+            containerElement.appendChild(fileList);
+
+            const currentDir = getFsEntry(path);
+
+            if (!currentDir || currentDir.type !== 'directory' || !currentDir.contents) {
+                fileList.innerHTML = `<li style="color: #ff0000;">Error: Directory not found or invalid path.</li>`;
+                return;
+            }
+
+            // Add a ".." (back) button if not at root
+            if (path !== '/home/anmol') {
+                const backItem = document.createElement('li');
+                backItem.classList.add('file-item');
+                // Use a folder icon for '..'
+                backItem.innerHTML = `<img src="https://icon-library.com/images/directory-icon/directory-icon-5.jpg" alt="Folder"> <span>..</span>`;
+                backItem.addEventListener('click', () => {
+                    const parentPath = path.substring(0, path.lastIndexOf('/'));
+                    currentPath = parentPath === '' ? '/home/anmol' : parentPath; // Go back to /home/anmol if parent is root
+                    renderFilesExplorer(containerElement, currentPath);
+                });
+                fileList.appendChild(backItem);
+            }
+
+            const sortedContents = Object.keys(currentDir.contents).sort((a, b) => {
+                const aIsDir = currentDir.contents[a].type === 'directory';
+                const bIsDir = currentDir.contents[b].type === 'directory';
+                if (aIsDir && !bIsDir) return -1; // Directories first
+                if (!aIsDir && bIsDir) return 1;
+                return a.localeCompare(b); // Then alphabetically
+            });
+
+
+            sortedContents.forEach(name => {
+                const entry = currentDir.contents[name];
+                const item = document.createElement('li');
+                item.classList.add('file-item');
+                if (entry.type === 'directory') {
+                    item.classList.add('dir');
+                    item.innerHTML = `<img src="https://icon-library.com/images/directory-icon/directory-icon-5.jpg" alt="Folder"> <span>${name}</span>`;
+                    item.addEventListener('click', () => {
+                        currentPath = `${path}/${name}`;
+                        renderFilesExplorer(containerElement, currentPath);
+                    });
+                } else { // type is 'file'
+                    item.innerHTML = `<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRY5u61Ich2-HvGRBe3hj043ILiPKh6HlmGrw&s" alt="File"> <span>${name}</span>`;
+                    item.addEventListener('click', () => {
+                        // Open the associated app/content when a file is clicked
+                        if (entry.app) {
+                            if (entry.app === 'browser') {
+                                // For browser, pass the specific URL from the entry (though not used in current fileSystem structure for browser)
+                                openWindow(entry.app, 'Web Browser', 'https://github.com/anmolksachan', { x: 200, y: 160, width: 800, height: 600 });
+                            } else {
+                                // For other apps (about, projects, contact), content is defined in constants
+                                openWindow(entry.app, entry.app.charAt(0).toUpperCase() + entry.app.slice(1).replace(/([A-Z])/g, ' $1'), '', { x: 250, y: 200, width: 450, height: 300 });
+                            }
+                        } else {
+                            // For generic text files without a specific app, display content in a new window
+                            openWindow('text-viewer', name, entry.content, { x: 220, y: 180, width: 500, height: 300 });
+                        }
+                    });
+                }
+                fileList.appendChild(item);
+            });
+
+
+             if (Object.keys(currentDir.contents).length === 0 && path !== '/home/anmol') {
+                const emptyMessage = document.createElement('li');
+                emptyMessage.style.color = '#888';
+                emptyMessage.textContent = 'This directory is empty.';
+                fileList.appendChild(emptyMessage);
+            }
+        }
+
+        function getFsEntry(path) {
+            const parts = path.split('/').filter(p => p !== '');
+            let current = fileSystem;
+            // Start from /home/anmol, which is the root of our virtual filesystem
+            if (parts[0] === 'home' && parts[1] === 'anmol') {
+                current = fileSystem['/home/anmol'];
+                parts.splice(0, 2); // Remove '/home/anmol' from parts for further traversal
+            } else {
+                return null; // Invalid base path
+            }
+
+            for (let i = 0; i < parts.length; i++) {
+                if (current.contents && current.contents[parts[i]]) {
+                    current = current.contents[parts[i]];
+                } else {
+                    return null; // Path not found
+                }
+            }
+            return current;
+        }
+
+        // --- Event Listeners ---
+
+        // Start the process when the entire page is loaded
+        window.onload = initializePortfolioDisplay;
+
+        // Desktop Reboot functionality on Escape key press
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                clearInterval(bootInterval);
+                clearInterval(timeInterval);
+                clearInterval(desktopTimeInterval);
+                initializePortfolioDisplay();
+            }
+        });
+
+        // Kali Menu Button Toggle
+        kaliMenuButton.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent click from bubbling to document
+            startMenu.classList.toggle('active');
+        });
+
+        // Close Start Menu if clicked outside
+        document.addEventListener('click', (e) => {
+            if (startMenu.classList.contains('active') && !startMenu.contains(e.target) && e.target !== kaliMenuButton) {
+                startMenu.classList.remove('active');
+            }
+        });
+
+        // Start Menu Item Clicks
+        document.querySelectorAll('#start-menu .start-menu-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const appId = item.getAttribute('data-app');
+                startMenu.classList.remove('active'); // Close menu after selection
+                if (appId === 'terminal') {
+                    openWindow('terminal', 'Terminal', '', { x: 100, y: 80, width: 600, height: 400 });
+                } else if (appId === 'files') {
+                    openWindow('files', 'File System', '', { x: 150, y: 120, width: 500, height: 350 });
+                } else if (appId === 'browser') {
+                    openWindow('browser', 'Web Browser', 'https://github.com/anmolksachan', { x: 200, y: 160, width: 800, height: 600 });
+                } else if (appId === 'about') {
+                    openWindow('about', 'About Anmol K Sachan', '', { x: 250, y: 200, width: 450, height: 300 });
+                }
+            });
+        });
+
+        // Desktop Icon Clicks
+        iconTerminal.addEventListener('click', () => openWindow('terminal', 'Terminal', '', { x: 100, y: 80, width: 600, height: 400 }));
+        iconFiles.addEventListener('click', () => {
+            currentPath = '/home/anmol'; // Reset path when opening from desktop icon
+            openWindow('files', 'File System', '', { x: 150, y: 120, width: 500, height: 350 });
+        });
+        iconBrowser.addEventListener('click', () => openWindow('browser', 'Web Browser', 'https://github.com/anmolksachan', { x: 200, y: 160, width: 800, height: 600 }));
+        iconAbout.addEventListener('click', () => openWindow('about', 'About Anmol K Sachan', '', { x: 250, y: 200, width: 450, height: 300 }));
+
+        // Power Off Button (Reboot)
+        powerOffButton.addEventListener('click', () => {
+            const confirmReboot = confirm("Are you sure you want to reboot the system?");
+            if (confirmReboot) {
+                clearInterval(bootInterval);
+                clearInterval(timeInterval);
+                clearInterval(desktopTimeInterval);
+                initializePortfolioDisplay();
+            }
+        });
+
+        // Start Menu Reboot button
+        startMenuReboot.addEventListener('click', () => {
+            const confirmReboot = confirm("Are you sure you want to reboot the system?");
+            if (confirmReboot) {
+                clearInterval(bootInterval);
+                clearInterval(timeInterval);
+                clearInterval(desktopTimeInterval);
+                initializePortfolioDisplay();
+            }
+        });
+
+        // Replace alert with a simple confirm for reboot, as alert() is restricted
+        // For 'Exit Terminal' in the overlay, I'll use a simple alert and then hide the desktop
+        window.confirm = (message) => {
+            // A simple custom modal or a browser's native confirm is fine for this context.
+            // For a full custom UI, you'd replace this with a div-based modal.
+            return window.confirm(message); // Use native confirm for simplicity
+        };
     </script>
 </body>
 </html>
