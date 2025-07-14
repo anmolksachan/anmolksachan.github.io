@@ -72,53 +72,53 @@
     },
     {
       "name": "RFC 7516 - JSON Web Encryption (JWE)",
-      "type": "RFC",
-      "url": "https://tools.ietf.org/html/rfc7516"
+      "description": "RFC",
+      "payload": "https://tools.ietf.org/html/rfc7516"
     },
     {
       "name": "JWT.io Debugger (with JWE support)",
-      "type": "Tool",
-      "url": "https://jwt.io/"
+      "description": "Tool",
+      "payload": "https://jwt.io/"
     },
     {
       "name": "JOSE-JWT Toolkit",
-      "type": "Tool",
-      "url": "https://github.com/dvsekhvalnov/jose-jwt"
+      "description": "Tool",
+      "payload": "https://github.com/dvsekhvalnov/jose-jwt"
     },
     {
       "name": "JWT Tool by ticarpi",
-      "type": "Tool",
-      "url": "https://github.com/ticarpi/jwt_tool"
+      "description": "Tool",
+      "payload": "https://github.com/ticarpi/jwt_tool"
     },
     {
       "name": "Cure53 Analysis of JOSE Libraries",
-      "type": "Security Research",
-      "url": "https://cure53.de/fp170.pdf"
+      "description": "Security Research",
+      "payload": "https://cure53.de/fp170.pdf"
     },
     {
       "name": "A Study of JWT Vulnerabilities",
-      "type": "Research Paper",
-      "url": "https://arxiv.org/pdf/2002.01894.pdf"
+      "description": "Research Paper",
+      "payload": "https://arxiv.org/pdf/2002.01894.pdf"
     },
     {
       "name": "PortSwigger – JWT Attacks",
-      "type": "Blog / Lab",
-      "url": "https://portswigger.net/web-security/jwt"
+      "description": "Blog / Lab",
+      "payload": "https://portswigger.net/web-security/jwt"
     },
     {
       "name": "Auth0 - JWE Introduction",
-      "type": "Docs",
-      "url": "https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-encryption"
+      "description": "Docs",
+      "payload": "https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-encryption"
     },
     {
       "name": "Security Ninja – JWT/JWE Attacks Cheat Sheet",
-      "type": "Blog",
-      "url": "https://www.security-ninjas.com/json-web-token-security-checklist/"
+      "description": "Blog",
+      "payload": "https://www.security-ninjas.com/json-web-token-security-checklist/"
     },
     {
       "name": "JWT/JWE Common Vulnerabilities (Slides)",
-      "type": "Presentation",
-      "url": "https://speakerdeck.com/mxchehab/jwt-security"
+      "description": "Presentation",
+      "payload": "https://speakerdeck.com/mxchehab/jwt-security"
     }
   ]
 }
