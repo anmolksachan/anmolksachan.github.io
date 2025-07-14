@@ -1,43 +1,74 @@
 {
   "test_cases": [
     {
-      "name": "Algorithm Confusion - alg none",
-      "description": "Attempt using 'alg: none' in JWE header. Should be rejected outright.",
-      "payload": "{ \"alg\": \"none\", \"enc\": \"A128GCM\" }"
+      "name": "Missing JWE segments",
+      "description": "The JWE compact serialization should have five parts (header, encrypted key, IV, ciphertext, authentication tag) separated by four dots:contentReference[oaicite:0]{index=0}. A token missing segments (e.g. only header and encrypted key) is malformed. Test truncating the JWE string to ensure the implementation rejects incomplete tokens.",
+      "payload": "eyJhbGciOiAiUlNBLU9BRVAiLCAiZW5jIjogIkEyNTZHQ00ifQ"
     },
     {
-      "name": "Invalid alg/enc Value",
-      "description": "Supply a non-existent algorithm like 'A512XYZ' and check how the parser handles it.",
-      "payload": "{ \"alg\": \"A512XYZ\", \"enc\": \"A128GCM\" }"
+      "name": "Extra JWE segments",
+      "description": "JWE parsers typically split the token on dots. A token with more than five segments (extra dots) can cause resource exhaustion or errors:contentReference[oaicite:1]{index=1}. Construct a JWE with six parts and check if it is rejected or fails safely.",
+      "payload": "eyJhbGciOiAiUlNBLU9BRVAiLCAiZW5jIjogIkEyNTZHQ00ifQ.abc.def.ghi.jkl.mno"
     },
     {
-      "name": "Key Reuse Check",
-      "description": "Verify if the same key is used for both signing and encryption operations."
+      "name": "Invalid Base64-URL in JWE",
+      "description": "Each part of a JWE must be valid Base64URL-encoded. Corrupting the encoding (e.g. inserting '?' or wrong padding) breaks the token format. Test corrupting the Base64URL in the header, key, IV, ciphertext, and tag to ensure such tokens are rejected.",
+      "payload": "eyJhbGciOiAiUlNBLU9BRVAiLCAiZW5jIjogIkEyNTZHQ00ifQ.abc.def.ghi.jkl?"
     },
     {
-      "name": "CBC Padding Oracle",
-      "description": "If using CBC, manipulate ciphertext to test for padding error response differences."
+      "name": "Unsupported alg header",
+      "description": "The 'alg' header identifies the key encryption algorithm. Values not defined for JWE (such as 'none') should be rejected. Test sending a token with 'alg':'none' (unsupported in JWE) to verify the server rejects it.",
+      "payload": "{\"alg\":\"none\",\"enc\":\"A256GCM\"}"
     },
     {
-      "name": "Compression Oracle",
-      "description": "If 'zip' is enabled, observe whether token compression reveals sensitive data."
+      "name": "Deprecated RSA1_5 key encryption",
+      "description": "The RSA1_5 key wrapping algorithm (RSAES-PKCS1-v1_5) is deprecated due to padding oracle vulnerabilities:contentReference[oaicite:2]{index=2}. Ensure that tokens with 'alg':'RSA1_5' are not accepted. Try downgrading to RSA1_5 and verify decryption fails.",
+      "payload": "{\"alg\":\"RSA1_5\",\"enc\":\"A256GCM\"}"
     },
     {
-      "name": "JWE-JWS Confusion",
-      "description": "Submit encrypted tokens where signed ones are expected (or vice versa)."
+      "name": "CBC content decryption (padding oracle)",
+      "description": "AES-CBC with HMAC (e.g. A128CBC-HS256) can be vulnerable to padding oracle attacks if decryption errors are leaked:contentReference[oaicite:3]{index=3}. Tamper with the ciphertext or tag of such a JWE and observe error differences. The implementation should fail uniformly without revealing padding validity.",
+      "payload": "eyJhbGciOiAiUlNBLU9BRVAiLCAiZW5jIjogIkEyNTZDQkMtSFM1MTIifQ.abc.def.ghi.jkl"
     },
     {
-      "name": "Header Injection - 'kid' Manipulation",
-      "description": "Manipulate the 'kid' to force server to fetch attacker-controlled keys.",
-      "payload": "{ \"kid\": \"http://attacker.com/evil.jwk\" }"
+      "name": "High-compression JWE (zip bomb)",
+      "description": "A JWE with 'zip':'DEF' and highly compressible plaintext can exhaust memory/CPU:contentReference[oaicite:4]{index=4}. For example, use a plaintext like 'AAAA...'(large repeat). Test decrypting such a token to ensure it does not cause a DoS.",
+      "payload": "{\"alg\":\"RSA-OAEP\",\"enc\":\"A256GCM\",\"zip\":\"DEF\"}"
     },
     {
-      "name": "Malformed Token - Truncated",
-      "description": "Send a token with only 3 parts instead of 5."
+      "name": "PBKDF2 iteration parameter DoS (p2c)",
+      "description": "JWE PBES2 encryption allows a 'p2c' (PBKDF2 count) parameter. An attacker can set 'p2c' extremely high to slow decryption massively:contentReference[oaicite:5]{index=5}. Send a token with a very large 'p2c' to ensure the server limits iterations or rejects the request.",
+      "payload": "{\"alg\":\"PBES2-HS256+A128KW\",\"enc\":\"A128GCM\",\"p2c\":999999999,\"p2s\":\"AAECAwQ=\"}"
     },
     {
-      "name": "Base64URL Corruption",
-      "description": "Insert invalid characters in base64url fields and analyze behavior."
+      "name": "JWK Set URL (jku) SSRF",
+      "description": "The 'jku' header is a URL to a JWK Set. If fetched without validation, it can cause SSRF:contentReference[oaicite:6]{index=6}. Test by setting 'jku' to an attacker-controlled or internal URL and see if the server attempts to retrieve it.",
+      "payload": "{\"alg\":\"RSA-OAEP\",\"enc\":\"A256GCM\",\"jku\":\"http://evil.com/jwks.json\"}"
+    },
+    {
+      "name": "X.509 URL (x5u) SSRF",
+      "description": "The 'x5u' header is a URL to an X.509 certificate. Unchecked fetching can also cause SSRF:contentReference[oaicite:7]{index=7}. Send a token with 'x5u' pointing to a malicious URL to check if the server loads it.",
+      "payload": "{\"alg\":\"RSA-OAEP\",\"enc\":\"A256GCM\",\"x5u\":\"http://evil.com/cert.pem\"}"
+    },
+    {
+      "name": "KID header injection",
+      "description": "The 'kid' header is used for key lookup. If used unsafely (e.g. as a file path), it can enable attacks:contentReference[oaicite:8]{index=8}. For example, set 'kid':'../../../../../../dev/null' or include shell syntax to test path traversal or command injection in key resolution.",
+      "payload": "{\"alg\":\"RSA-OAEP\",\"enc\":\"A256GCM\",\"kid\":\"../../../../../../dev/null\"}"
+    },
+    {
+      "name": "JWE-JWS confusion (sign/encrypt)",
+      "description": "If a system uses the same key for JWS and JWE, an attacker can confuse them:contentReference[oaicite:9]{index=9}. For example, encrypt a JWE using the public key normally used for signing. Send it to the server expecting a signed token to see if it is incorrectly accepted.",
+      "payload": ""
+    },
+    {
+      "name": "Nested JWE with inner JWS",
+      "description": "A JWE might contain a nested JWS inside. Even after decryption, the inner JWS must have its signature verified:contentReference[oaicite:10]{index=10}. Test by creating a JWE whose plaintext is a signed JWT with an invalid signature. The server should reject the token due to the bad signature.",
+      "payload": ""
+    },
+    {
+      "name": "Token replay (missing nonce/exp)",
+      "description": "Without proper replay protection ('exp','jti', or nonce), a valid JWE can be reused:contentReference[oaicite:11]{index=11}. Try resending a previously valid (or expired) JWE to ensure the server rejects replayed tokens.",
+      "payload": ""
     }
   ]
 }
