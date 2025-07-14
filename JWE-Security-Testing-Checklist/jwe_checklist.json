@@ -1,0 +1,43 @@
+{
+  "test_cases": [
+    {
+      "name": "Algorithm Confusion - alg none",
+      "description": "Attempt using 'alg: none' in JWE header. Should be rejected outright.",
+      "payload": "{ \"alg\": \"none\", \"enc\": \"A128GCM\" }"
+    },
+    {
+      "name": "Invalid alg/enc Value",
+      "description": "Supply a non-existent algorithm like 'A512XYZ' and check how the parser handles it.",
+      "payload": "{ \"alg\": \"A512XYZ\", \"enc\": \"A128GCM\" }"
+    },
+    {
+      "name": "Key Reuse Check",
+      "description": "Verify if the same key is used for both signing and encryption operations."
+    },
+    {
+      "name": "CBC Padding Oracle",
+      "description": "If using CBC, manipulate ciphertext to test for padding error response differences."
+    },
+    {
+      "name": "Compression Oracle",
+      "description": "If 'zip' is enabled, observe whether token compression reveals sensitive data."
+    },
+    {
+      "name": "JWE-JWS Confusion",
+      "description": "Submit encrypted tokens where signed ones are expected (or vice versa)."
+    },
+    {
+      "name": "Header Injection - 'kid' Manipulation",
+      "description": "Manipulate the 'kid' to force server to fetch attacker-controlled keys.",
+      "payload": "{ \"kid\": \"http://attacker.com/evil.jwk\" }"
+    },
+    {
+      "name": "Malformed Token - Truncated",
+      "description": "Send a token with only 3 parts instead of 5."
+    },
+    {
+      "name": "Base64URL Corruption",
+      "description": "Insert invalid characters in base64url fields and analyze behavior."
+    }
+  ]
+}
