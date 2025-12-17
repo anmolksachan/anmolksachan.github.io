@@ -2,875 +2,262 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Anmol K Sachan - Portfolio</title>
-    <meta name="description" content="Anmol K Sachan's official portfolio showcasing projects in web development, machine learning, and data science. Explore my work and skills.">
-    <meta name="keywords" content="Anmol K Sachan, portfolio, web development, machine learning, data science, projects, skills, HTML, CSS, JavaScript, Python, React, AI">
-    <meta name="author" content="Anmol K Sachan">
-    
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://anmolksachan.github.io/">
-    <meta property="og:title" content="Anmol K Sachan - Portfolio">
-    <meta property="og:description" content="Anmol K Sachan's official portfolio showcasing projects in web development, machine learning, and data science. Explore my work and skills.">
-    <meta property="og:image" content="https://anmolksachan.github.io/images/social-share-image.jpg"> <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://anmolksachan.github.io/">
-    <meta property="twitter:title" content="Anmol K Sachan - Portfolio">
-    <meta property="twitter:description" content="Anmol K Sachan's official portfolio showcasing projects in web development, machine learning, and data science. Explore my work and skills.">
-    <meta property="twitter:image" content="https://anmolksachan.github.io/images/social-share-image.jpg"> <link rel="canonical" href="https://anmolksachan.github.io/">
-
-    <link rel="icon" type="image/png" href="https://anmolksachan.github.io/images/favicon.png"> </head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    <title>Anmol K Sachan | NetHunter Shell</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* Global Styles */
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background: #0d0d0d;
-            color: #00ff99;
-            font-family: 'Fira Code', monospace;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden; /* Main body overflow hidden to prevent double scrollbars */
-            -webkit-overflow-scrolling: touch;
-            font-size: clamp(12px, 3.5vw, 16px);
+        :root {
+            --bg: #0a0a0c;
+            --surface: #121217;
+            --green: #00ff99;
+            --cyan: #00ffff;
+            --red: #ff3e3e;
+            --text-dim: #888ec8;
+            --text-main: #d1d1d1;
         }
 
-        a {
-            color: #00ffff;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-
-        /* --- Pre-Boot Logo Screen --- */
-        .pre-boot-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1001;
-            opacity: 1;
-            transition: opacity 0.5s ease-out;
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background: var(--bg); color: var(--green);
+            font-family: 'Fira Code', monospace; overflow: hidden;
         }
 
-        .pre-boot-screen img {
-            width: 50vw;
-            max-width: 250px;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+        /* Screen Transitions */
+        .screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; transition: opacity 0.8s ease;
+            z-index: 10;
+        }
+        .hidden { opacity: 0; pointer-events: none; visibility: hidden; }
+
+        /* Pre-Boot Splash */
+        #splash { background: #000; justify-content: center; align-items: center; z-index: 1000; }
+        #splash img { width: 70vw; max-width: 320px; filter: drop-shadow(0 0 20px var(--green)); }
+
+        /* Boot Sequence */
+        #boot { background: var(--bg); padding: 20px; justify-content: center; }
+        .boot-log { 
+            list-style: none; padding: 0; margin: 0 auto; width: 90%; max-width: 500px;
+            font-size: 0.8rem; color: var(--text-dim); height: 200px; overflow: hidden;
+        }
+        .boot-log li { margin-bottom: 5px; }
+        .boot-log li::before { content: "[ OK ] "; color: var(--green); }
+        .progress-container { width: 90%; max-width: 500px; margin: 20px auto; height: 2px; background: #222; }
+        #progress-bar { height: 100%; width: 0%; background: var(--cyan); transition: width 0.1s; }
+
+        /* Main Terminal */
+        #terminal-container { background: var(--bg); }
+        .term-header {
+            padding: 10px 15px; background: var(--surface); border-bottom: 1px solid #222;
+            font-size: 0.75rem; color: var(--cyan); display: flex; justify-content: space-between;
+        }
+        .term-body {
+            flex: 1; overflow-y: auto; padding: 15px; line-height: 1.6;
+            font-size: 14px; word-wrap: break-word;
         }
 
-        .pre-boot-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-
-        /* --- Main Boot Screen Section --- */
-        .boot-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-            color: #eee;
-            font-size: 0.9em;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-            user-select: none;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .boot-screen.active {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        .boot-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .boot-screen img {
-            width: 35vw;
-            max-width: 180px;
-            filter: drop-shadow(0 0 10px #00ff99);
-            margin-bottom: 20px;
-            animation: pulse 1.5s infinite alternate;
-        }
-
-        @keyframes pulse {
-            from {
-                transform: scale(1);
-                filter: drop-shadow(0 0 10px #00ff99);
-            }
-            to {
-                transform: scale(1.05);
-                filter: drop_shadow(0 0 18px #00ff99);
-            }
-        }
-
-        .boot-messages {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            text-align: left;
-            width: 80%;
-            max-width: 450px;
-            color: #bbb;
-            font-size: 1.05em;
-            overflow: hidden;
-        }
-
-        .boot-messages li {
-            margin-bottom: 8px;
-            white-space: nowrap;
-            opacity: 0;
-            transform: translateY(10px);
-            animation: fadeInMessage 0.3s forwards;
-            animation-delay: var(--delay);
-        }
-
-        @keyframes fadeInMessage {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .boot-messages li::before {
-            content: "[ ";
-            color: #00ff99;
-        }
-
-        .boot-messages li::after {
-            content: " ]";
-            color: #00ff99;
-        }
-
-        .boot-messages li.success::after {
-            content: " OK ]";
-            color: #00ff99;
-        }
-
-        .boot-messages li.fail::after {
-            content: " FAIL ]";
-            color: #ff0000;
-        }
-
-        .boot-messages .progress-bar {
-            width: 100%;
-            height: 4px;
-            background-color: #333;
-            margin-top: 20px;
-            border-radius: 2px;
-            overflow: hidden;
-            box-shadow: 0 0 5px rgba(0, 255, 153, 0.3);
-        }
-
-        .boot-messages .progress-bar-fill {
-            height: 100%;
-            width: 0%;
-            background-color: #00ff99;
-            transition: width 0.3s ease-out;
-        }
-
-        /* The boot-time on the boot screen is kept as is for its initial role */
-        .boot-time {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #888;
-            font-size: 0.8em;
-            letter-spacing: 0.5px;
-        }
-
-        /* --- Terminal Section --- */
-        .terminal {
-            flex: 1;
-            width: 100%;
-            box-sizing: border-box;
-            padding: 2vh 2vw;
-            white-space: pre-wrap;
-            overflow-y: scroll; /* Changed from auto to scroll to try and force visibility */
-            line-height: 1.5;
-            display: none;
-            overflow-wrap: break-word;
-            word-wrap: break-word;
-            opacity: 0;
-            transition: opacity 0.8s ease-in;
-            position: relative; /* For positioning controls */
-            min-height: 0;
-
-            /* New flex properties for its children */
-            display: flex; /* Make terminal a flex container */
-            flex-direction: column; /* Stack children vertically */
-        }
-
-        .terminal.active {
-            opacity: 1;
-        }
-
-        #terminal-header {
-            /* Style for the date/time header if needed */
-            margin-bottom: 1vh; /* Space between header and typed content */
-            flex-shrink: 0; /* Prevent it from shrinking */
-        }
-
-        #typed-content {
-            flex: 1; /* Make typed content fill remaining space */
-        }
-
+        /* Command Styling */
+        .prompt { color: var(--cyan); font-weight: bold; margin-top: 15px; }
+        .cmd-line { color: #fff; margin-bottom: 5px; }
+        .output { color: var(--text-main); display: block; margin-bottom: 10px; padding-left: 5px; border-left: 1px solid #222; }
+        .highlight { color: var(--green); }
+        a { color: var(--cyan); text-decoration: none; border-bottom: 1px dashed var(--cyan); }
+        
         .cursor {
-            display: inline-block;
-            width: 0.5em;
-            height: 1.1em;
-            background: #00ff99;
-            animation: blink 1s step-start infinite;
-            vertical-align: text-bottom;
+            display: inline-block; width: 8px; height: 15px;
+            background: var(--green); animation: blink 1s step-end infinite;
+            vertical-align: middle; margin-left: 5px;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Controls */
+        .fab-menu {
+            position: fixed; top: 15px; right: 15px; width: 45px; height: 45px;
+            background: rgba(0, 255, 153, 0.1); border: 1px solid var(--green);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            z-index: 100; color: var(--green); cursor: pointer; backdrop-filter: blur(5px);
         }
 
-        @keyframes blink {
-            50% { opacity: 0; }
+        .scroll-btns {
+            position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .s-btn {
+            width: 40px; height: 40px; background: var(--surface); border: 1px solid #333;
+            color: var(--text-dim); border-radius: 5px; display: flex; align-items: center; justify-content: center;
         }
 
-        /* --- Custom Scrollbar Styling (for WebKit browsers like Chrome/Safari) --- */
-        .terminal::-webkit-scrollbar {
-            width: 15px !important; /* Make it wider for visibility */
-            background-color: red !important; /* Make track color obvious for testing */
+        /* Overlay */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 200; display: none;
+            align-items: center; justify-content: center;
         }
-
-        .terminal::-webkit-scrollbar-thumb {
-            background-color: blue !important; /* Make thumb color obvious for testing */
-            border-radius: 4px !important; /* Rounded corners for the thumb */
-            border: 1px solid darkblue !important; /* Slightly darker border */
+        .menu-box {
+            background: var(--surface); border: 1px solid var(--green); padding: 30px;
+            width: 85%; max-width: 320px; text-align: center; border-radius: 8px;
         }
-
-        .terminal::-webkit-scrollbar-thumb:hover {
-            background-color: lightblue !important;
+        .menu-box button {
+            width: 100%; padding: 12px; margin: 10px 0; background: transparent;
+            border: 1px solid var(--cyan); color: var(--cyan); font-family: 'Fira Code';
         }
-
-        /* For Firefox (different properties) */
-        .terminal {
-            scrollbar-width: auto !important; /* "auto", "thin", or "none" - trying auto */
-            scrollbar-color: blue red !important; /* thumb color track color */
-        }
-
-
-        /* --- Mobile Controls --- */
-        .mobile-menu-button {
-            display: none; /* Hidden by default, shown on smaller screens via media query */
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 100; /* Above terminal content */
-            background: rgba(0, 255, 153, 0.2); /* Semi-transparent Kali green */
-            border: 1px solid #00ff99;
-            color: #00ff99;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%; /* Circle shape */
-            font-size: 1.5em;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 255, 153, 0.5); /* Glowing effect */
-            backdrop-filter: blur(5px); /* Frosted glass effect */
-            -webkit-backdrop-filter: blur(5px);
-            transition: background 0.3s, box-shadow 0.3s;
-        }
-
-        .mobile-menu-button:hover {
-            background: rgba(0, 255, 153, 0.4);
-            box-shadow: 0 0 20px rgba(0, 255, 153, 0.7);
-        }
-
-        .mobile-menu-overlay {
-            display: none; /* Hidden by default */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.8); /* Dark overlay */
-            z-index: 99; /* Below the button, above terminal */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-        }
-
-        .mobile-menu-overlay.active {
-            opacity: 1;
-            display: flex;
-        }
-
-        .overlay-content {
-            background: #1a1a1a; /* Darker background for menu */
-            border: 1px solid #00ff99;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 25px rgba(0, 255, 153, 0.6);
-            text-align: center;
-            max-width: 90vw;
-            min-width: 250px;
-            transform: translateY(-20px);
-            opacity: 0;
-            animation: overlaySlideIn 0.3s forwards;
-        }
-
-        @keyframes overlaySlideIn {
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .overlay-content h3 {
-            color: #00ff99;
-            margin-top: 0;
-            margin-bottom: 20px;
-            text-shadow: 0 0 8px rgba(0, 255, 153, 0.4);
-        }
-
-        .overlay-content ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .overlay-content ul li {
-            margin-bottom: 15px;
-        }
-
-        .overlay-content button {
-            background: #005030; /* Darker green */
-            color: #00ff99;
-            border: 1px solid #00ff99;
-            padding: 12px 25px;
-            font-family: 'Fira Code', monospace;
-            font-size: 1.1em;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
-            width: 100%;
-        }
-
-        .overlay-content button:hover {
-            background: #007f4a;
-            color: #fff;
-            box-shadow: 0 0 10px rgba(0, 255, 153, 0.8);
-        }
-
-        .overlay-close {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            color: #00ffff;
-            font-size: 1.8em;
-            cursor: pointer;
-            font-weight: bold;
-            transition: color 0.2s;
-        }
-
-        .overlay-close:hover {
-            color: #ff0000;
-        }
-
-        /* --- Scroll Controls --- */
-        .scroll-controls {
-            position: fixed; /* Changed from absolute to fixed */
-            bottom: 20px;
-            right: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 100;
-            display: none; /* Hidden by default */
-        }
-
-        .terminal.active .scroll-controls {
-            display: flex; /* Show when terminal is active */
-        }
-
-        .scroll-button {
-            background: rgba(0, 255, 153, 0.2);
-            border: 1px solid #00ff99;
-            color: #00ff99;
-            width: 45px; /* Slightly larger */
-            height: 45px; /* Slightly larger */
-            border-radius: 50%;
-            font-size: 1.4em; /* Larger icon */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(0, 255, 153, 0.3);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            transition: background 0.3s, box-shadow 0.3s;
-        }
-
-        .scroll-button:hover {
-            background: rgba(0, 255, 153, 0.4);
-            box-shadow: 0 0 15px rgba(0, 255, 153, 0.5);
-        }
-
-
-        /* Media Queries for Responsiveness */
-        @media (max-width: 768px) {
-            .mobile-menu-button {
-                display: flex; /* Show on smaller screens */
-            }
-            .overlay-content {
-                width: 85vw; /* More width on smaller screens */
-            }
-            .scroll-controls {
-                bottom: 80px; /* Adjust position for mobile, below existing button */
-                right: 20px;
-            }
-        }
-        @media (min-width: 769px) {
-            .mobile-menu-button {
-                display: none; /* Hide on larger screens */
-            }
-            .scroll-controls {
-                bottom: 20px; /* Default desktop position */
-                right: 20px;
-            }
-        }
-
     </style>
 </head>
 <body>
-    <div class="pre-boot-screen" id="pre-boot-screen">
-        <img src="https://www.kali.org/blog/kali-linux-2020-4-release/images/boot-kali.gif" alt="Kali Linux Boot Logo">
+
+    <div id="splash" class="screen">
+        <img src="https://www.kali.org/blog/kali-linux-2020-4-release/images/boot-kali.gif" alt="Kali Logo">
     </div>
 
-    <div class="boot-screen" id="boot-screen">
-        <ul class="boot-messages" id="boot-messages"></ul>
-        <div class="boot-messages progress-bar">
-            <div class="progress-bar-fill" id="progress-bar-fill"></div>
-        </div>
-        <div class="boot-time" id="boot-time"></div>
+    <div id="boot" class="screen hidden">
+        <ul class="boot-log" id="boot-log"></ul>
+        <div class="progress-container"><div id="progress-bar"></div></div>
     </div>
 
-    <div class="terminal" id="terminal">
-        <div class="mobile-menu-button" id="mobileMenuButton">☰</div>
-        <div id="terminal-header">
-            <span id="current-terminal-date-time"></span>
+    <div id="terminal-container" class="screen hidden">
+        <div class="term-header">
+            <span id="term-status">● nethunter-session</span>
+            <span id="term-clock">00:00:00</span>
         </div>
-        <div id="typed-content"></div>
+        <div class="fab-menu" onclick="toggleMenu()">☰</div>
+        
+        <div class="term-body" id="term-body">
+            <div id="typewriter"></div>
+            <div id="anchor"></div>
+        </div>
 
-        <div class="scroll-controls">
-            <button id="scrollUpButton" class="scroll-button">⬆</button>
-            <button id="scrollDownButton" class="scroll-button">⬇</button>
+        <div class="scroll-btns">
+            <div class="s-btn" onclick="termScroll(-150)">▲</div>
+            <div class="s-btn" onclick="termScroll(150)">▼</div>
         </div>
     </div>
 
-    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
-        <div class="overlay-content">
-            <span class="overlay-close" id="overlayClose">&times;</span>
-            <h3>System Menu</h3>
-            <ul>
-                <li><button id="overlayRebootButton">Reboot System</button></li>
-                <li><button id="overlayAboutButton">About Anmol K Sachan</button></li>
-                <li><button id="overlayExitButton">Exit Terminal</button></li>
-            </ul>
+    <div id="overlay" class="overlay" onclick="toggleMenu()">
+        <div class="menu-box" onclick="event.stopPropagation()">
+            <h3 style="color:var(--green); margin-top:0;">SYSTEM OPTIONS</h3>
+            <button onclick="location.reload()">REBOOT SHELL</button>
+            <button onclick="toggleMenu()">RETURN TO SESSION</button>
+            <button onclick="alert('Session logged out.')">LOGOUT</button>
         </div>
     </div>
 
     <script>
-        const preBootScreen = document.getElementById("pre-boot-screen");
-        const terminal = document.getElementById("terminal");
-        const bootScreen = document.getElementById("boot-screen");
-        const bootMessages = document.getElementById("boot-messages");
-        const bootTime = document.getElementById("boot-time"); // For the initial boot screen
-        const progressBarFill = document.getElementById("progress-bar-fill");
-        const typedContentDiv = document.getElementById("typed-content"); // For dynamically typed content
-
-        // Mobile UI elements
-        const mobileMenuButton = document.getElementById("mobileMenuButton");
-        const mobileMenuOverlay = document.getElementById("mobileMenuOverlay");
-        const overlayClose = document.getElementById("overlayClose");
-        const overlayRebootButton = document.getElementById("overlayRebootButton");
-        const overlayAboutButton = document.getElementById("overlayAboutButton");
-        const overlayExitButton = document.getElementById("overlayExitButton");
-
-        // Scroll control buttons
-        const scrollUpButton = document.getElementById('scrollUpButton');
-        const scrollDownButton = document.getElementById('scrollDownButton');
-
-        const terminalContent = [
-            "┌──(anmol㉿nethunter)-[~/profile]",
-            "└─$ cat about_me.txt",
-            "👋 Hey there, I'm Anmol K Sachan (FR13ND0x7F)",
-            "I’m a seasoned Security Researcher, Penetration Tester, and Bug Bounty Hunter with a passion for uncovering vulnerabilities and securing systems.",
-            "My approach to hacking is rooted in curiosity, creativity, and persistence. I believe that security isn’t just about mastering tools—it’s about understanding systems, thinking like an attacker, and crafting solutions that make a difference.\\n",
-
-            "┌──(anmol㉿nethunter)-[~/about_details]",
-            "└─$ cat details.txt",
-            "🌟 About Me:",
-            "- 🔍 Skilled Penetration Tester: Specializing in Web, Mobile, API, AI/ML, and Network Security.",
-            "- 🛡️ Security Advocate: Passionate about ethical hacking, vulnerability research, and contributing to a safer digital world.",
-            "- 💻 Builder & Developer: Crafting custom exploits, tools, and automation scripts to solve complex problems.",
-            "- 🧠 Lifelong Learner: Always exploring new technologies, techniques, and methodologies to stay ahead in the ever-evolving cybersecurity landscape.\\n",
-
-            "┌──(anmol㉿nethunter)-[~/achievements]",
-            "└─$ cat recognitions.txt",
-            "🏆 Achievements & Recognitions:",
-            "- Reported critical vulnerabilities to organizations like Nokia, Federal Communications Commission (USA Gov), Mediatek, Healthy Supplies, and Wageningen University & Research.",
-            "- Acknowledged with Hall of Fame (HOF) entries and official recognition letters for responsible disclosures.",
-            "- Identified multiple CVEs, including CVE-2021-27539 and CVE-2022-33041.\\n",
-
-            "┌──(anmol㉿nethunter)-[~/cves]",
-            "└─$ ls -l CVEs_Reported",
-            "📜 CVEs Reported by Me:",
-            "- CVE-2021-27539",
-            "- CVE-2022-33041",
-            "- CVE-2021-27295",
-            "- CVE-2021-27296",
-            "- CVE-2021-27190",
-            "- And more!\\n",
-
-            "┌──(anmol㉿nethunter)-[~/skills]",
-            "└─$ cat my_skillset.sh",
-            "🛠️ My Skillset:",
-            "✔️ Web Application Penetration Testing",
-            "✔️ Mobile Application Penettration Testing",
-            "✔️ API Penetration Testing",
-            "✔️ AI/ML Penetration Testing",
-            "✔️ Network Pentesting",
-            "✔️ Attack Surface Management (ASM)",
-            "✔️ Ethical Hacking & Red Team Operations",
-            "✔️ CTFs & Capture The Flag Challenges",
-            "✔️ OSINT (Open Source Intelligence)",
-            "✔️ Thick Client Pentesting",
-            "✔️ Reverse Engineering",
-            "✔️ Source Code Review",
-            "✔️ Video Editing & Content Creation",
-            "✔️ Community Building\\n",
-
-            "⚙️ Proficient Security Tools:",
-            "- Metasploit, Burp Suite, Nmap, SQLMap, OWASP ZAP",
-            "- Wireshark, tcpdump, John the Ripper, Hydra, DirBuster, Nikto",
-            "- Postman, Nessus",
-            "- Custom scripts & frameworks\\n",
-
-            "┌──(anmol㉿nethunter)-[~/tools]",
-            "└─$ ./list_community_tools.sh",
-            "🚀 Tools I’ve Built for the Community:",
-            "- The Time Machine (★312): <a href='https://github.com/anmolksachan/TheTimeMachine' target='_blank'>Recon leveraging Wayback Machine</a>",
-            "- ThreatTracer: <a href='https://github.com/anmolksachan/ThreatTracer' target='_blank'>CVE checker & exploit enumerator</a>",
-            "- WayBackLister: <a href='https://github.com/anmolksachan/wayBackLister' target='_blank'>Directory listing from archived URLs</a>",
-            "- WayBackup Finder: <a href='https://github.com/anmolksachan/WayBackupFinder' target='_blank'>Backup file & sensitive data leaks</a>",
-            "- CVE Seeker: <a href='https://github.com/anmolksachan/CVESeeker' target='_blank'>Search for CVEs and related exploits</a>",
-            "- CrossInjector: <a href='https://github.com/anmolksachan/CrossInjector' target='_blank'>Automating XSS payload testing</a>",
-            "- What The Cipher: <a href='https://github.com/anmolksachan/WhatTheCipher' target='_blank'>Cipher analysis for CTF challenges</a>",
-            "- Project Dork: <a href='https://anmolksachan.github.io/ProjectDork/' target='_blank'>Curated Google Dorks for OSINT</a>",
-            "- JIRA\"YA: <a href='https://github.com/anmolksachan/JIRAya' target='_blank'>JIRA vulnerability analyzer</a>",
-            "- DKIM Lookup: <a href='https://github.com/anmolksachan/dkim-lookup' target='_blank'>Verify DKIM records for email security</a>\\n",
-            "Note: These tools are intended for educational purposes only. Use responsibly and within authorized boundaries.\\n",
-
-            "┌──(anmol㉿nethunter)-[~/research]",
-            "└─$ cat published_research.txt",
-            "📄 Published Research:",
-            "- \"AI: Perilous Threat to Both Physical and Cyber Worlds\"",
-            "  Published in the <a href='https://www.jetir.org/view?paper=JETIRDQ06013' target='_blank'>Journal of Emerging Technologies and Innovative Research (JETIR)</a>.",
-            "  Explores the dual-use nature of AI in cybersecurity and its implications for both defenders and attackers.\\n",
-
-            "┌──(anmol㉿nethunter)-[~/competitions]",
-            "└─$ cat ctf_summary.txt",
-            "🏅 CTF & Competitions:",
-            "- Member of Warlock_RootX CTF Team, ranked 2nd in India until 2021.",
-            "- Top performances in Defcon CTF, HACK-A-SAT, and Amrita InCTF.\\n",
-
-            "┌──(anmol㉿nethunter)-[~/speaking]",
-            "└─$ cat conferences.txt",
-            "🎤 Conferences & Public Speaking:",
-            "- Attended Nullcon conferences via Bug Bounty Scholarship and CFP participation.\\n",
-
-            "┌──(anmol㉿nethunter)-[~/socials]",
-            "└─$ echo Connect With Me",
-            "🌍 Connect With Me:",
-            "Twitter: <a href='https://twitter.com/FR13ND0x7f' target='_blank'>Follow for insights, tools, and updates</a>",
-            "LinkedIn: <a href='https://www.linkedin.com/in/anmolksachan/' target='_blank'>Connect professionally</a>",
-            "Blog: <a href='https://anmolksachan.github.io/blogs/' target='_blank'>Read articles on cybersecurity, tools, and practices</a>",
-            "Instagram: <a href='https://instagram.com/the_guy_that_hacks' target='_blank'>Sneak peeks into my hacking journey</a>\\n",
-
-            "┌──(anmol㉿nethunter)-[~/next_steps]",
-            "└─$ cat whats_next.md",
-            "🎯 What’s Next?",
-            "- 🔭 Currently working on advanced AI-driven security tools and research.",
-            "- 🌱 Learning more about cloud security, blockchain vulnerabilities, and quantum cryptography.",
-            "- 👯 Looking to collaborate on open-source security projects and tools.",
-            "- 🤔 Seeking feedback and ideas for improving existing tools.",
-            "- 💬 Feel free to ask me about anything related to cybersecurity, tools, or research!",
-            "- 📫 Reach out via <a href='https://twitter.com/FR13ND0x7f' target='_blank'>Twitter DMs</a> or <a href='https://www.linkedin.com/in/anmolksachan/' target='_blank'>LinkedIn</a>.\\n",
-
-            "┌──(anmol㉿nethunter)-[~/misc]",
-            "└─$ cat fun_facts.txt",
-            "⚡ Fun Fact:",
-            "I once spent 48 hours straight debugging a single line of code—and yes, it was worth it! 😄\\n",
-
-            "┌──(anmol㉿nethunter)-[~/licensing]",
-            "└─$ cat license.txt",
-            "📜 License:",
-            "All tools and content are released under the MIT License unless otherwise specified.",
-            "Contributions are welcome—fork, modify—and submit pull requests to help improve these projects!\\n",
-
-            "\\n[✓] Portfolio loaded successfully. Press ESC or tap the '☰' icon for options. Have a nice day!"
+        const bootTasks = [
+            "Initializing Linux kernel 5.10.0-nethunter...",
+            "Checking filesystem quotas... done",
+            "Starting system logging daemon...",
+            "Loading cryptographic modules (AES-NI)...",
+            "Activating network interfaces (wlan0)...",
+            "Mounting /dev/mapper/kali-root on /...",
+            "Checking for authorized keys...",
+            "Starting FR13ND0x7F Environment..."
         ];
 
-        const bootSequence = [
-            "Initializing kernel modules...",
-            "Establishing secure connections...",
-            "Scanning for system vulnerabilities...",
-            "Loading cryptographic libraries...",
-            "Allocating system resources...",
-            "Starting network daemon...",
-            "Compiling environment variables...",
-            "Authenticating user profile...",
-            "Synchronizing data streams...",
-            "Activating display protocols...",
-            "System check complete."
+        const shellData = [
+            { cmd: "cat about_me.txt", prompt: "┌──(anmol㉿nethunter)-[~/profile]", output: "👋 Hey there, I'm <span class='highlight'>Anmol K Sachan (FR13ND0x7F)</span>.<br>I’m a seasoned Security Researcher, Penetration Tester, and Bug Bounty Hunter. My approach is rooted in curiosity and persistence. I believe security is about thinking like an attacker to craft solutions that make a difference." },
+            { cmd: "cat details.txt", prompt: "┌──(anmol㉿nethunter)-[~/about_details]", output: "🌟 <span class='highlight'>Status:</span> Sr. Security Consultant @ NetSPI<br>🛡️ <span class='highlight'>Specializing:</span> Web, Mobile, API, AI/ML, and Network Security.<br>💻 <span class='highlight'>Focus:</span> Crafting custom exploits and automation scripts.<br>🧠 <span class='highlight'>Mindset:</span> Always exploring new methodologies to stay ahead." },
+            { cmd: "ls -l CVEs_Reported", prompt: "┌──(anmol㉿nethunter)-[~/cves]", output: "🏆 <span class='highlight'>Confirmed Vulnerabilities:</span><br>- CVE-2021-27539<br>- CVE-2022-33041<br>- CVE-2021-27295<br>- CVE-2021-27296<br>- CVE-2021-27190<br>Acknowledged by <span class='highlight'>Nokia, FCC (USA Gov), Mediatek, Healthy Supplies, Wageningen University and more</span>." },
+            { cmd: "ls -la appearances/", prompt: "┌──(anmol㉿nethunter)-[~/events]", output: "🎤 <span class='highlight'>Speaking & Showcase:</span><br>• <span class='highlight'>Defcon 33 (2025)</span> - Demo Labs, Las Vegas, NV<br>• <span class='highlight'>BSides Mumbai (2025)</span> - Tools Arsenal Showcase<br>• <span class='highlight'>OSINT Conference (2025)</span> - Speaker/Panelist<br>• <span class='highlight'>Null Bangalore × OWASP (2025)</span> - Monthly Meetup<br>• <span class='highlight'>BSides Delaware (2025)</span> - Conference Track<br>• <span class='highlight'>BSides Agra (2025)</span> - Conference Speaker<br>• <span class='highlight'>Wild West Hackin' Fest (2026)</span> - Denver, CO<br>• <span class='highlight'>Defcon MADURAI</span> - Chapter Speaker" },
+            { cmd: "./list_community_tools.sh", prompt: "┌──(anmol㉿nethunter)-[~/tools]", output: "🚀 <span class='highlight'>Open Source Projects:</span><br>• <a href='https://github.com/anmolksachan/TheTimeMachine' target='_blank'>The Time Machine</a> (Weaponizing WaybackUrls for Recon)<br>• <a href='https://github.com/anmolksachan/ThreatTracer' target='_blank'>ThreatTracer</a> (CVE Checker & Exploit Enumerator)<br>• <a href='https://github.com/anmolksachan/CVESeeker' target='_blank'>CVE Seeker</a> (Passive Asset Scanning)<br>• <a href='https://github.com/anmolksachan/WayBackLister' target='_blank'>WayBackLister</a> (Directory Listing Recovery)<br>• <a href='https://github.com/anmolksachan/WayBackupFinder' target='_blank'>WayBackup Finder</a> (Sensitive Data Identification)<br>• <a href='https://github.com/anmolksachan/JIRAya' target='_blank'>JIRA'YA</a> (JIRA Vulnerability Analyzer)<br>• <a href='https://github.com/anmolksachan/CrossInjector' target='_blank'>CrossInjector</a> (Automated XSS Detection)<br>• <a href='https://anmolksachan.github.io/ProjectDork/' target='_blank'>Project Dork</a> (Advanced Google Dorks)" },
+            { cmd: "cat research.txt", prompt: "┌──(anmol㉿nethunter)-[~/research]", output: "📄 <span class='highlight'>Research:</span> 'AI: Perilous Threat to Both Physical and Cyber Worlds'<br>Published in <a href='https://www.jetir.org/view?paper=JETIRDQ06013' target='_blank'>JETIR Journal</a>. Explores dual-use AI in cybersecurity." },
+            { cmd: "echo $SOCIALS", prompt: "┌──(anmol㉿nethunter)-[~/socials]", output: "🌍 <span class='highlight'>Connect:</span><br>Twitter: <a href='https://twitter.com/FR13ND0x7f' target='_blank'>@FR13ND0x7f</a><br>LinkedIn: <a href='https://www.linkedin.com/in/anmolksachan/' target='_blank'>anmolksachan</a><br>GitHub: <a href='https://github.com/anmolksachan/' target='_blank'>anmolksachan</a><br>Blog: <a href='https://anmolksachan.medium.com/' target='_blank'>Security Write-ups (Medium)</a>" }
         ];
 
-        let bootMessageIndex = 0;
-        let bootInterval;
-        let timeInterval; // For boot screen time
-        let terminalTimeInterval; // For terminal time
+        async function init() {
+            // 1. Splash
+            await sleep(2500);
+            document.getElementById('splash').classList.add('hidden');
+            
+            // 2. Boot
+            document.getElementById('boot').classList.remove('hidden');
+            const log = document.getElementById('boot-log');
+            const bar = document.getElementById('progress-bar');
+            
+            for(let i=0; i<bootTasks.length; i++) {
+                let li = document.createElement('li');
+                li.textContent = bootTasks[i];
+                log.appendChild(li);
+                bar.style.width = ((i+1)/bootTasks.length)*100 + '%';
+                await sleep(200);
+            }
+            await sleep(600);
+            document.getElementById('boot').classList.add('hidden');
 
-        let currentTypingLineIndex = 0;
-        const typingSpeed = 30; // Milliseconds delay between lines for typing effect
+            // 3. Shell
+            document.getElementById('terminal-container').classList.remove('hidden');
+            updateClock();
+            setInterval(updateClock, 1000);
+            runShell();
+        }
 
-        function updateBootScreenTime() {
+        async function runShell() {
+            const container = document.getElementById('typewriter');
+            for(const item of shellData) {
+                // Print Prompt
+                const p = document.createElement('div');
+                p.className = 'prompt';
+                p.textContent = item.prompt;
+                container.appendChild(p);
+
+                // Print Command
+                const c = document.createElement('div');
+                c.className = 'cmd-line';
+                c.textContent = '└─$ ';
+                const txt = document.createElement('span');
+                c.appendChild(txt);
+                container.appendChild(c);
+
+                for(let char of item.cmd) {
+                    txt.textContent += char;
+                    await sleep(30);
+                    autoScroll();
+                }
+
+                await sleep(400);
+
+                // Print Output
+                const o = document.createElement('div');
+                o.className = 'output';
+                o.innerHTML = item.output;
+                container.appendChild(o);
+                autoScroll();
+                await sleep(800);
+            }
+            
+            // Final Ready Signal
+            const final = document.createElement('div');
+            final.innerHTML = "<br><span class='highlight'>[✓] Portfolio fully loaded.</span> Session: Active <span class='cursor'></span>";
+            container.appendChild(final);
+        }
+
+        function autoScroll() {
+            const body = document.getElementById('term-body');
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function termScroll(val) {
+            document.getElementById('term-body').scrollBy({ top: val, behavior: 'smooth' });
+        }
+
+        function toggleMenu() {
+            const o = document.getElementById('overlay');
+            o.style.display = (o.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function updateClock() {
             const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            bootTime.textContent = `${hours}:${minutes}:${seconds}`;
+            document.getElementById('term-clock').textContent = now.toLocaleTimeString('en-GB');
         }
 
-        function updateTerminalDateTime() {
-            const now = new Date();
-            const optionsDate = { weekday: 'short', month: 'short', day: 'numeric' };
-            const formattedDate = now.toLocaleDateString('en-US', optionsDate);
+        function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
 
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            const formattedTime = `${hours}:${minutes}:${seconds} IST`;
-
-            const dateTimeString = `[ ${formattedDate} ${formattedTime} ]`;
-            document.getElementById('current-terminal-date-time').innerHTML = `<span style="color: #00ff99;">${dateTimeString}</span>\\n`;
-        }
-
-        function typeNextLine() {
-            if (currentTypingLineIndex < terminalContent.length) {
-                let line = terminalContent[currentTypingLineIndex];
-
-                const lineElement = document.createElement('div');
-                lineElement.innerHTML = line; // Use innerHTML to parse any HTML tags (like <a>)
-                typedContentDiv.appendChild(lineElement);
-
-                // Scroll the newly added line into view to keep content at the bottom
-                lineElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
-
-                currentTypingLineIndex++;
-                setTimeout(typeNextLine, typingSpeed); // Schedule the next line
-            } else {
-                // All lines typed, append the cursor at the very end
-                const cursorElement = document.createElement('span');
-                cursorElement.classList.add('cursor');
-                typedContentDiv.appendChild(cursorElement);
-
-                // Ensure cursor is visible at the very end after all content is added
-                cursorElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
-            }
-        }
-
-        function startTypingEffect() {
-            // Clear existing content in the *typed content div*
-            typedContentDiv.innerHTML = "";
-
-            // Set initial date/time and start updating it
-            updateTerminalDateTime();
-            if (terminalTimeInterval) clearInterval(terminalTimeInterval); // Clear any previous interval
-            terminalTimeInterval = setInterval(updateTerminalDateTime, 1000);
-
-            currentTypingLineIndex = 0; // Reset typing index
-            typeNextLine();
-        }
-
-        function runBootSequence() {
-            if (bootMessageIndex < bootSequence.length) {
-                const li = document.createElement('li');
-                li.textContent = bootSequence[bootMessageIndex];
-                li.classList.add('success');
-                li.style.setProperty('--delay', `${bootMessageIndex * 0.05}s`);
-                bootMessages.appendChild(li);
-                bootMessages.scrollTop = bootMessages.scrollHeight;
-
-                const progress = ((bootMessageIndex + 1) / bootSequence.length) * 100;
-                progressBarFill.style.width = `${progress}%`;
-
-                bootMessageIndex++;
-            } else {
-                clearInterval(bootInterval);
-                clearInterval(timeInterval); // Stop boot screen time update
-                setTimeout(() => {
-                    bootScreen.classList.add('hidden');
-                    setTimeout(() => {
-                        bootScreen.style.display = 'none';
-                        terminal.style.display = 'flex'; // Change to flex to enable column layout for its children
-                        terminal.classList.add('active');
-                        mobileMenuButton.style.display = 'flex'; // Show mobile menu button after terminal loads
-
-                        // Start the typing effect instead of setting innerHTML directly
-                        startTypingEffect();
-
-                    }, 1000);
-                }, 800);
-            }
-        }
-
-        function initializePortfolioDisplay() {
-            // Clear any active intervals on re-initialization
-            if (terminalTimeInterval) clearInterval(terminalTimeInterval);
-            if (bootInterval) clearInterval(bootInterval);
-            if (timeInterval) clearInterval(timeInterval);
-
-            // Hide mobile menu button during boot process
-            mobileMenuButton.style.display = 'none';
-            mobileMenuOverlay.classList.remove('active'); // Close overlay if open
-
-            preBootScreen.classList.remove('hidden');
-            preBootScreen.style.display = 'flex';
-
-            bootScreen.classList.remove('active');
-            bootScreen.classList.add('hidden');
-            bootScreen.style.display = 'none';
-            terminal.style.display = 'none';
-            terminal.classList.remove('active');
-
-            // Set up initial boot screen time
-            updateBootScreenTime();
-            timeInterval = setInterval(updateBootScreenTime, 1000);
-
-            // Duration of pre-boot logo (5.5 seconds) then fade out (0.5 seconds)
-            setTimeout(() => {
-                preBootScreen.classList.add('hidden');
-                setTimeout(() => {
-                    preBootScreen.style.display = 'none';
-                    bootScreen.classList.remove('hidden');
-                    bootScreen.classList.add('active');
-                    bootScreen.style.display = 'flex';
-
-                    bootMessages.innerHTML = '';
-                    bootMessageIndex = 0;
-                    progressBarFill.style.width = '0%';
-
-                    bootInterval = setInterval(runBootSequence, 200);
-                }, 500); // Duration of the pre-boot fade-out
-            }, 5500); // Total duration pre-boot logo is visible
-        }
-
-        // --- Event Listeners ---
-
-        // Start the process when the entire page is loaded
-        window.onload = initializePortfolioDisplay;
-
-        // Desktop Reboot functionality on Escape key press
-        document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape") {
-                initializePortfolioDisplay();
-            }
-        });
-
-        // Mobile Menu Button Toggle
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenuOverlay.classList.toggle('active');
-        });
-
-        // Close Overlay Button
-        overlayClose.addEventListener('click', () => {
-            mobileMenuOverlay.classList.remove('active');
-        });
-
-        // Overlay Reboot Button
-        overlayRebootButton.addEventListener('click', () => {
-            mobileMenuOverlay.classList.remove('active'); // Close overlay first
-            initializePortfolioDisplay();
-        });
-
-        // Example for other overlay buttons (you can expand these)
-        overlayAboutButton.addEventListener('click', () => {
-            alert("This button could navigate to a specific section or show a quick 'About' pop-up!");
-            mobileMenuOverlay.classList.remove('active');
-        });
-
-        overlayExitButton.addEventListener('click', () => {
-            alert("Terminal session terminated. Refresh the page to restart.");
-            mobileMenuOverlay.classList.remove('active');
-            terminal.classList.remove('active');
-            mobileMenuButton.style.display = 'none'; // Hide the button
-            clearInterval(bootInterval);
-            clearInterval(timeInterval);
-            clearInterval(terminalTimeInterval); // Stop terminal time update
-
-            setTimeout(() => {
-                terminal.style.display = 'none';
-                document.body.style.background = '#000'; // Go to black screen
-            }, 800);
-        });
-
-        // Close overlay if clicked outside content
-        mobileMenuOverlay.addEventListener('click', (e) => {
-            if (e.target === mobileMenuOverlay) {
-                mobileMenuOverlay.classList.remove('active');
-            }
-        });
-
-        // Scroll button event listeners
-        scrollUpButton.addEventListener('click', () => {
-            terminal.scrollBy({
-                top: -terminal.clientHeight * 0.2, // Scroll up by 20% of terminal height
-                behavior: 'smooth'
-            });
-        });
-
-        scrollDownButton.addEventListener('click', () => {
-            terminal.scrollBy({
-                top: terminal.clientHeight * 0.2, // Scroll down by 20% of terminal height
-                behavior: 'smooth'
-            });
-        });
-
+        window.onload = init;
     </script>
 </body>
 </html>
