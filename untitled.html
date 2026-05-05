@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gym Trainer Pro</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body {
+  background: radial-gradient(circle at top, #0f172a, #020617);
+}
+.glass {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.card { transition: 0.3s ease; }
+.card:hover { transform: translateY(-4px); }
+
+.chip {
+  background:#1e293b;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body class="text-white font-sans">
+
+<header class="p-4 sticky top-0 glass z-50">
+  <h1 class="text-lg font-semibold">🏋️ Gym Trainer</h1>
+  <p class="text-xs text-gray-400">Follow → Watch → Execute</p>
+</header>
+
+<!-- LANDING -->
+<div id="landing" class="p-4 grid grid-cols-2 gap-4"></div>
+
+<!-- WORKOUT -->
+<div id="workout" class="hidden p-4 space-y-6"></div>
+
+<!-- EXPLORER -->
+<div id="explorer" class="hidden p-4 space-y-4">
+  <button onclick="goHome()" class="text-blue-400 text-sm">← Back</button>
+  <h2 class="text-xl font-semibold">Explore Exercises</h2>
+
+  <div class="flex flex-wrap gap-2">
+    <div class="chip" onclick="loadExercises('chest')">Chest</div>
+    <div class="chip" onclick="loadExercises('back')">Back</div>
+    <div class="chip" onclick="loadExercises('leg')">Legs</div>
+    <div class="chip" onclick="loadExercises('shoulder')">Shoulders</div>
+    <div class="chip" onclick="loadExercises('biceps')">Biceps</div>
+    <div class="chip" onclick="loadExercises('triceps')">Triceps</div>
+    <div class="chip" onclick="loadExercises('core')">Core</div>
+    <div class="chip" onclick="loadExercises('full-body')">Full Body</div>
+  </div>
+
+  <input id="searchBox" placeholder="Search (e.g squat, curl)"
+    class="w-full p-2 rounded bg-slate-800 text-sm"/>
+
+  <button onclick="searchExercise()" 
+    class="bg-purple-600 px-3 py-2 rounded w-full">
+    🔍 Search
+  </button>
+
+  <iframe id="frame" class="w-full h-[70vh] rounded-xl border border-gray-700"></iframe>
+</div>
+
+<script>
+
+// ---------- BASE ----------
+const base = "https://fitnessprogramer.com/wp-content/uploads/2021/02/";
+
+function img(src){
+  return `<img src="${src}" 
+  onerror="this.onerror=null;this.src='${base}Push-Up.gif';"
+  class="rounded-xl w-full"/>`;
+}
+
+// ---------- DATA ----------
+const weekly = {
+Monday:{title:"Chest + Triceps",ex:[
+["Chest Press",base+"Chest-Press-Machine.gif","3x10","Push straight","Lock elbows","Control"],
+["Incline DB Press",base+"Incline-Dumbbell-Press.gif","3x10","Upper chest","Fast","Full stretch"],
+["Decline Pushup",base+"Push-Up.gif","3x12","Lower chest","Half reps","Full depth"],
+["Cable Fly",base+"Cable-Crossover.gif","3x12","Squeeze","Too much bend","Slow"],
+["Machine Fly",base+"Pec-Deck-Fly.gif","3x12","Chest squeeze","Fast","Pause"],
+["Pushdown",base+"Triceps-Pushdown.gif","3x12","Elbows fixed","Swing","Full extend"],
+["Overhead Extension",base+"Overhead-Triceps-Extension.gif","3x12","Stretch","Elbows wide","Control"],
+["Bench Dips",base+"Bench-Dips.gif","3x12","Lower slow","Shoulder strain","Control"]
+]},
+
+Tuesday:{title:"Back + Biceps",ex:[
+["Lat Pulldown",base+"Lat-Pulldown.gif","3x10","Elbows down","Leaning","Chest up"],
+["Close Grip Pulldown",base+"Close-Grip-Lat-Pulldown.gif","3x10","Lower lats","Swing","Control"],
+["Seated Row",base+"Seated-Cable-Row.gif","3x10","Pull waist","Rounded","Squeeze"],
+["Straight Arm",base+"Straight-Arm-Pulldown.gif","3x12","Arms straight","Bend","Feel lats"],
+["Face Pull",base+"Face-Pull.gif","3x12","Upper back","Fast","Control"],
+["DB Curl",base+"Dumbbell-Curl.gif","3x12","Control","Swing","Elbows tight"],
+["Hammer Curl",base+"Hammer-Curl.gif","3x12","Neutral","Fast","Slow"],
+["Preacher Curl",base+"Preacher-Curl.gif","3x12","Strict","Cheat","Full"]
+]},
+
+Wednesday:{title:"Legs",ex:[
+["Leg Press",base+"Leg-Press.gif","3x12","Heels push","Knees in","Depth"],
+["Squat",base+"Barbell-Squat.gif","3x10","Sit back","Knees in","Chest up"],
+["Leg Extension",base+"Leg-Extension.gif","3x12","Full extend","Fast","Pause"],
+["Leg Curl",base+"Lying-Leg-Curl.gif","3x12","Full curl","Half","Squeeze"],
+["Walking Lunges",base+"Walking-Lunges.gif","3x10","Balance","Knee over","Control"],
+["Calf Raise",base+"Calf-Raise.gif","3x15","Stretch","Bounce","Slow"],
+["Seated Calf Raise",base+"Seated-Calf-Raise.gif","3x15","Range","Fast","Pause"]
+]},
+
+Thursday:{title:"Shoulders + Core",ex:[
+["Shoulder Press",base+"Dumbbell-Shoulder-Press.gif","3x10","Vertical","Arch","Core"],
+["Arnold Press",base+"Arnold-Press.gif","3x10","Rotate","Fast","Control"],
+["Lateral Raise",base+"Lateral-Raise.gif","3x12","Height","Swing","Light"],
+["Front Raise",base+"Front-Raise.gif","3x12","Control","Swing","Slow"],
+["Rear Delt",base+"Rear-Delt-Fly.gif","3x12","Back squeeze","Momentum","Control"],
+["Plank",base+"Plank.gif","3x30s","Straight","Drop","Brace"],
+["Leg Raise",base+"Hanging-Leg-Raise.gif","3x12","Core","Swing","Control"],
+["Russian Twist",base+"Russian-Twist.gif","3x20","Rotate","Fast","Control"]
+]},
+
+Friday:{title:"Full Body",ex:[
+["Goblet Squat",base+"Goblet-Squat.gif","3x10","Chest up","Knees","Sit"],
+["Push Ups",base+"Push-Up.gif","3x12","Range","Sag","Tight"],
+["Lat Pulldown",base+"Lat-Pulldown.gif","3x12","Form","Heavy","Control"],
+["DB Row",base+"Dumbbell-Row.gif","3x10","Elbow back","Twist","Squeeze"],
+["Deadlift",base+"Barbell-Deadlift.gif","3x8","Hinge","Round","Tight"],
+["Plank Tap",base+"Plank-Shoulder-Tap.gif","3x20","Stable","Sway","Slow"],
+["Mountain Climber",base+"Mountain-Climber.gif","3x20","Core","Fast","Control"]
+]}
+};
+
+// ---------- HELPERS ----------
+function today(){
+  return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()];
+}
+
+// ---------- LANDING ----------
+function renderLanding(){
+  const el=document.getElementById("landing");
+  el.innerHTML="";
+  const t=today();
+
+  Object.keys(weekly).forEach(day=>{
+    const active=day===t;
+
+    const c=document.createElement("div");
+    c.className=`card glass p-4 rounded-xl cursor-pointer ${active?"border border-green-400":""}`;
+
+    c.innerHTML=`
+      <h2 class="font-semibold">${day}</h2>
+      <p class="text-xs text-gray-400">${weekly[day].title}</p>
+      ${active?'<span class="text-green-400 text-xs">Today</span>':""}
+    `;
+
+    c.onclick=()=>openWorkout(day);
+    el.appendChild(c);
+  });
+}
+
+// ---------- WORKOUT ----------
+function openWorkout(day){
+  document.getElementById("landing").classList.add("hidden");
+  const view=document.getElementById("workout");
+  view.classList.remove("hidden");
+
+  const data=weekly[day];
+
+  view.innerHTML=`
+    <button onclick="goHome()" class="text-blue-400 text-sm">← Back</button>
+    <h2 class="text-xl font-semibold">${day} — ${data.title}</h2>
+
+    <button onclick="openExplorerInline()" 
+    class="w-full mt-2 bg-purple-600 py-2 rounded-xl">
+      🔍 Explore More Exercises
+    </button>
+  `;
+
+  data.ex.forEach(ex=>{
+    const card=document.createElement("div");
+    card.className="card glass p-4 rounded-xl";
+
+    card.innerHTML=`
+      <h3 class="font-medium">${ex[0]}</h3>
+      <p class="text-xs text-gray-400">${ex[2]}</p>
+
+      ${img(ex[1])}
+
+      <div class="text-xs mt-2 space-y-1">
+        <div class="text-yellow-300">⚡ ${ex[3]}</div>
+        <div class="text-red-400">❌ ${ex[4]}</div>
+        <div class="text-green-400">💡 ${ex[5]}</div>
+      </div>
+    `;
+
+    view.appendChild(card);
+  });
+}
+
+// ---------- EXPLORER ----------
+function openExplorerInline(){
+  document.getElementById("landing").classList.add("hidden");
+  document.getElementById("workout").classList.add("hidden");
+  document.getElementById("explorer").classList.remove("hidden");
+
+  loadExercises("chest");
+}
+
+function loadExercises(muscle){
+  const url=`https://fitnessprogramer.com/exercises/?muscle=${muscle}`;
+  const frame=document.getElementById("frame");
+
+  frame.src=url;
+
+  setTimeout(()=>{
+    try{
+      if(!frame.contentWindow){
+        window.open(url,"_blank");
+      }
+    }catch{
+      window.open(url,"_blank");
+    }
+  },1500);
+}
+
+function searchExercise(){
+  const val=document.getElementById("searchBox").value;
+  if(!val) return;
+
+  const url=`https://fitnessprogramer.com/?s=${val}`;
+  document.getElementById("frame").src=url;
+}
+
+// ---------- NAV ----------
+function goHome(){
+  document.getElementById("explorer").classList.add("hidden");
+  document.getElementById("workout").classList.add("hidden");
+  document.getElementById("landing").classList.remove("hidden");
+}
+
+renderLanding();
+
+</script>
+
+</body>
+</html>
