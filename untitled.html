@@ -1,251 +1,2110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gym Trainer Pro</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#08090E" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>RYZE — Gym Trainer</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 
 <style>
-body {
-  background: radial-gradient(circle at top, #0f172a, #020617);
-}
-.glass {
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(255,255,255,0.08);
-}
-.card { transition: 0.3s ease; }
-.card:hover { transform: translateY(-4px); }
+  :root {
+    --bg-0: #08090E;
+    --bg-1: #0E1018;
+    --bg-2: #14161F;
+    --surface: rgba(255,255,255,0.04);
+    --surface-2: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.14);
+    --text: #F5F6F8;
+    --text-dim: #A1A6B3;
+    --text-mute: #6B7080;
+    --accent: #D4FF4F;
+    --accent-soft: rgba(212,255,79,0.16);
+    --accent-glow: rgba(212,255,79,0.35);
+    --coral: #FF6B4A;
+    --cyan: #4ADEFF;
+    --gold: #FFCB47;
+    --magenta: #FF4ACF;
+    --easy: #4ADEFF;
+    --med: #FFCB47;
+    --hard: #FF6B4A;
+  }
 
-.chip {
-  background:#1e293b;
-  padding:6px 10px;
-  border-radius:999px;
-  font-size:12px;
-  cursor:pointer;
-}
+  * { -webkit-tap-highlight-color: transparent; }
+  html, body { overscroll-behavior-y: contain; }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--bg-0);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: env(safe-area-inset-bottom);
+    background-image:
+      radial-gradient(1200px 600px at 20% -10%, rgba(212,255,79,0.07), transparent 60%),
+      radial-gradient(900px 500px at 100% 100%, rgba(74,222,255,0.05), transparent 60%),
+      linear-gradient(180deg, #08090E 0%, #06070C 100%);
+    background-attachment: fixed;
+  }
+
+  .font-display { font-family: 'Archivo', sans-serif; letter-spacing: -0.02em; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* Subtle grain texture overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.04 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    z-index: 1;
+    opacity: 0.6;
+    mix-blend-mode: overlay;
+  }
+
+  /* Hide scrollbars */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Glass */
+  .glass {
+    background: var(--surface);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid var(--border);
+  }
+  .glass-strong {
+    background: var(--surface-2);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--border-strong);
+  }
+
+  /* Card */
+  .card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02));
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    transition: transform .25s cubic-bezier(.2,.7,.2,1), border-color .2s, background .2s;
+  }
+  .card:active { transform: scale(.98); }
+
+  /* Chip */
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    font-size: 12px; font-weight: 600;
+    color: var(--text-dim);
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .chip.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0a0a0a;
+    box-shadow: 0 0 24px var(--accent-glow);
+  }
+  .chip:active { transform: scale(.95); }
+
+  /* Difficulty badges */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+  .badge-easy   { background: rgba(74,222,255,0.12); color: var(--easy); border:1px solid rgba(74,222,255,0.25); }
+  .badge-med    { background: rgba(255,203,71,0.12); color: var(--med);  border:1px solid rgba(255,203,71,0.25); }
+  .badge-hard   { background: rgba(255,107,74,0.12); color: var(--hard); border:1px solid rgba(255,107,74,0.25); }
+  .badge-muscle { background: rgba(255,255,255,0.05); color: var(--text-dim); border:1px solid var(--border); }
+
+  /* Accent button */
+  .btn-accent {
+    background: var(--accent);
+    color: #0a0a0a;
+    font-weight: 700;
+    border-radius: 14px;
+    transition: transform .15s, box-shadow .2s;
+    box-shadow: 0 8px 30px -8px var(--accent-glow);
+  }
+  .btn-accent:active { transform: scale(.97); }
+
+  .btn-ghost {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 14px;
+    transition: all .2s;
+  }
+  .btn-ghost:active { transform: scale(.97); background: rgba(255,255,255,0.08); }
+
+  /* Page transitions */
+  .page { animation: pageIn .35s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes pageIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Stagger reveal */
+  .reveal { opacity: 0; transform: translateY(10px); animation: revealIn .5s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes revealIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Skeleton shimmer */
+  .skeleton {
+    background: linear-gradient(90deg,
+      rgba(255,255,255,0.04) 0%,
+      rgba(255,255,255,0.09) 50%,
+      rgba(255,255,255,0.04) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s linear infinite;
+  }
+  @keyframes shimmer {
+    from { background-position: 200% 0; }
+    to   { background-position: -200% 0; }
+  }
+
+  /* Pulse for "live" indicators */
+  @keyframes livePulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50%     { opacity: .55; transform: scale(.92); }
+  }
+  .live-dot { animation: livePulse 1.6s ease-in-out infinite; }
+
+  /* Breathing animation for fallback SVG */
+  @keyframes breathe {
+    0%,100% { transform: scale(1); opacity: 0.9; }
+    50%     { transform: scale(1.04); opacity: 1; }
+  }
+  .breathe { animation: breathe 2.6s ease-in-out infinite; transform-origin: center; }
+
+  /* Marquee for muscle filters horizontal scroll */
+  .scroll-x {
+    display: flex; gap: 8px;
+    overflow-x: auto;
+    padding: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Progress ring */
+  .ring-track { stroke: rgba(255,255,255,0.08); }
+  .ring-fill  { stroke: var(--accent); transition: stroke-dashoffset .6s cubic-bezier(.2,.7,.2,1); }
+
+  /* Image holder */
+  .ex-img-wrap {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(212,255,79,0.04), rgba(74,222,255,0.04));
+    border: 1px solid var(--border);
+    aspect-ratio: 4/3;
+  }
+  .ex-img-wrap img,
+  .ex-img-wrap svg.fallback {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .ex-img-wrap .skeleton-layer {
+    position: absolute; inset: 0;
+    transition: opacity .3s;
+  }
+
+  /* Bottom nav safe area */
+  .nav-pad { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+
+  /* Modal */
+  .modal-backdrop {
+    background: rgba(2,3,7,0.7);
+    backdrop-filter: blur(10px);
+  }
+  .modal-sheet {
+    animation: sheetUp .35s cubic-bezier(.2,.7,.2,1) both;
+    max-height: 92vh;
+  }
+  @keyframes sheetUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+
+  /* Checkmark animation */
+  @keyframes pop {
+    0%   { transform: scale(0); }
+    70%  { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+  .pop { animation: pop .35s cubic-bezier(.2,.7,.2,1) both; }
+
+  /* Timer ring big */
+  @keyframes ringSpin { to { stroke-dashoffset: 0; } }
+
+  /* Streak flame */
+  @keyframes flicker {
+    0%,100% { transform: scale(1) rotate(-2deg); }
+    50%     { transform: scale(1.08) rotate(2deg); }
+  }
+  .flicker { animation: flicker 1.4s ease-in-out infinite; transform-origin: bottom center; }
+
+  /* Done state */
+  .exercise-done { opacity: 0.55; }
+  .exercise-done .ex-img-wrap { filter: grayscale(0.6); }
+
+  /* Selected day glow */
+  .today-glow {
+    border-color: var(--accent);
+    box-shadow:
+      0 0 0 1px var(--accent),
+      0 14px 50px -14px var(--accent-glow);
+  }
+
+  /* Smooth disable */
+  button { user-select: none; }
+
+  /* Decorative ticker line */
+  .ticker-line {
+    background: repeating-linear-gradient(90deg,
+      transparent 0, transparent 6px,
+      rgba(255,255,255,0.08) 6px, rgba(255,255,255,0.08) 7px);
+  }
 </style>
 </head>
 
-<body class="text-white font-sans">
+<body class="text-white">
 
-<header class="p-4 sticky top-0 glass z-50">
-  <h1 class="text-lg font-semibold">🏋️ Gym Trainer</h1>
-  <p class="text-xs text-gray-400">Follow → Watch → Execute</p>
-</header>
+<!-- ============================== APP ROOT ============================== -->
+<div id="app" class="relative z-10 max-w-[480px] mx-auto">
 
-<!-- LANDING -->
-<div id="landing" class="p-4 grid grid-cols-2 gap-4"></div>
+  <!-- ===== TOP BAR ===== -->
+  <header class="sticky top-0 z-40 px-5 pt-4 pb-3 glass-strong" style="border-bottom:1px solid var(--border);">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center font-display font-black text-lg"
+             style="background:var(--accent); color:#0a0a0a;">R</div>
+        <div>
+          <div class="font-display font-black text-[17px] leading-none tracking-tight">RYZE</div>
+          <div class="text-[10px] text-[var(--text-mute)] font-mono uppercase tracking-widest mt-0.5">Train · Track · Rise</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btnStreak" class="glass px-2.5 py-1.5 rounded-full flex items-center gap-1.5 text-xs font-bold">
+          <span class="flicker">🔥</span><span id="streakCount">0</span>
+        </button>
+        <button id="btnSettings" class="glass w-9 h-9 rounded-full flex items-center justify-center">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
 
-<!-- WORKOUT -->
-<div id="workout" class="hidden p-4 space-y-6"></div>
+  <!-- ===== MAIN CONTENT ===== -->
+  <main id="main" class="px-5 nav-pad">
 
-<!-- EXPLORER -->
-<div id="explorer" class="hidden p-4 space-y-4">
-  <button onclick="goHome()" class="text-blue-400 text-sm">← Back</button>
-  <h2 class="text-xl font-semibold">Explore Exercises</h2>
+    <!-- HOME PAGE -->
+    <section id="page-home" class="page py-5"></section>
 
-  <div class="flex flex-wrap gap-2">
-    <div class="chip" onclick="loadExercises('chest')">Chest</div>
-    <div class="chip" onclick="loadExercises('back')">Back</div>
-    <div class="chip" onclick="loadExercises('leg')">Legs</div>
-    <div class="chip" onclick="loadExercises('shoulder')">Shoulders</div>
-    <div class="chip" onclick="loadExercises('biceps')">Biceps</div>
-    <div class="chip" onclick="loadExercises('triceps')">Triceps</div>
-    <div class="chip" onclick="loadExercises('core')">Core</div>
-    <div class="chip" onclick="loadExercises('full-body')">Full Body</div>
+    <!-- WORKOUT PAGE -->
+    <section id="page-workout" class="page py-5 hidden"></section>
+
+    <!-- EXPLORER PAGE -->
+    <section id="page-explorer" class="page py-5 hidden"></section>
+
+    <!-- PROGRESS PAGE -->
+    <section id="page-progress" class="page py-5 hidden"></section>
+
+  </main>
+
+  <!-- ===== BOTTOM NAV ===== -->
+  <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 px-4 pb-3" style="padding-bottom: calc(12px + env(safe-area-inset-bottom));">
+    <div class="glass-strong rounded-2xl flex items-center justify-around py-2 px-2" style="box-shadow: 0 -10px 40px -10px rgba(0,0,0,0.5);">
+      <button data-nav="home"     class="nav-btn flex-1 py-2 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-bold uppercase tracking-wider">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v10h14V10"/></svg>
+        Home
+      </button>
+      <button data-nav="explorer" class="nav-btn flex-1 py-2 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-bold uppercase tracking-wider">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        Browse
+      </button>
+      <button data-nav="progress" class="nav-btn flex-1 py-2 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-bold uppercase tracking-wider">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg>
+        Progress
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== EXERCISE MODAL ===== -->
+  <div id="exerciseModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+    <div class="modal-backdrop absolute inset-0" data-close-modal></div>
+    <div class="modal-sheet relative w-full max-w-[480px] glass-strong rounded-t-3xl overflow-hidden" style="border-bottom: none;">
+      <div class="absolute top-2.5 left-1/2 -translate-x-1/2 w-10 h-1 rounded-full bg-white/20"></div>
+      <button class="absolute top-3 right-3 w-9 h-9 rounded-full glass flex items-center justify-center z-10" data-close-modal>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <div id="exerciseModalBody" class="overflow-y-auto no-scrollbar" style="max-height:92vh;"></div>
+    </div>
   </div>
 
-  <input id="searchBox" placeholder="Search (e.g squat, curl)"
-    class="w-full p-2 rounded bg-slate-800 text-sm"/>
+  <!-- ===== REST TIMER MODAL ===== -->
+  <div id="timerModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center">
+    <div class="modal-backdrop absolute inset-0"></div>
+    <div class="relative w-[88%] max-w-[360px] glass-strong rounded-3xl p-6 text-center">
+      <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--text-mute)]">Rest Timer</div>
+      <div class="text-xs text-[var(--text-dim)] mt-1" id="timerLabel">Take a breath</div>
 
-  <button onclick="searchExercise()" 
-    class="bg-purple-600 px-3 py-2 rounded w-full">
-    🔍 Search
-  </button>
+      <div class="relative w-[200px] h-[200px] mx-auto my-5">
+        <svg viewBox="0 0 100 100" class="w-full h-full -rotate-90">
+          <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="6"/>
+          <circle id="timerRing" cx="50" cy="50" r="45" fill="none" stroke="var(--accent)" stroke-width="6"
+                  stroke-linecap="round" stroke-dasharray="282.7" stroke-dashoffset="0"
+                  style="transition: stroke-dashoffset 0.95s linear;"/>
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+          <div id="timerDisplay" class="font-display font-black text-5xl tabular-nums">00:30</div>
+          <div class="text-[10px] font-mono uppercase tracking-widest text-[var(--text-mute)] mt-1">remaining</div>
+        </div>
+      </div>
 
-  <iframe id="frame" class="w-full h-[70vh] rounded-xl border border-gray-700"></iframe>
+      <div class="grid grid-cols-4 gap-2 mb-4">
+        <button class="btn-ghost py-2 text-xs font-bold" data-timer-preset="30">30s</button>
+        <button class="btn-ghost py-2 text-xs font-bold" data-timer-preset="60">60s</button>
+        <button class="btn-ghost py-2 text-xs font-bold" data-timer-preset="90">90s</button>
+        <button class="btn-ghost py-2 text-xs font-bold" data-timer-preset="120">2m</button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <button id="timerToggle" class="btn-accent py-3 font-bold text-sm">PAUSE</button>
+        <button id="timerClose"  class="btn-ghost py-3 font-bold text-sm">END</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
+<!-- ============================== JS ============================== -->
 <script>
+/* =======================================================================
+   RYZE GYM TRAINER — Single-file premium fitness app
+   Architecture:
+     1. CONSTANTS / DATA  (exercise DB + workout program)
+     2. STORAGE LAYER     (localStorage with versioning)
+     3. STATE             (app state, current view, etc.)
+     4. IMAGE SERVICE     (loader, cache, SVG fallback factory)
+     5. UI COMPONENTS     (small reusable render helpers)
+     6. PAGES             (home, workout, explorer, progress)
+     7. MODALS            (exercise detail, rest timer)
+     8. NAVIGATION        (router)
+     9. INIT
+   ======================================================================= */
 
-// ---------- BASE ----------
-const base = "https://fitnessprogramer.com/wp-content/uploads/2021/02/";
+/* =====================================================================
+   1. CONSTANTS / DATA
+   ===================================================================== */
 
-function img(src){
-  return `<img src="${src}" 
-  onerror="this.onerror=null;this.src='${base}Push-Up.gif';"
-  class="rounded-xl w-full"/>`;
-}
+const GIF_BASE = 'https://fitnessprogramer.com/wp-content/uploads/2021/02/';
 
-// ---------- DATA ----------
-const weekly = {
-Monday:{title:"Chest + Triceps",ex:[
-["Chest Press",base+"Chest-Press-Machine.gif","3x10","Push straight","Lock elbows","Control"],
-["Incline DB Press",base+"Incline-Dumbbell-Press.gif","3x10","Upper chest","Fast","Full stretch"],
-["Decline Pushup",base+"Push-Up.gif","3x12","Lower chest","Half reps","Full depth"],
-["Cable Fly",base+"Cable-Crossover.gif","3x12","Squeeze","Too much bend","Slow"],
-["Machine Fly",base+"Pec-Deck-Fly.gif","3x12","Chest squeeze","Fast","Pause"],
-["Pushdown",base+"Triceps-Pushdown.gif","3x12","Elbows fixed","Swing","Full extend"],
-["Overhead Extension",base+"Overhead-Triceps-Extension.gif","3x12","Stretch","Elbows wide","Control"],
-["Bench Dips",base+"Bench-Dips.gif","3x12","Lower slow","Shoulder strain","Control"]
-]},
+/* Comprehensive exercise database.
+   Each entry is keyed by a stable slug. We control every field so the
+   UI never has to guess. `gif` paths reference fitnessprogramer.com but
+   the image service falls back to a hand-drawn animated SVG if a URL
+   404s, so the app always renders cleanly. */
+const EXERCISES = {
+  // ===== CHEST =====
+  'barbell-bench-press': {
+    name: 'Barbell Bench Press', muscle: 'chest', secondary: ['triceps','shoulders'],
+    difficulty: 'intermediate', equipment: 'barbell',
+    gif: GIF_BASE + 'Barbell-Bench-Press.gif',
+    instructions: [
+      'Lie flat, eyes under the bar, grip slightly wider than shoulders.',
+      'Unrack the bar and lower under control to mid-chest.',
+      'Drive through your feet and press the bar back up in a slight arc.'
+    ],
+    cues: ['Plant feet, squeeze shoulder blades back and down', 'Bar travels in a slight arc, not straight up', 'Touch chest lightly — don\'t bounce'],
+    mistakes: ['Flaring elbows to 90°', 'Bouncing off the chest', 'Lifting hips off the bench'],
+  },
+  'incline-dumbbell-press': {
+    name: 'Incline Dumbbell Press', muscle: 'chest', secondary: ['shoulders','triceps'],
+    difficulty: 'beginner', equipment: 'dumbbell',
+    gif: GIF_BASE + 'Incline-Dumbbell-Press.gif',
+    instructions: [
+      'Set bench to 30–45°. Sit with dumbbells on thighs.',
+      'Kick the dumbbells up to shoulder height, palms facing forward.',
+      'Press up and slightly inward without locking out hard.'
+    ],
+    cues: ['30–45° is the sweet spot — steeper hits shoulders more', 'Lower until you feel a stretch in upper chest', 'Squeeze at the top'],
+    mistakes: ['Going too steep (becomes a shoulder press)', 'Letting dumbbells drift too wide', 'Pressing only with arms — drive with chest'],
+  },
+  'push-up': {
+    name: 'Push-Up', muscle: 'chest', secondary: ['triceps','core'],
+    difficulty: 'beginner', equipment: 'bodyweight',
+    gif: GIF_BASE + 'Push-Up.gif',
+    instructions: [
+      'Hands under shoulders, body in a straight line head to heels.',
+      'Lower chest to the floor, elbows tracking ~45°.',
+      'Press back up while bracing core.'
+    ],
+    cues: ['Body is one rigid plank', 'Hands stack under shoulders', 'Full range — chest taps the floor'],
+    mistakes: ['Sagging hips', 'Flared elbows at 90°', 'Half reps'],
+  },
+  'cable-fly': {
+    name: 'Cable Chest Fly', muscle: 'chest', secondary: ['shoulders'],
+    difficulty: 'beginner', equipment: 'cable',
+    gif: GIF_BASE + 'Cable-Fly.gif',
+    instructions: [
+      'Set pulleys at chest height, grab handles, step forward into split stance.',
+      'Soft bend in elbows, sweep arms in a wide arc.',
+      'Meet hands in front of chest and squeeze.'
+    ],
+    cues: ['Lock the elbow angle — don\'t turn it into a press', 'Feel the stretch at the bottom', 'Hands meet, don\'t cross'],
+    mistakes: ['Bending elbows to cheat the weight', 'Going too heavy', 'Letting shoulders roll forward'],
+  },
+  'chest-dip': {
+    name: 'Chest Dip', muscle: 'chest', secondary: ['triceps','shoulders'],
+    difficulty: 'intermediate', equipment: 'bodyweight',
+    gif: GIF_BASE + 'Chest-Dip.gif',
+    instructions: [
+      'Grip parallel bars, lean torso forward ~30°.',
+      'Lower until upper arms are parallel to the floor.',
+      'Press up powerfully without locking elbows hard.'
+    ],
+    cues: ['Lean forward for chest emphasis', 'Knees can bend behind you for balance', 'Control the descent'],
+    mistakes: ['Staying upright (turns it into triceps)', 'Going too deep with cranky shoulders', 'Bouncing at the bottom'],
+  },
 
-Tuesday:{title:"Back + Biceps",ex:[
-["Lat Pulldown",base+"Lat-Pulldown.gif","3x10","Elbows down","Leaning","Chest up"],
-["Close Grip Pulldown",base+"Close-Grip-Lat-Pulldown.gif","3x10","Lower lats","Swing","Control"],
-["Seated Row",base+"Seated-Cable-Row.gif","3x10","Pull waist","Rounded","Squeeze"],
-["Straight Arm",base+"Straight-Arm-Pulldown.gif","3x12","Arms straight","Bend","Feel lats"],
-["Face Pull",base+"Face-Pull.gif","3x12","Upper back","Fast","Control"],
-["DB Curl",base+"Dumbbell-Curl.gif","3x12","Control","Swing","Elbows tight"],
-["Hammer Curl",base+"Hammer-Curl.gif","3x12","Neutral","Fast","Slow"],
-["Preacher Curl",base+"Preacher-Curl.gif","3x12","Strict","Cheat","Full"]
-]},
+  // ===== BACK =====
+  'pull-up': {
+    name: 'Pull-Up', muscle: 'back', secondary: ['biceps'],
+    difficulty: 'advanced', equipment: 'bodyweight',
+    gif: GIF_BASE + 'Pull-up.gif',
+    instructions: [
+      'Hang from a bar, hands slightly wider than shoulders, palms forward.',
+      'Pull chest toward the bar by driving elbows down.',
+      'Lower under control to full hang.'
+    ],
+    cues: ['Initiate with the lats, not the arms', 'Think "elbows to back pockets"', 'Full hang at the bottom'],
+    mistakes: ['Kipping for momentum', 'Half range of motion', 'Shrugging into traps'],
+  },
+  'lat-pulldown': {
+    name: 'Lat Pulldown', muscle: 'back', secondary: ['biceps'],
+    difficulty: 'beginner', equipment: 'cable',
+    gif: GIF_BASE + 'Lat-Pulldown.gif',
+    instructions: [
+      'Grip wider than shoulders, lock thighs under the pad.',
+      'Lean back ~10°, pull the bar to your upper chest.',
+      'Squeeze lats and control the bar back up.'
+    ],
+    cues: ['Bar to chest, not behind the neck', 'Drive elbows down and back', 'Chest stays up the whole time'],
+    mistakes: ['Pulling with arms only', 'Excessive lean back', 'Letting the weight pull you up at the top'],
+  },
+  'seated-cable-row': {
+    name: 'Seated Cable Row', muscle: 'back', secondary: ['biceps'],
+    difficulty: 'beginner', equipment: 'cable',
+    gif: GIF_BASE + 'Seated-Cable-Row.gif',
+    instructions: [
+      'Sit tall, feet braced, knees slightly bent.',
+      'Pull the handle to your lower ribs, elbows back.',
+      'Squeeze shoulder blades, return under control.'
+    ],
+    cues: ['Chest up, no rounding', 'Pull to belly, not chest', 'Lats lead the movement'],
+    mistakes: ['Using momentum from the torso', 'Rounding the lower back', 'Shrugging'],
+  },
+  'bent-over-row': {
+    name: 'Barbell Bent-Over Row', muscle: 'back', secondary: ['biceps','rear-delts'],
+    difficulty: 'intermediate', equipment: 'barbell',
+    gif: GIF_BASE + 'Bent-over-Barbell-Row.gif',
+    instructions: [
+      'Hinge at hips until torso is ~45°, bar hangs at knee height.',
+      'Pull bar to lower ribs, elbows close to body.',
+      'Lower with control without losing torso position.'
+    ],
+    cues: ['Hinge from the hips, neutral spine', 'Drive elbows up and back', 'Bar path is straight'],
+    mistakes: ['Standing up to cheat the weight', 'Rounding the back', 'Pulling to the chest, not the ribs'],
+  },
+  'one-arm-row': {
+    name: 'One-Arm Dumbbell Row', muscle: 'back', secondary: ['biceps'],
+    difficulty: 'beginner', equipment: 'dumbbell',
+    gif: GIF_BASE + 'One-Arm-Dumbbell-Row.gif',
+    instructions: [
+      'Brace one hand and knee on a bench, opposite foot on floor.',
+      'Dumbbell hangs straight, pull it to your hip.',
+      'Squeeze at the top, lower slowly.'
+    ],
+    cues: ['Flat back, hips square', 'Elbow stays close to ribs', 'Pull to the hip, not the chest'],
+    mistakes: ['Rotating the torso to lift more', 'Pulling with the bicep', 'Short range of motion'],
+  },
+  'face-pull': {
+    name: 'Face Pull', muscle: 'back', secondary: ['rear-delts'],
+    difficulty: 'beginner', equipment: 'cable',
+    gif: GIF_BASE + 'Face-Pull.gif',
+    instructions: [
+      'Cable at upper-chest height with a rope.',
+      'Pull rope toward your forehead, separating the ends.',
+      'Externally rotate so knuckles end up beside your ears.'
+    ],
+    cues: ['Elbows high and wide', 'Light weight — quality over load', 'Pause and squeeze rear delts'],
+    mistakes: ['Going too heavy and shrugging', 'Pulling to the chin', 'Forgetting the external rotation'],
+  },
 
-Wednesday:{title:"Legs",ex:[
-["Leg Press",base+"Leg-Press.gif","3x12","Heels push","Knees in","Depth"],
-["Squat",base+"Barbell-Squat.gif","3x10","Sit back","Knees in","Chest up"],
-["Leg Extension",base+"Leg-Extension.gif","3x12","Full extend","Fast","Pause"],
-["Leg Curl",base+"Lying-Leg-Curl.gif","3x12","Full curl","Half","Squeeze"],
-["Walking Lunges",base+"Walking-Lunges.gif","3x10","Balance","Knee over","Control"],
-["Calf Raise",base+"Calf-Raise.gif","3x15","Stretch","Bounce","Slow"],
-["Seated Calf Raise",base+"Seated-Calf-Raise.gif","3x15","Range","Fast","Pause"]
-]},
+  // ===== SHOULDERS =====
+  'overhead-press': {
+    name: 'Dumbbell Shoulder Press', muscle: 'shoulders', secondary: ['triceps'],
+    difficulty: 'beginner', equipment: 'dumbbell',
+    gif: GIF_BASE + 'Dumbbell-Shoulder-Press.gif',
+    instructions: [
+      'Sit on a bench with back support, dumbbells at shoulder level.',
+      'Press up until arms are nearly straight overhead.',
+      'Lower under control to ear height.'
+    ],
+    cues: ['Brace core — no arching the lower back', 'Wrists stacked over elbows', 'Press up and slightly in'],
+    mistakes: ['Arching the back excessively', 'Bouncing dumbbells off shoulders', 'Pressing forward instead of up'],
+  },
+  'arnold-press': {
+    name: 'Arnold Press', muscle: 'shoulders', secondary: ['triceps'],
+    difficulty: 'intermediate', equipment: 'dumbbell',
+    gif: GIF_BASE + 'Arnold-Press.gif',
+    instructions: [
+      'Start with dumbbells in front of shoulders, palms facing you.',
+      'Rotate palms forward as you press overhead.',
+      'Reverse the rotation on the way down.'
+    ],
+    cues: ['Smooth rotation, no jerks', 'Full overhead lockout', 'Control the eccentric'],
+    mistakes: ['Rushing the rotation', 'Going too heavy and losing form', 'Half reps'],
+  },
+  'lateral-raise': {
+    name: 'Dumbbell Lateral Raise', muscle: 'shoulders', secondary: [],
+    difficulty: 'beginner', equipment: 'dumbbell',
+    gif: GIF_BASE + 'Dumbbell-Lateral-Raise.gif',
+    instructions: [
+      'Stand tall, dumbbells at your sides, soft elbow bend.',
+      'Raise arms to the side until parallel with the floor.',
+      'Lower slowly — fight gravity on the way down.'
+    ],
+    cues: ['Lead with the elbow, not the hand', 'Pinky slightly higher than thumb at top', 'Light weights, perfect form'],
+    mistakes: ['Swinging the weights up', 'Raising above shoulder height', 'Going too heavy'],
+  },
+  'front-raise': {
+    name: 'Dumbbell Front Raise', muscle: 'shoulders', secondary: [],
+    difficulty: 'beginner', equipment: 'dumbbell',
+    gif: GIF_BASE + 'Dumbbell-Front-Raise.gif',
+    instructions: [
+      'Stand with dumbbells in front of thighs, palms facing in.',
+      'Raise one or both arms to shoulder height.',
+      'Lower under control.'
+    ],
+    cues: ['Soft elbow bend held the whole rep', 'Stop at shoulder height', 'No body english'],
+    mistakes: ['Swinging hips to lift', 'Going above shoulder height', 'Locking elbows out straight'],
+  },
+  'rear-delt-fly': {
+    name: 'Reverse Fly', muscle: 'shoulders', secondary: ['back'],
+    difficulty: 'beginner', equipment: 'dumbbell',
+    gif: GIF_BASE + 'Reverse-Fly.gif',
+    instructions: [
+      'Hinge forward at the hips, chest near parallel to the floor.',
+      'Dumbbells hang under shoulders, soft elbows.',
+      'Raise arms out to your sides, squeezing rear delts.'
+    ],
+    cues: ['Hinge from the hips — flat back', 'Lead with the elbows', 'Squeeze, don\'t jerk'],
+    mistakes: ['Standing too upright', 'Using too much weight', 'Pulling with the traps'],
+  },
 
-Thursday:{title:"Shoulders + Core",ex:[
-["Shoulder Press",base+"Dumbbell-Shoulder-Press.gif","3x10","Vertical","Arch","Core"],
-["Arnold Press",base+"Arnold-Press.gif","3x10","Rotate","Fast","Control"],
-["Lateral Raise",base+"Lateral-Raise.gif","3x12","Height","Swing","Light"],
-["Front Raise",base+"Front-Raise.gif","3x12","Control","Swing","Slow"],
-["Rear Delt",base+"Rear-Delt-Fly.gif","3x12","Back squeeze","Momentum","Control"],
-["Plank",base+"Plank.gif","3x30s","Straight","Drop","Brace"],
-["Leg Raise",base+"Hanging-Leg-Raise.gif","3x12","Core","Swing","Control"],
-["Russian Twist",base+"Russian-Twist.gif","3x20","Rotate","Fast","Control"]
-]},
+  // ===== BICEPS =====
+  'barbell-curl': {
+    name: 'Barbell Curl', muscle: 'biceps', secondary: ['forearms'],
+    difficulty: 'beginner', equipment: 'barbell',
+    gif: GIF_BASE + 'Barbell-Curl.gif',
+    instructions: [
+      'Stand with bar at thigh height, shoulder-width grip, palms up.',
+      'Curl bar to chest, keeping elbows pinned.',
+      'Lower slowly to full extension.'
+    ],
+    cues: ['Elbows glued to your ribs', 'Squeeze at the top', 'Control the negative'],
+    mistakes: ['Swinging at the hips', 'Letting elbows drift forward', 'Half reps'],
+  },
+  'dumbbell-curl': {
+    name: 'Dumbbell Curl', muscle: 'biceps', secondary: ['forearms'],
+    difficulty: 'beginner', equipment: 'dumbbell',
+    gif: GIF_BASE + 'Dumbbell-Bicep-Curl.gif',
+    instructions: [
+      'Dumbbells at sides, palms forward (or rotating from neutral).',
+      'Curl up while keeping elbows fixed.',
+      'Lower fully under control.'
+    ],
+    cues: ['Supinate (rotate palm up) as you curl', 'No swinging', 'Full stretch at the bottom'],
+    mistakes: ['Using momentum', 'Half range', 'Elbows drifting forward'],
+  },
+  'hammer-curl': {
+    name: 'Hammer Curl', muscle: 'biceps', secondary: ['forearms'],
+    difficulty: 'beginner', equipment: 'dumbbell',
+    gif: GIF_BASE + 'Hammer-Curl.gif',
+    instructions: [
+      'Dumbbells at sides, palms facing each other (neutral).',
+      'Curl up while keeping the neutral grip.',
+      'Lower with control.'
+    ],
+    cues: ['Wrists stay neutral, no rotation', 'Hits brachialis and forearms', 'Elbows pinned'],
+    mistakes: ['Swinging', 'Rotating wrists', 'Bouncing off the bottom'],
+  },
+  'preacher-curl': {
+    name: 'Preacher Curl', muscle: 'biceps', secondary: [],
+    difficulty: 'intermediate', equipment: 'machine',
+    gif: GIF_BASE + 'Preacher-Curl.gif',
+    instructions: [
+      'Set the pad so your armpits sit on top, arms over the pad.',
+      'Curl the bar up without lifting your upper arms.',
+      'Lower until just before full extension.'
+    ],
+    cues: ['Strict isolation — no cheating', 'Don\'t fully lock out at the bottom', 'Slow eccentric'],
+    mistakes: ['Lifting elbows off the pad', 'Hyperextending at the bottom', 'Bouncing'],
+  },
 
-Friday:{title:"Full Body",ex:[
-["Goblet Squat",base+"Goblet-Squat.gif","3x10","Chest up","Knees","Sit"],
-["Push Ups",base+"Push-Up.gif","3x12","Range","Sag","Tight"],
-["Lat Pulldown",base+"Lat-Pulldown.gif","3x12","Form","Heavy","Control"],
-["DB Row",base+"Dumbbell-Row.gif","3x10","Elbow back","Twist","Squeeze"],
-["Deadlift",base+"Barbell-Deadlift.gif","3x8","Hinge","Round","Tight"],
-["Plank Tap",base+"Plank-Shoulder-Tap.gif","3x20","Stable","Sway","Slow"],
-["Mountain Climber",base+"Mountain-Climber.gif","3x20","Core","Fast","Control"]
-]}
+  // ===== TRICEPS =====
+  'triceps-pushdown': {
+    name: 'Cable Triceps Pushdown', muscle: 'triceps', secondary: [],
+    difficulty: 'beginner', equipment: 'cable',
+    gif: GIF_BASE + 'Triceps-Pushdown.gif',
+    instructions: [
+      'Stand at a high pulley with a rope or straight bar.',
+      'Elbows tucked at your sides, push down to full extension.',
+      'Squeeze and return slowly.'
+    ],
+    cues: ['Elbows pinned the entire set', 'Lock out fully', 'Slight forward lean is fine'],
+    mistakes: ['Elbows flaring forward', 'Using shoulders to press down', 'Going too heavy'],
+  },
+  'overhead-triceps-ext': {
+    name: 'Overhead Triceps Extension', muscle: 'triceps', secondary: [],
+    difficulty: 'beginner', equipment: 'dumbbell',
+    gif: GIF_BASE + 'Dumbbell-Overhead-Triceps-Extension.gif',
+    instructions: [
+      'Hold one dumbbell with both hands overhead.',
+      'Lower behind your head by bending the elbows.',
+      'Press back up to lockout.'
+    ],
+    cues: ['Elbows narrow and pointed up', 'Full stretch at the bottom', 'Don\'t flare the elbows wide'],
+    mistakes: ['Elbows flaring out', 'Shoulders shrugging', 'Short range of motion'],
+  },
+  'skull-crusher': {
+    name: 'Skull Crusher', muscle: 'triceps', secondary: [],
+    difficulty: 'intermediate', equipment: 'barbell',
+    gif: GIF_BASE + 'Skull-Crusher.gif',
+    instructions: [
+      'Lie on a bench, EZ-bar over your forehead, arms straight.',
+      'Bend elbows to lower the bar to your forehead/hairline.',
+      'Extend back to start using only the triceps.'
+    ],
+    cues: ['Elbows stay vertical the whole time', 'Aim bar toward forehead, not chest', 'Control the descent'],
+    mistakes: ['Elbows flaring out', 'Letting elbows drift back (turns it into a pullover)', 'Going too heavy'],
+  },
+  'bench-dip': {
+    name: 'Bench Dip', muscle: 'triceps', secondary: ['shoulders'],
+    difficulty: 'beginner', equipment: 'bodyweight',
+    gif: GIF_BASE + 'Bench-Dip.gif',
+    instructions: [
+      'Hands on a bench behind you, legs out in front.',
+      'Lower by bending elbows to ~90°.',
+      'Press back up to lockout.'
+    ],
+    cues: ['Keep hips close to the bench', 'Shoulders down, away from ears', 'Stop at 90° to protect shoulders'],
+    mistakes: ['Going too deep with rounded shoulders', 'Sagging hips away from the bench', 'Bouncing at the bottom'],
+  },
+
+  // ===== LEGS =====
+  'barbell-squat': {
+    name: 'Barbell Back Squat', muscle: 'legs', secondary: ['glutes','core'],
+    difficulty: 'intermediate', equipment: 'barbell',
+    gif: GIF_BASE + 'Barbell-Squat.gif',
+    instructions: [
+      'Bar on upper traps, feet shoulder width, toes slightly out.',
+      'Brace core, descend by pushing hips back and knees out.',
+      'Squat to at least parallel, then drive up through the floor.'
+    ],
+    cues: ['Knees track over toes', 'Chest up the whole time', 'Push the floor away'],
+    mistakes: ['Knees caving in', 'Heels lifting', 'Rounding the lower back'],
+  },
+  'leg-press': {
+    name: 'Leg Press', muscle: 'legs', secondary: ['glutes'],
+    difficulty: 'beginner', equipment: 'machine',
+    gif: GIF_BASE + 'Leg-Press.gif',
+    instructions: [
+      'Feet shoulder-width on the platform, back flat against the pad.',
+      'Lower until knees are near your chest, controlled.',
+      'Press through the heels back to nearly locked out.'
+    ],
+    cues: ['Don\'t fully lock the knees', 'Hips stay anchored', 'Push through midfoot'],
+    mistakes: ['Lifting hips off the pad', 'Hyperextending the knees at the top', 'Short range of motion'],
+  },
+  'romanian-deadlift': {
+    name: 'Romanian Deadlift', muscle: 'legs', secondary: ['glutes','back'],
+    difficulty: 'intermediate', equipment: 'barbell',
+    gif: GIF_BASE + 'Romanian-Deadlift.gif',
+    instructions: [
+      'Bar at thigh, soft knee bend, neutral spine.',
+      'Push hips back, lower the bar along your legs.',
+      'Stop when you feel a deep hamstring stretch, then drive hips forward.'
+    ],
+    cues: ['Hinge, don\'t squat', 'Bar stays close — almost grazes the legs', 'Lats tight, chest proud'],
+    mistakes: ['Rounding the back', 'Squatting it instead of hinging', 'Going too low and losing tension'],
+  },
+  'leg-extension': {
+    name: 'Leg Extension', muscle: 'legs', secondary: [],
+    difficulty: 'beginner', equipment: 'machine',
+    gif: GIF_BASE + 'Leg-Extension.gif',
+    instructions: [
+      'Sit with knees at the edge, pad on top of ankles.',
+      'Extend legs until straight, squeeze quads at the top.',
+      'Lower slowly.'
+    ],
+    cues: ['Pause at the top', 'Slow eccentric', 'Don\'t bang the stack'],
+    mistakes: ['Using momentum', 'Half reps', 'Going too heavy and bouncing'],
+  },
+  'leg-curl': {
+    name: 'Lying Leg Curl', muscle: 'legs', secondary: [],
+    difficulty: 'beginner', equipment: 'machine',
+    gif: GIF_BASE + 'Lying-Leg-Curl.gif',
+    instructions: [
+      'Lie face down, pad on lower calves above the heels.',
+      'Curl heels toward glutes, squeezing hamstrings.',
+      'Lower under control.'
+    ],
+    cues: ['Hips stay pressed to the pad', 'Full curl, full stretch', 'Squeeze at the top'],
+    mistakes: ['Lifting hips off the bench', 'Partial reps', 'Letting the weight drop'],
+  },
+  'walking-lunge': {
+    name: 'Walking Lunges', muscle: 'legs', secondary: ['glutes','core'],
+    difficulty: 'beginner', equipment: 'dumbbell',
+    gif: GIF_BASE + 'Walking-Lunge.gif',
+    instructions: [
+      'Stand tall, dumbbells at sides (optional).',
+      'Step forward into a lunge, back knee just above the floor.',
+      'Drive through the front heel to step into the next lunge.'
+    ],
+    cues: ['Long step — front knee over ankle', 'Torso tall and proud', 'Drive through the front heel'],
+    mistakes: ['Steps too short', 'Front knee caving in', 'Leaning forward'],
+  },
+  'calf-raise': {
+    name: 'Standing Calf Raise', muscle: 'legs', secondary: [],
+    difficulty: 'beginner', equipment: 'machine',
+    gif: GIF_BASE + 'Standing-Calf-Raise.gif',
+    instructions: [
+      'Balls of feet on the platform, shoulders under the pad.',
+      'Drop heels for a full stretch, then press up onto your toes.',
+      'Squeeze at the top.'
+    ],
+    cues: ['Full stretch at the bottom', 'Slow tempo — calves love time under tension', 'Pause at the top'],
+    mistakes: ['Bouncing', 'Half reps', 'Going too fast'],
+  },
+  'hip-thrust': {
+    name: 'Barbell Hip Thrust', muscle: 'legs', secondary: ['glutes'],
+    difficulty: 'intermediate', equipment: 'barbell',
+    gif: GIF_BASE + 'Hip-Thrust.gif',
+    instructions: [
+      'Upper back on a bench, bar over hips (use a pad).',
+      'Drive hips up by squeezing glutes until torso is parallel to floor.',
+      'Lower under control without resting on the floor.'
+    ],
+    cues: ['Chin tucked, ribs down', 'Squeeze glutes hard at the top', 'Feet flat, knees ~90° at top'],
+    mistakes: ['Hyperextending the lower back', 'Pushing through toes instead of heels', 'Short range'],
+  },
+
+  // ===== CORE =====
+  'plank': {
+    name: 'Plank', muscle: 'core', secondary: ['shoulders'],
+    difficulty: 'beginner', equipment: 'bodyweight',
+    gif: GIF_BASE + 'Plank.gif',
+    instructions: [
+      'Forearms on the floor, elbows under shoulders.',
+      'Body straight from head to heels, brace core.',
+      'Hold for time, breathing steadily.'
+    ],
+    cues: ['Squeeze glutes and quads', 'Tuck chin slightly', 'Ribs down — no flaring'],
+    mistakes: ['Sagging hips', 'Hiking butt up high', 'Holding breath'],
+  },
+  'hanging-leg-raise': {
+    name: 'Hanging Leg Raise', muscle: 'core', secondary: [],
+    difficulty: 'advanced', equipment: 'bodyweight',
+    gif: GIF_BASE + 'Hanging-Leg-Raise.gif',
+    instructions: [
+      'Hang from a pull-up bar with a full grip.',
+      'Raise straight legs until parallel (or higher) with the floor.',
+      'Lower slowly without swinging.'
+    ],
+    cues: ['Initiate from the abs, not the hips', 'No kipping', 'Slow controlled descent'],
+    mistakes: ['Swinging', 'Bending knees on harder version', 'Using momentum'],
+  },
+  'russian-twist': {
+    name: 'Russian Twist', muscle: 'core', secondary: [],
+    difficulty: 'beginner', equipment: 'bodyweight',
+    gif: GIF_BASE + 'Russian-Twist.gif',
+    instructions: [
+      'Sit with knees bent, lean back ~45°, feet up or on floor.',
+      'Rotate torso side to side, touching the floor beside you.',
+      'Keep chest up.'
+    ],
+    cues: ['Rotate from the torso, not the arms', 'Slow and controlled', 'Brace the whole time'],
+    mistakes: ['Just moving the arms', 'Rounding the back', 'Going too fast'],
+  },
+  'cable-crunch': {
+    name: 'Cable Crunch', muscle: 'core', secondary: [],
+    difficulty: 'beginner', equipment: 'cable',
+    gif: GIF_BASE + 'Cable-Crunch.gif',
+    instructions: [
+      'Kneel under a high pulley, rope behind your head.',
+      'Crunch down by curling the spine, elbows toward thighs.',
+      'Return slowly.'
+    ],
+    cues: ['Curl the spine — don\'t hinge at the hips', 'Hips locked in place', 'Squeeze abs at the bottom'],
+    mistakes: ['Hinging at the hips instead of crunching', 'Pulling with arms', 'Going too heavy'],
+  },
+  'mountain-climber': {
+    name: 'Mountain Climber', muscle: 'core', secondary: ['shoulders'],
+    difficulty: 'beginner', equipment: 'bodyweight',
+    gif: GIF_BASE + 'Mountain-Climber.gif',
+    instructions: [
+      'Start in a high plank, hands under shoulders.',
+      'Drive one knee toward your chest, then switch quickly.',
+      'Maintain plank position — no bobbing.'
+    ],
+    cues: ['Hips stay level', 'Brace the core', 'Quick feet, stable shoulders'],
+    mistakes: ['Bouncing hips up and down', 'Hands creeping forward', 'Going so fast form falls apart'],
+  },
+  'dead-bug': {
+    name: 'Dead Bug', muscle: 'core', secondary: [],
+    difficulty: 'beginner', equipment: 'bodyweight',
+    gif: GIF_BASE + 'Dead-Bug.gif',
+    instructions: [
+      'Lie on your back, arms straight up, knees over hips at 90°.',
+      'Lower opposite arm and leg toward the floor.',
+      'Return and repeat on the other side.'
+    ],
+    cues: ['Lower back stays glued to the floor', 'Move slowly', 'Exhale as you extend'],
+    mistakes: ['Lower back arching off the floor', 'Moving too quickly', 'Not breathing'],
+  },
+
+  // ===== FULL BODY / CONDITIONING =====
+  'goblet-squat': {
+    name: 'Goblet Squat', muscle: 'legs', secondary: ['core'],
+    difficulty: 'beginner', equipment: 'dumbbell',
+    gif: GIF_BASE + 'Goblet-Squat.gif',
+    instructions: [
+      'Hold a dumbbell vertically at your chest with both hands.',
+      'Squat down between your knees, elbows brushing inside the thighs.',
+      'Drive up through the heels.'
+    ],
+    cues: ['Chest tall, dumbbell stays against the chest', 'Knees push out', 'Sit between the heels'],
+    mistakes: ['Rounding the upper back', 'Heels lifting', 'Short depth'],
+  },
+  'dumbbell-thruster': {
+    name: 'Dumbbell Thruster', muscle: 'legs', secondary: ['shoulders','core'],
+    difficulty: 'intermediate', equipment: 'dumbbell',
+    gif: GIF_BASE + 'Dumbbell-Thruster.gif',
+    instructions: [
+      'Dumbbells at shoulder height, feet shoulder-width.',
+      'Squat down to parallel.',
+      'Drive up explosively and press the dumbbells overhead in one motion.'
+    ],
+    cues: ['One fluid motion, hip drive powers the press', 'Lock out overhead', 'Reset for each rep'],
+    mistakes: ['Pressing before standing fully', 'Soft lockout overhead', 'Going too heavy and losing form'],
+  },
+  'plank-shoulder-tap': {
+    name: 'Plank Shoulder Tap', muscle: 'core', secondary: ['shoulders'],
+    difficulty: 'beginner', equipment: 'bodyweight',
+    gif: GIF_BASE + 'Plank-Shoulder-Tap.gif',
+    instructions: [
+      'Start in a high plank, feet shoulder-width for stability.',
+      'Tap opposite shoulder with one hand while keeping hips square.',
+      'Alternate sides slowly.'
+    ],
+    cues: ['Hips don\'t rock', 'Slow taps', 'Brace harder than you think'],
+    mistakes: ['Hips rotating side to side', 'Rushing', 'Wide feet to cheat'],
+  },
+  'kettlebell-swing': {
+    name: 'Kettlebell Swing', muscle: 'legs', secondary: ['back','core'],
+    difficulty: 'intermediate', equipment: 'kettlebell',
+    gif: GIF_BASE + 'Kettlebell-Swing.gif',
+    instructions: [
+      'Stand over a kettlebell, hinge and grab with both hands.',
+      'Hike it back between your legs, then snap your hips forward.',
+      'Let the bell float to chest height — arms are ropes.'
+    ],
+    cues: ['Hip hinge, not a squat', 'Snap glutes hard at the top', 'Arms just guide the bell'],
+    mistakes: ['Squatting the swing', 'Lifting with the arms', 'Hyperextending the back at the top'],
+  },
 };
 
-// ---------- HELPERS ----------
-function today(){
-  return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()];
+/* Weekly program — improved split with rationale:
+   Mon: Push  | Tue: Pull  | Wed: Legs  | Thu: Upper (volume)  | Fri: Full Body & Core
+   Sat: Active Recovery   | Sun: Rest
+   - Better fatigue distribution than the original
+   - Each session has a clear primary + secondary focus
+   - Sets/reps follow standard hypertrophy template (8–12 main, 12–15 isolation)
+*/
+const PROGRAM = {
+  monday: {
+    name: 'Push Day',
+    focus: 'Chest · Shoulders · Triceps',
+    duration: 55,
+    difficulty: 'intermediate',
+    warmup: ['5 min light cardio', '2× band pull-aparts ×15', 'Empty bar bench ×10'],
+    exercises: [
+      { id: 'barbell-bench-press',   sets: 4, reps: '6–8',   rest: 120 },
+      { id: 'incline-dumbbell-press',sets: 3, reps: '8–10',  rest: 90  },
+      { id: 'overhead-press',        sets: 3, reps: '8–10',  rest: 90  },
+      { id: 'cable-fly',             sets: 3, reps: '12–15', rest: 60  },
+      { id: 'lateral-raise',         sets: 3, reps: '12–15', rest: 60  },
+      { id: 'triceps-pushdown',      sets: 3, reps: '10–12', rest: 60  },
+      { id: 'overhead-triceps-ext',  sets: 3, reps: '10–12', rest: 60  },
+    ]
+  },
+  tuesday: {
+    name: 'Pull Day',
+    focus: 'Back · Biceps · Rear Delts',
+    duration: 55,
+    difficulty: 'intermediate',
+    warmup: ['5 min row machine', 'Scapular pull-ups ×8', 'Band face-pulls ×15'],
+    exercises: [
+      { id: 'pull-up',           sets: 4, reps: '5–8',   rest: 120 },
+      { id: 'bent-over-row',     sets: 3, reps: '8–10',  rest: 90  },
+      { id: 'lat-pulldown',      sets: 3, reps: '10–12', rest: 75  },
+      { id: 'seated-cable-row',  sets: 3, reps: '10–12', rest: 75  },
+      { id: 'face-pull',         sets: 3, reps: '15',    rest: 45  },
+      { id: 'barbell-curl',      sets: 3, reps: '10–12', rest: 60  },
+      { id: 'hammer-curl',       sets: 3, reps: '10–12', rest: 60  },
+    ]
+  },
+  wednesday: {
+    name: 'Leg Day',
+    focus: 'Quads · Hamstrings · Glutes · Calves',
+    duration: 60,
+    difficulty: 'advanced',
+    warmup: ['5 min bike', 'Bodyweight squats ×15', 'Hip openers ×10/side'],
+    exercises: [
+      { id: 'barbell-squat',     sets: 4, reps: '6–8',   rest: 150 },
+      { id: 'romanian-deadlift', sets: 3, reps: '8–10',  rest: 120 },
+      { id: 'leg-press',         sets: 3, reps: '10–12', rest: 90  },
+      { id: 'walking-lunge',     sets: 3, reps: '10/leg',rest: 75  },
+      { id: 'leg-curl',          sets: 3, reps: '10–12', rest: 60  },
+      { id: 'leg-extension',     sets: 3, reps: '12–15', rest: 60  },
+      { id: 'calf-raise',        sets: 4, reps: '12–15', rest: 45  },
+    ]
+  },
+  thursday: {
+    name: 'Upper Body',
+    focus: 'Volume · Shoulders · Arms · Core',
+    duration: 50,
+    difficulty: 'intermediate',
+    warmup: ['5 min cardio', 'Arm circles ×20', 'Push-ups ×10'],
+    exercises: [
+      { id: 'arnold-press',      sets: 3, reps: '8–10',  rest: 75 },
+      { id: 'lateral-raise',     sets: 4, reps: '12–15', rest: 45 },
+      { id: 'rear-delt-fly',     sets: 3, reps: '12–15', rest: 45 },
+      { id: 'preacher-curl',     sets: 3, reps: '10–12', rest: 60 },
+      { id: 'skull-crusher',     sets: 3, reps: '10–12', rest: 60 },
+      { id: 'plank',             sets: 3, reps: '45s',   rest: 45 },
+      { id: 'hanging-leg-raise', sets: 3, reps: '10–12', rest: 60 },
+    ]
+  },
+  friday: {
+    name: 'Full Body & Core',
+    focus: 'Conditioning · Total Body',
+    duration: 45,
+    difficulty: 'intermediate',
+    warmup: ['5 min jump rope or row', 'Inchworms ×8', 'World\'s greatest stretch ×5/side'],
+    exercises: [
+      { id: 'goblet-squat',       sets: 3, reps: '12',    rest: 60 },
+      { id: 'dumbbell-thruster',  sets: 3, reps: '10',    rest: 75 },
+      { id: 'one-arm-row',        sets: 3, reps: '10/arm',rest: 60 },
+      { id: 'push-up',            sets: 3, reps: '12–15', rest: 45 },
+      { id: 'hip-thrust',         sets: 3, reps: '10–12', rest: 75 },
+      { id: 'kettlebell-swing',   sets: 3, reps: '15',    rest: 60 },
+      { id: 'russian-twist',      sets: 3, reps: '20',    rest: 45 },
+      { id: 'mountain-climber',   sets: 3, reps: '30s',   rest: 30 },
+    ]
+  },
+  saturday: {
+    name: 'Active Recovery',
+    focus: 'Mobility · Core · Light Cardio',
+    duration: 30,
+    difficulty: 'beginner',
+    warmup: ['Light walk ×5 min'],
+    exercises: [
+      { id: 'plank',             sets: 3, reps: '30s',   rest: 30 },
+      { id: 'dead-bug',          sets: 3, reps: '10/side',rest: 30 },
+      { id: 'plank-shoulder-tap',sets: 3, reps: '20',    rest: 30 },
+      { id: 'russian-twist',     sets: 3, reps: '20',    rest: 30 },
+    ]
+  },
+  sunday: {
+    name: 'Rest Day',
+    focus: 'Recovery · Sleep · Eat well',
+    duration: 0,
+    difficulty: 'beginner',
+    warmup: [],
+    exercises: []
+  }
+};
+
+const DAYS = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+const DAY_LABELS = { sunday:'Sun', monday:'Mon', tuesday:'Tue', wednesday:'Wed', thursday:'Thu', friday:'Fri', saturday:'Sat' };
+const DAY_LONG   = { sunday:'Sunday', monday:'Monday', tuesday:'Tuesday', wednesday:'Wednesday', thursday:'Thursday', friday:'Friday', saturday:'Saturday' };
+
+const MUSCLE_GROUPS = [
+  { id: 'all',       label: 'All',       color: '#D4FF4F' },
+  { id: 'chest',     label: 'Chest',     color: '#FF6B4A' },
+  { id: 'back',      label: 'Back',      color: '#4ADEFF' },
+  { id: 'shoulders', label: 'Shoulders', color: '#FFCB47' },
+  { id: 'biceps',    label: 'Biceps',    color: '#FF4ACF' },
+  { id: 'triceps',   label: 'Triceps',   color: '#A78BFA' },
+  { id: 'legs',      label: 'Legs',      color: '#34D399' },
+  { id: 'core',      label: 'Core',      color: '#FB7185' },
+];
+
+/* =====================================================================
+   2. STORAGE LAYER
+   ===================================================================== */
+
+const STORAGE_KEY = 'ryze.v1';
+const defaultStore = {
+  completed: {},        // { 'YYYY-MM-DD': { dayKey: 'monday', exerciseIds: ['barbell-bench-press', ...] } }
+  streak: 0,
+  lastWorkoutDate: null,
+  totalWorkouts: 0,
+  totalSets: 0,
+  brokenImages: {},     // url -> true
+};
+
+function loadStore() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return {...defaultStore};
+    return { ...defaultStore, ...JSON.parse(raw) };
+  } catch { return {...defaultStore}; }
+}
+function saveStore() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); } catch {}
 }
 
-// ---------- LANDING ----------
-function renderLanding(){
-  const el=document.getElementById("landing");
-  el.innerHTML="";
-  const t=today();
+let store = loadStore();
 
-  Object.keys(weekly).forEach(day=>{
-    const active=day===t;
-
-    const c=document.createElement("div");
-    c.className=`card glass p-4 rounded-xl cursor-pointer ${active?"border border-green-400":""}`;
-
-    c.innerHTML=`
-      <h2 class="font-semibold">${day}</h2>
-      <p class="text-xs text-gray-400">${weekly[day].title}</p>
-      ${active?'<span class="text-green-400 text-xs">Today</span>':""}
-    `;
-
-    c.onclick=()=>openWorkout(day);
-    el.appendChild(c);
-  });
+function todayKey() {
+  const d = new Date();
+  return d.toISOString().slice(0,10);
+}
+function dayOfWeek() {
+  return DAYS[new Date().getDay()];
 }
 
-// ---------- WORKOUT ----------
-function openWorkout(day){
-  document.getElementById("landing").classList.add("hidden");
-  const view=document.getElementById("workout");
-  view.classList.remove("hidden");
+/* =====================================================================
+   3. APP STATE
+   ===================================================================== */
 
-  const data=weekly[day];
+const state = {
+  page: 'home',
+  selectedDay: dayOfWeek(),
+  explorerFilter: 'all',
+  explorerSearch: '',
+  timer: { active: false, total: 60, remaining: 60, intervalId: null, paused: false }
+};
 
-  view.innerHTML=`
-    <button onclick="goHome()" class="text-blue-400 text-sm">← Back</button>
-    <h2 class="text-xl font-semibold">${day} — ${data.title}</h2>
+/* =====================================================================
+   4. IMAGE SERVICE
+   Strategy:
+     - Each <img> mounts inside a wrapper with a skeleton overlay.
+     - If `src` errors OR fails to load within a timeout, swap to a
+       hand-drawn animated SVG illustration based on the muscle group.
+     - Failed URLs are remembered in localStorage so we don't retry.
+   ===================================================================== */
 
-    <button onclick="openExplorerInline()" 
-    class="w-full mt-2 bg-purple-600 py-2 rounded-xl">
-      🔍 Explore More Exercises
-    </button>
+const imageCache = new Map(); // url -> 'ok' | 'fail'
+
+function isKnownBroken(url) {
+  return store.brokenImages[url] === true || imageCache.get(url) === 'fail';
+}
+function markBroken(url) {
+  store.brokenImages[url] = true;
+  imageCache.set(url, 'fail');
+  saveStore();
+}
+function markOk(url) { imageCache.set(url, 'ok'); }
+
+/* Hand-drawn SVG illustration per muscle group. These are stylized,
+   animated, and look intentional — never like a broken-image icon. */
+function muscleSVG(muscle, exerciseName) {
+  const palette = {
+    chest:     { hi: '#FF6B4A', glow: 'rgba(255,107,74,0.25)'  },
+    back:      { hi: '#4ADEFF', glow: 'rgba(74,222,255,0.25)'  },
+    shoulders: { hi: '#FFCB47', glow: 'rgba(255,203,71,0.25)'  },
+    biceps:    { hi: '#FF4ACF', glow: 'rgba(255,74,207,0.25)'  },
+    triceps:   { hi: '#A78BFA', glow: 'rgba(167,139,250,0.25)' },
+    legs:      { hi: '#34D399', glow: 'rgba(52,211,153,0.25)'  },
+    core:      { hi: '#FB7185', glow: 'rgba(251,113,133,0.25)' },
+  };
+  const c = palette[muscle] || { hi: '#D4FF4F', glow: 'rgba(212,255,79,0.25)' };
+
+  // Highlight regions per muscle (rough body silhouette zones)
+  const highlights = {
+    chest:     '<ellipse cx="100" cy="78"  rx="28" ry="14" fill="url(#hl)"/>',
+    back:      '<rect x="72" y="62" width="56" height="42" rx="10" fill="url(#hl)"/>',
+    shoulders: '<circle cx="68"  cy="62" r="14" fill="url(#hl)"/><circle cx="132" cy="62" r="14" fill="url(#hl)"/>',
+    biceps:    '<ellipse cx="58"  cy="92" rx="9" ry="18" fill="url(#hl)"/><ellipse cx="142" cy="92" rx="9" ry="18" fill="url(#hl)"/>',
+    triceps:   '<ellipse cx="56"  cy="100" rx="8" ry="20" fill="url(#hl)"/><ellipse cx="144" cy="100" rx="8" ry="20" fill="url(#hl)"/>',
+    legs:      '<rect x="78" y="135" width="18" height="58" rx="9" fill="url(#hl)"/><rect x="104" y="135" width="18" height="58" rx="9" fill="url(#hl)"/>',
+    core:      '<rect x="84" y="105" width="32" height="32" rx="6" fill="url(#hl)"/>',
+  };
+
+  const safeName = (exerciseName || muscle).replace(/[<>&]/g, '');
+
+  return `
+  <svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" class="fallback">
+    <defs>
+      <radialGradient id="bg" cx="50%" cy="35%" r="70%">
+        <stop offset="0%" stop-color="${c.glow}"/>
+        <stop offset="100%" stop-color="transparent"/>
+      </radialGradient>
+      <linearGradient id="hl" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${c.hi}" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="${c.hi}" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="rgba(255,255,255,0.10)"/>
+        <stop offset="100%" stop-color="rgba(255,255,255,0.04)"/>
+      </linearGradient>
+    </defs>
+
+    <rect width="200" height="240" fill="url(#bg)"/>
+
+    <!-- Decorative grid -->
+    <g stroke="rgba(255,255,255,0.04)" stroke-width="0.5">
+      <line x1="0" y1="60"  x2="200" y2="60"/>
+      <line x1="0" y1="120" x2="200" y2="120"/>
+      <line x1="0" y1="180" x2="200" y2="180"/>
+      <line x1="50"  y1="0" x2="50"  y2="240"/>
+      <line x1="100" y1="0" x2="100" y2="240"/>
+      <line x1="150" y1="0" x2="150" y2="240"/>
+    </g>
+
+    <!-- Body silhouette -->
+    <g class="breathe">
+      <!-- head -->
+      <circle cx="100" cy="38" r="14" fill="url(#body)" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+      <!-- neck -->
+      <rect x="94" y="50" width="12" height="10" fill="url(#body)" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+      <!-- torso -->
+      <path d="M70,60 Q70,55 78,55 L122,55 Q130,55 130,60 L138,140 Q138,148 130,148 L70,148 Q62,148 62,140 Z"
+            fill="url(#body)" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+      <!-- arms -->
+      <rect x="48" y="62" width="16" height="62" rx="8" fill="url(#body)" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+      <rect x="136" y="62" width="16" height="62" rx="8" fill="url(#body)" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+      <!-- legs -->
+      <rect x="76" y="148" width="20" height="72" rx="9" fill="url(#body)" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+      <rect x="104" y="148" width="20" height="72" rx="9" fill="url(#body)" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+
+      <!-- Muscle highlight -->
+      ${highlights[muscle] || ''}
+    </g>
+
+    <!-- Label -->
+    <g>
+      <rect x="14" y="210" width="172" height="22" rx="6" fill="rgba(0,0,0,0.35)" stroke="rgba(255,255,255,0.10)"/>
+      <text x="100" y="225" text-anchor="middle"
+            font-family="Archivo, sans-serif" font-weight="800" font-size="11"
+            fill="${c.hi}" letter-spacing="1">
+        ${safeName.toUpperCase()}
+      </text>
+    </g>
+  </svg>`;
+}
+
+/* Mount an image element with skeleton + auto-fallback to SVG. */
+function mountImage(container, exercise) {
+  if (!container) return;
+  container.innerHTML = '';
+  container.classList.add('ex-img-wrap');
+
+  // Skeleton layer
+  const skel = document.createElement('div');
+  skel.className = 'skeleton skeleton-layer';
+  container.appendChild(skel);
+
+  const useFallback = isKnownBroken(exercise.gif);
+
+  if (useFallback) {
+    container.insertAdjacentHTML('beforeend', muscleSVG(exercise.muscle, exercise.name));
+    skel.style.opacity = '0';
+    setTimeout(() => skel.remove(), 300);
+    return;
+  }
+
+  const img = new Image();
+  img.loading = 'lazy';
+  img.decoding = 'async';
+  img.alt = exercise.name;
+  let settled = false;
+  const timeout = setTimeout(() => {
+    if (!settled) { onErr(); }
+  }, 6000);
+
+  const onOk = () => {
+    if (settled) return;
+    settled = true;
+    clearTimeout(timeout);
+    markOk(exercise.gif);
+    container.appendChild(img);
+    requestAnimationFrame(() => { skel.style.opacity = '0'; });
+    setTimeout(() => skel.remove(), 320);
+  };
+  const onErr = () => {
+    if (settled) return;
+    settled = true;
+    clearTimeout(timeout);
+    markBroken(exercise.gif);
+    container.insertAdjacentHTML('beforeend', muscleSVG(exercise.muscle, exercise.name));
+    requestAnimationFrame(() => { skel.style.opacity = '0'; });
+    setTimeout(() => skel.remove(), 320);
+  };
+  img.addEventListener('load', onOk);
+  img.addEventListener('error', onErr);
+  img.src = exercise.gif;
+}
+
+/* =====================================================================
+   5. UI COMPONENTS / HELPERS
+   ===================================================================== */
+
+function el(tag, cls, html) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (html !== undefined) e.innerHTML = html;
+  return e;
+}
+
+function difficultyBadge(d) {
+  const map = { beginner: ['badge-easy','Easy'], intermediate: ['badge-med','Med'], advanced: ['badge-hard','Hard'] };
+  const [cls, label] = map[d] || map.beginner;
+  return `<span class="badge ${cls}">${label}</span>`;
+}
+
+function muscleColor(muscle) {
+  const found = MUSCLE_GROUPS.find(m => m.id === muscle);
+  return found ? found.color : '#D4FF4F';
+}
+
+function muscleBadge(muscle) {
+  return `<span class="badge badge-muscle" style="color:${muscleColor(muscle)}; border-color:${muscleColor(muscle)}33;">${muscle}</span>`;
+}
+
+/* =====================================================================
+   6. PAGES
+   ===================================================================== */
+
+/* ===== HOME ===== */
+function renderHome() {
+  const root = document.getElementById('page-home');
+  const today = dayOfWeek();
+  const workout = PROGRAM[today];
+  const isRest = today === 'sunday';
+
+  // Today's completion %
+  const todayLog = store.completed[todayKey()];
+  const totalToday = workout.exercises.length || 1;
+  const doneToday = todayLog ? todayLog.exerciseIds.length : 0;
+  const pct = Math.round((doneToday / totalToday) * 100);
+
+  root.innerHTML = `
+    <!-- Hero / Today banner -->
+    <div class="relative overflow-hidden rounded-3xl mb-5 reveal" style="animation-delay:.05s;
+         background: linear-gradient(135deg, rgba(212,255,79,0.18) 0%, rgba(74,222,255,0.08) 60%, rgba(255,255,255,0.02) 100%);
+         border:1px solid var(--border-strong);">
+      <!-- Decorative shapes -->
+      <div class="absolute -right-10 -top-10 w-48 h-48 rounded-full" style="background: radial-gradient(closest-side, var(--accent-glow), transparent 70%);"></div>
+      <div class="absolute -left-12 -bottom-12 w-40 h-40 rounded-full" style="background: radial-gradient(closest-side, rgba(74,222,255,0.18), transparent 70%);"></div>
+
+      <div class="relative p-5">
+        <div class="flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full live-dot" style="background:var(--accent);"></span>
+          <span class="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--text-dim)]">${formatDate()}</span>
+        </div>
+        <h1 class="font-display font-black text-[34px] leading-[1.05] mt-1.5">${isRest ? 'Recovery<br/>Mode.' : `Today is<br/>${workout.name}.`}</h1>
+        <p class="text-sm text-[var(--text-dim)] mt-2">${isRest ? 'Sleep. Eat. Stretch. Tomorrow you push.' : workout.focus}</p>
+
+        ${!isRest ? `
+        <div class="flex items-end gap-4 mt-5">
+          <div class="flex-1">
+            <div class="flex justify-between text-[10px] font-mono uppercase tracking-widest text-[var(--text-mute)] mb-1.5">
+              <span>Today's Progress</span><span>${doneToday}/${totalToday}</span>
+            </div>
+            <div class="h-2 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.06);">
+              <div class="h-full transition-all duration-500" style="width:${pct}%; background: linear-gradient(90deg, var(--accent), var(--cyan));"></div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="font-display font-black text-2xl tabular-nums">${pct}<span class="text-base text-[var(--text-mute)]">%</span></div>
+          </div>
+        </div>
+
+        <button id="ctaStart" class="mt-5 w-full btn-accent py-4 flex items-center justify-center gap-2 text-[15px]">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          ${doneToday > 0 ? 'Continue Workout' : 'Start Workout'}
+        </button>
+        ` : `
+        <button class="mt-5 w-full btn-ghost py-4 flex items-center justify-center gap-2 text-[15px]" onclick="navigate('progress')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg>
+          View This Week's Progress
+        </button>
+        `}
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="grid grid-cols-3 gap-3 mb-5 reveal" style="animation-delay:.12s;">
+      ${statCard('Streak', store.streak + 'd', '🔥')}
+      ${statCard('Workouts', store.totalWorkouts, '💪')}
+      ${statCard('Total Sets', store.totalSets, '📊')}
+    </div>
+
+    <!-- Week schedule -->
+    <div class="mb-2 flex items-baseline justify-between reveal" style="animation-delay:.18s;">
+      <h2 class="font-display font-bold text-lg">This Week</h2>
+      <span class="text-[10px] font-mono uppercase tracking-widest text-[var(--text-mute)]">7-day split</span>
+    </div>
+
+    <div class="space-y-2.5 reveal" style="animation-delay:.22s;">
+      ${DAYS.map(dayKey => dayCard(dayKey)).join('')}
+    </div>
   `;
 
-  data.ex.forEach(ex=>{
-    const card=document.createElement("div");
-    card.className="card glass p-4 rounded-xl";
+  // Hooks
+  const cta = document.getElementById('ctaStart');
+  if (cta) cta.addEventListener('click', () => openWorkout(today));
 
-    card.innerHTML=`
-      <h3 class="font-medium">${ex[0]}</h3>
-      <p class="text-xs text-gray-400">${ex[2]}</p>
-
-      ${img(ex[1])}
-
-      <div class="text-xs mt-2 space-y-1">
-        <div class="text-yellow-300">⚡ ${ex[3]}</div>
-        <div class="text-red-400">❌ ${ex[4]}</div>
-        <div class="text-green-400">💡 ${ex[5]}</div>
-      </div>
-    `;
-
-    view.appendChild(card);
+  document.querySelectorAll('[data-day-card]').forEach(card => {
+    card.addEventListener('click', () => openWorkout(card.dataset.dayCard));
   });
 }
 
-// ---------- EXPLORER ----------
-function openExplorerInline(){
-  document.getElementById("landing").classList.add("hidden");
-  document.getElementById("workout").classList.add("hidden");
-  document.getElementById("explorer").classList.remove("hidden");
-
-  loadExercises("chest");
+function statCard(label, value, icon) {
+  return `
+    <div class="glass rounded-2xl p-3 text-center">
+      <div class="text-base mb-0.5">${icon}</div>
+      <div class="font-display font-black text-xl tabular-nums leading-none">${value}</div>
+      <div class="text-[9px] font-mono uppercase tracking-widest text-[var(--text-mute)] mt-1">${label}</div>
+    </div>
+  `;
 }
 
-function loadExercises(muscle){
-  const url=`https://fitnessprogramer.com/exercises/?muscle=${muscle}`;
-  const frame=document.getElementById("frame");
+function dayCard(dayKey) {
+  const w = PROGRAM[dayKey];
+  const today = dayOfWeek();
+  const isToday = dayKey === today;
+  const isRest = dayKey === 'sunday';
 
-  frame.src=url;
+  // Did the user complete it today/recently?
+  let completedToday = false;
+  if (isToday && store.completed[todayKey()] && store.completed[todayKey()].dayKey === dayKey) {
+    completedToday = store.completed[todayKey()].exerciseIds.length >= w.exercises.length && w.exercises.length > 0;
+  }
 
-  setTimeout(()=>{
-    try{
-      if(!frame.contentWindow){
-        window.open(url,"_blank");
-      }
-    }catch{
-      window.open(url,"_blank");
+  return `
+    <div data-day-card="${dayKey}" class="card p-4 cursor-pointer ${isToday ? 'today-glow' : ''}">
+      <div class="flex items-center gap-3">
+        <div class="flex-shrink-0 w-12 h-12 rounded-xl flex flex-col items-center justify-center font-display font-black"
+             style="background: ${isToday ? 'var(--accent)' : 'rgba(255,255,255,0.05)'};
+                    color: ${isToday ? '#0a0a0a' : 'var(--text)'};">
+          <div class="text-[9px] font-mono tracking-widest leading-none opacity-70">${isToday ? 'TODAY' : DAY_LABELS[dayKey].toUpperCase()}</div>
+          <div class="text-lg leading-none mt-0.5">${isToday ? '↗' : DAY_LABELS[dayKey][0]}</div>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <h3 class="font-bold text-[15px] truncate">${w.name}</h3>
+            ${completedToday ? '<span class="text-[var(--accent)]">✓</span>' : ''}
+          </div>
+          <p class="text-xs text-[var(--text-dim)] truncate">${w.focus}</p>
+          <div class="flex items-center gap-3 mt-1.5 text-[10px] text-[var(--text-mute)] font-mono uppercase tracking-wider">
+            ${isRest ? '<span>Rest</span>' : `
+              <span>${w.exercises.length} ex</span>
+              <span>·</span>
+              <span>${w.duration}min</span>
+              <span>·</span>
+              <span style="color:${
+                w.difficulty === 'advanced' ? 'var(--hard)' :
+                w.difficulty === 'intermediate' ? 'var(--med)' : 'var(--easy)'
+              };">${w.difficulty}</span>
+            `}
+          </div>
+        </div>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--text-mute)]">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </div>
+    </div>
+  `;
+}
+
+function formatDate() {
+  const d = new Date();
+  return d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+}
+
+/* ===== WORKOUT PAGE ===== */
+function openWorkout(dayKey) {
+  state.selectedDay = dayKey;
+  navigate('workout');
+}
+
+function renderWorkout() {
+  const root = document.getElementById('page-workout');
+  const dayKey = state.selectedDay;
+  const w = PROGRAM[dayKey];
+
+  const todayLog = (store.completed[todayKey()] && store.completed[todayKey()].dayKey === dayKey)
+    ? store.completed[todayKey()] : null;
+  const doneSet = new Set(todayLog ? todayLog.exerciseIds : []);
+  const totalEx = w.exercises.length;
+  const doneEx = doneSet.size;
+  const pct = totalEx ? Math.round((doneEx/totalEx)*100) : 0;
+
+  root.innerHTML = `
+    <button onclick="navigate('home')" class="flex items-center gap-1.5 text-sm text-[var(--text-dim)] mb-3">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg>
+      Back
+    </button>
+
+    <!-- Header -->
+    <div class="mb-4">
+      <div class="flex items-center gap-2 mb-1">
+        <span class="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--text-mute)]">${DAY_LONG[dayKey]}</span>
+        ${difficultyBadge(w.difficulty)}
+      </div>
+      <h1 class="font-display font-black text-[28px] leading-tight">${w.name}</h1>
+      <p class="text-sm text-[var(--text-dim)] mt-1">${w.focus}</p>
+    </div>
+
+    ${totalEx === 0 ? `
+      <div class="glass rounded-2xl p-6 text-center">
+        <div class="text-3xl mb-2">🧘</div>
+        <h3 class="font-bold mb-1">Rest Day</h3>
+        <p class="text-sm text-[var(--text-dim)]">Recovery is when you grow. Hydrate, eat well, sleep 7–9 hours.</p>
+      </div>
+    ` : `
+      <!-- Stats row -->
+      <div class="grid grid-cols-3 gap-2 mb-4">
+        <div class="glass rounded-xl p-2.5 text-center">
+          <div class="font-display font-black text-lg">${totalEx}</div>
+          <div class="text-[9px] font-mono uppercase tracking-widest text-[var(--text-mute)] mt-0.5">Exercises</div>
+        </div>
+        <div class="glass rounded-xl p-2.5 text-center">
+          <div class="font-display font-black text-lg">${w.duration}<span class="text-xs text-[var(--text-mute)]">min</span></div>
+          <div class="text-[9px] font-mono uppercase tracking-widest text-[var(--text-mute)] mt-0.5">Duration</div>
+        </div>
+        <div class="glass rounded-xl p-2.5 text-center">
+          <div class="font-display font-black text-lg">${pct}<span class="text-xs text-[var(--text-mute)]">%</span></div>
+          <div class="text-[9px] font-mono uppercase tracking-widest text-[var(--text-mute)] mt-0.5">Done</div>
+        </div>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="mb-4">
+        <div class="h-1.5 rounded-full overflow-hidden" style="background: rgba(255,255,255,0.06);">
+          <div class="h-full transition-all duration-500" style="width:${pct}%; background: linear-gradient(90deg, var(--accent), var(--cyan));"></div>
+        </div>
+      </div>
+
+      <!-- Warmup -->
+      ${w.warmup.length ? `
+      <div class="glass rounded-2xl p-3.5 mb-4">
+        <div class="flex items-center gap-2 mb-2">
+          <span style="color:var(--gold);">⚡</span>
+          <h3 class="font-bold text-sm">Warmup</h3>
+          <span class="text-[10px] font-mono uppercase tracking-widest text-[var(--text-mute)] ml-auto">~5 min</span>
+        </div>
+        <ul class="text-xs text-[var(--text-dim)] space-y-1">
+          ${w.warmup.map(t => `<li class="flex gap-2"><span class="text-[var(--text-mute)]">›</span>${t}</li>`).join('')}
+        </ul>
+      </div>
+      ` : ''}
+
+      <!-- Floating rest timer button -->
+      <button onclick="openTimer(90)" class="w-full mb-4 btn-ghost py-3 flex items-center justify-center gap-2 text-sm font-bold">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        Open Rest Timer
+      </button>
+
+      <!-- Exercises -->
+      <div class="space-y-3">
+        ${w.exercises.map((entry, idx) => exerciseRowHTML(entry, idx, doneSet)).join('')}
+      </div>
+
+      ${doneEx === totalEx && totalEx > 0 ? `
+        <div class="glass-strong rounded-2xl p-5 text-center mt-5" style="border-color:var(--accent);">
+          <div class="text-4xl mb-2">🏆</div>
+          <h3 class="font-display font-black text-lg">Workout Complete</h3>
+          <p class="text-sm text-[var(--text-dim)] mt-1">Great session. Refuel and recover.</p>
+        </div>
+      ` : ''}
+    `}
+  `;
+
+  // Mount images
+  w.exercises.forEach(entry => {
+    const ex = EXERCISES[entry.id];
+    const imgHolder = document.getElementById('img-' + entry.id);
+    if (ex && imgHolder) mountImage(imgHolder, ex);
+  });
+
+  // Bind row clicks (open detail modal)
+  document.querySelectorAll('[data-ex-row]').forEach(row => {
+    row.addEventListener('click', (e) => {
+      // ignore if the click came from the check button
+      if (e.target.closest('[data-ex-check]')) return;
+      openExerciseModal(row.dataset.exRow);
+    });
+  });
+
+  // Bind check buttons
+  document.querySelectorAll('[data-ex-check]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleExerciseDone(btn.dataset.exCheck);
+    });
+  });
+}
+
+function exerciseRowHTML(entry, idx, doneSet) {
+  const ex = EXERCISES[entry.id];
+  if (!ex) return '';
+  const isDone = doneSet.has(entry.id);
+
+  return `
+    <div data-ex-row="${entry.id}" class="card p-3 ${isDone ? 'exercise-done' : ''}">
+      <div class="flex gap-3">
+        <!-- Image -->
+        <div id="img-${entry.id}" class="ex-img-wrap" style="width: 96px; flex-shrink:0; aspect-ratio: 1/1;"></div>
+
+        <!-- Content -->
+        <div class="flex-1 min-w-0">
+          <div class="flex items-start gap-2">
+            <div class="flex-1 min-w-0">
+              <div class="text-[10px] font-mono uppercase tracking-widest text-[var(--text-mute)]">${String(idx+1).padStart(2,'0')}</div>
+              <h3 class="font-bold text-[14px] leading-tight mt-0.5 truncate">${ex.name}</h3>
+            </div>
+            <button data-ex-check="${entry.id}"
+                    class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all"
+                    style="background:${isDone ? 'var(--accent)' : 'rgba(255,255,255,0.05)'}; border:1px solid ${isDone ? 'var(--accent)' : 'var(--border)'};">
+              ${isDone ? `
+                <svg class="pop" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              ` : ''}
+            </button>
+          </div>
+
+          <div class="flex flex-wrap gap-1.5 mt-2">
+            ${muscleBadge(ex.muscle)}
+            ${difficultyBadge(ex.difficulty)}
+          </div>
+
+          <div class="flex items-center gap-3 mt-2 text-[11px] text-[var(--text-dim)] font-mono">
+            <span><span class="text-[var(--text-mute)]">SETS</span> ${entry.sets}</span>
+            <span><span class="text-[var(--text-mute)]">REPS</span> ${entry.reps}</span>
+            <span><span class="text-[var(--text-mute)]">REST</span> ${entry.rest}s</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* ===== EXPLORER ===== */
+function renderExplorer() {
+  const root = document.getElementById('page-explorer');
+  root.innerHTML = `
+    <div class="mb-4">
+      <h1 class="font-display font-black text-[28px] leading-tight">Exercise Library</h1>
+      <p class="text-sm text-[var(--text-dim)] mt-1">${Object.keys(EXERCISES).length} exercises · Filter by muscle</p>
+    </div>
+
+    <!-- Search -->
+    <div class="relative mb-3">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-mute)]" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input id="explorerSearchInput" type="text" placeholder="Search exercises..."
+             value="${state.explorerSearch}"
+             class="w-full glass rounded-xl pl-10 pr-10 py-3 text-sm placeholder:text-[var(--text-mute)]"/>
+      ${state.explorerSearch ? `<button id="clearSearch" class="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-mute)]">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>` : ''}
+    </div>
+
+    <!-- Muscle filter chips -->
+    <div class="scroll-x no-scrollbar -mx-5 px-5 mb-4">
+      ${MUSCLE_GROUPS.map(m => `
+        <button class="chip ${state.explorerFilter === m.id ? 'active' : ''}" data-muscle-filter="${m.id}">
+          ${m.id !== 'all' ? `<span class="w-1.5 h-1.5 rounded-full" style="background:${m.color};"></span>` : ''}
+          ${m.label}
+        </button>
+      `).join('')}
+    </div>
+
+    <!-- Results -->
+    <div id="explorerResults" class="grid grid-cols-2 gap-3"></div>
+  `;
+
+  // Bind interactions
+  document.getElementById('explorerSearchInput').addEventListener('input', (e) => {
+    state.explorerSearch = e.target.value;
+    renderExplorerResults();
+    // toggle clear button
+    const btn = document.getElementById('clearSearch');
+    if (state.explorerSearch && !btn) {
+      // re-render to add the clear button
+      renderExplorer();
+      document.getElementById('explorerSearchInput').focus();
     }
-  },1500);
+  });
+
+  document.querySelectorAll('[data-muscle-filter]').forEach(b => {
+    b.addEventListener('click', () => {
+      state.explorerFilter = b.dataset.muscleFilter;
+      renderExplorer();
+    });
+  });
+
+  const clear = document.getElementById('clearSearch');
+  if (clear) clear.addEventListener('click', () => {
+    state.explorerSearch = '';
+    renderExplorer();
+  });
+
+  renderExplorerResults();
 }
 
-function searchExercise(){
-  const val=document.getElementById("searchBox").value;
-  if(!val) return;
+function renderExplorerResults() {
+  const results = document.getElementById('explorerResults');
+  if (!results) return;
 
-  const url=`https://fitnessprogramer.com/?s=${val}`;
-  document.getElementById("frame").src=url;
+  const q = state.explorerSearch.trim().toLowerCase();
+  const filter = state.explorerFilter;
+
+  const list = Object.entries(EXERCISES).filter(([id, ex]) => {
+    if (filter !== 'all' && ex.muscle !== filter) return false;
+    if (q && !ex.name.toLowerCase().includes(q) && !ex.muscle.includes(q) && !ex.equipment.includes(q)) return false;
+    return true;
+  });
+
+  if (list.length === 0) {
+    results.outerHTML = `
+      <div id="explorerResults" class="col-span-2 glass rounded-2xl p-8 text-center">
+        <div class="text-3xl mb-2">🔍</div>
+        <h3 class="font-bold mb-1">No exercises found</h3>
+        <p class="text-sm text-[var(--text-dim)]">Try a different muscle or search term.</p>
+      </div>
+    `;
+    return;
+  }
+
+  results.innerHTML = list.map(([id, ex]) => `
+    <div data-explorer-card="${id}" class="card overflow-hidden cursor-pointer">
+      <div id="ex-img-${id}" class="ex-img-wrap" style="aspect-ratio: 1/1; border-radius: 0;"></div>
+      <div class="p-2.5">
+        <h3 class="font-bold text-[13px] leading-tight truncate">${ex.name}</h3>
+        <div class="flex items-center gap-1.5 mt-1.5">
+          <span class="w-1.5 h-1.5 rounded-full" style="background:${muscleColor(ex.muscle)};"></span>
+          <span class="text-[10px] font-mono uppercase tracking-widest text-[var(--text-mute)]">${ex.muscle}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Mount images & bind clicks
+  list.forEach(([id, ex]) => {
+    const holder = document.getElementById('ex-img-' + id);
+    if (holder) mountImage(holder, ex);
+  });
+  document.querySelectorAll('[data-explorer-card]').forEach(c => {
+    c.addEventListener('click', () => openExerciseModal(c.dataset.explorerCard));
+  });
 }
 
-// ---------- NAV ----------
-function goHome(){
-  document.getElementById("explorer").classList.add("hidden");
-  document.getElementById("workout").classList.add("hidden");
-  document.getElementById("landing").classList.remove("hidden");
+/* ===== PROGRESS PAGE ===== */
+function renderProgress() {
+  const root = document.getElementById('page-progress');
+
+  // Week stats
+  const weekDays = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0,10);
+    const log = store.completed[key];
+    weekDays.push({ date: d, key, log });
+  }
+
+  const totalDone = weekDays.reduce((sum, d) => sum + (d.log ? d.log.exerciseIds.length : 0), 0);
+
+  root.innerHTML = `
+    <div class="mb-5">
+      <h1 class="font-display font-black text-[28px] leading-tight">Your Progress</h1>
+      <p class="text-sm text-[var(--text-dim)] mt-1">Consistency builds strength.</p>
+    </div>
+
+    <!-- Big stats -->
+    <div class="grid grid-cols-2 gap-3 mb-5">
+      <div class="glass rounded-2xl p-4 relative overflow-hidden">
+        <div class="absolute -right-4 -top-4 w-20 h-20 rounded-full" style="background:radial-gradient(closest-side, rgba(212,255,79,0.20), transparent 70%);"></div>
+        <div class="relative">
+          <div class="text-[10px] font-mono uppercase tracking-widest text-[var(--text-mute)]">Current Streak</div>
+          <div class="font-display font-black text-4xl mt-1 tabular-nums">${store.streak}<span class="text-base text-[var(--text-mute)]"> days</span></div>
+          <div class="text-xs text-[var(--text-dim)] mt-1">${store.streak > 0 ? 'Keep it going 🔥' : 'Start today'}</div>
+        </div>
+      </div>
+      <div class="glass rounded-2xl p-4 relative overflow-hidden">
+        <div class="absolute -right-4 -top-4 w-20 h-20 rounded-full" style="background:radial-gradient(closest-side, rgba(74,222,255,0.20), transparent 70%);"></div>
+        <div class="relative">
+          <div class="text-[10px] font-mono uppercase tracking-widest text-[var(--text-mute)]">Total Workouts</div>
+          <div class="font-display font-black text-4xl mt-1 tabular-nums">${store.totalWorkouts}</div>
+          <div class="text-xs text-[var(--text-dim)] mt-1">${store.totalSets} sets logged</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Week heatmap -->
+    <div class="glass rounded-2xl p-4 mb-5">
+      <div class="flex items-baseline justify-between mb-3">
+        <h2 class="font-bold text-sm">Last 7 Days</h2>
+        <span class="text-[10px] font-mono uppercase tracking-widest text-[var(--text-mute)]">${totalDone} ex completed</span>
+      </div>
+      <div class="grid grid-cols-7 gap-2">
+        ${weekDays.map(d => {
+          const done = d.log ? d.log.exerciseIds.length : 0;
+          const intensity = Math.min(done / 6, 1);
+          const isToday = d.key === todayKey();
+          return `
+            <div class="text-center">
+              <div class="aspect-square rounded-lg flex items-center justify-center font-display font-black text-xs"
+                   style="background: ${intensity > 0 ? `rgba(212,255,79,${0.18 + intensity*0.6})` : 'rgba(255,255,255,0.04)'};
+                          border: 1px solid ${isToday ? 'var(--accent)' : (intensity > 0 ? 'rgba(212,255,79,0.4)' : 'var(--border)')};
+                          color: ${intensity > 0.3 ? '#0a0a0a' : 'var(--text)'};">
+                ${done || '·'}
+              </div>
+              <div class="text-[9px] font-mono uppercase tracking-widest text-[var(--text-mute)] mt-1">${['S','M','T','W','T','F','S'][d.date.getDay()]}</div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div class="space-y-2">
+      <button id="resetData" class="w-full glass rounded-xl py-3 text-sm text-[var(--text-dim)]">Reset all data</button>
+    </div>
+  `;
+
+  const reset = document.getElementById('resetData');
+  if (reset) reset.addEventListener('click', () => {
+    if (confirm('Reset all progress, streaks and history? This cannot be undone.')) {
+      store = {...defaultStore};
+      saveStore();
+      renderProgress();
+      updateStreakBadge();
+    }
+  });
 }
 
-renderLanding();
+/* =====================================================================
+   7. MODALS
+   ===================================================================== */
 
+function openExerciseModal(exId) {
+  const ex = EXERCISES[exId];
+  if (!ex) return;
+
+  const body = document.getElementById('exerciseModalBody');
+  body.innerHTML = `
+    <div id="modal-img-${exId}" class="ex-img-wrap" style="aspect-ratio: 16/10; border-radius: 0;"></div>
+
+    <div class="p-5">
+      <div class="flex items-center gap-2 mb-2">
+        ${muscleBadge(ex.muscle)}
+        ${difficultyBadge(ex.difficulty)}
+        <span class="badge badge-muscle">${ex.equipment}</span>
+      </div>
+
+      <h2 class="font-display font-black text-2xl leading-tight">${ex.name}</h2>
+
+      ${ex.secondary && ex.secondary.length ? `
+        <div class="mt-2 text-xs text-[var(--text-dim)]">
+          Also hits: <span class="text-[var(--text)]">${ex.secondary.join(', ')}</span>
+        </div>
+      ` : ''}
+
+      <!-- How to perform -->
+      <div class="mt-5">
+        <div class="flex items-center gap-2 mb-2">
+          <span style="color: var(--cyan);">📋</span>
+          <h3 class="font-bold text-sm">How to perform</h3>
+        </div>
+        <ol class="space-y-2">
+          ${ex.instructions.map((s, i) => `
+            <li class="flex gap-3 text-sm">
+              <span class="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-mono font-bold mt-0.5"
+                    style="background:rgba(255,255,255,0.06); color:var(--text-dim);">${i+1}</span>
+              <span class="text-[var(--text-dim)]">${s}</span>
+            </li>
+          `).join('')}
+        </ol>
+      </div>
+
+      <!-- Form cues -->
+      <div class="mt-5">
+        <div class="flex items-center gap-2 mb-2">
+          <span style="color: var(--gold);">⚡</span>
+          <h3 class="font-bold text-sm">Form Cues</h3>
+        </div>
+        <ul class="space-y-1.5">
+          ${ex.cues.map(c => `
+            <li class="flex gap-2 text-sm text-[var(--text-dim)]">
+              <span style="color:var(--gold);">›</span>${c}
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+
+      <!-- Common mistakes -->
+      <div class="mt-5">
+        <div class="flex items-center gap-2 mb-2">
+          <span style="color: var(--coral);">⚠</span>
+          <h3 class="font-bold text-sm">Common Mistakes</h3>
+        </div>
+        <ul class="space-y-1.5">
+          ${ex.mistakes.map(m => `
+            <li class="flex gap-2 text-sm text-[var(--text-dim)]">
+              <span style="color:var(--coral);">×</span>${m}
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+
+      <button onclick="openTimer(60)" class="btn-accent w-full py-3.5 mt-6 flex items-center justify-center gap-2 font-bold">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        Start Rest Timer
+      </button>
+
+      <div class="h-6"></div>
+    </div>
+  `;
+
+  const holder = document.getElementById('modal-img-' + exId);
+  if (holder) mountImage(holder, ex);
+
+  document.getElementById('exerciseModal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeExerciseModal() {
+  document.getElementById('exerciseModal').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+/* ===== REST TIMER ===== */
+function openTimer(seconds = 60) {
+  state.timer.total = seconds;
+  state.timer.remaining = seconds;
+  state.timer.paused = false;
+  state.timer.active = true;
+
+  document.getElementById('timerModal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+
+  updateTimerDisplay();
+  startTimerLoop();
+}
+
+function startTimerLoop() {
+  clearInterval(state.timer.intervalId);
+  state.timer.intervalId = setInterval(() => {
+    if (state.timer.paused) return;
+    state.timer.remaining -= 1;
+    if (state.timer.remaining <= 0) {
+      state.timer.remaining = 0;
+      updateTimerDisplay();
+      clearInterval(state.timer.intervalId);
+      playBeep();
+      const lbl = document.getElementById('timerLabel');
+      if (lbl) lbl.textContent = 'Time\'s up — back to work!';
+      return;
+    }
+    updateTimerDisplay();
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const disp = document.getElementById('timerDisplay');
+  const ring = document.getElementById('timerRing');
+  if (!disp || !ring) return;
+  const mm = Math.floor(state.timer.remaining / 60).toString().padStart(2,'0');
+  const ss = (state.timer.remaining % 60).toString().padStart(2,'0');
+  disp.textContent = `${mm}:${ss}`;
+  const circumference = 282.7;
+  const progress = 1 - (state.timer.remaining / state.timer.total);
+  ring.style.strokeDashoffset = -progress * circumference;
+}
+
+function closeTimer() {
+  state.timer.active = false;
+  clearInterval(state.timer.intervalId);
+  document.getElementById('timerModal').classList.add('hidden');
+  document.body.style.overflow = '';
+  const lbl = document.getElementById('timerLabel');
+  if (lbl) lbl.textContent = 'Take a breath';
+  document.getElementById('timerToggle').textContent = 'PAUSE';
+}
+
+function playBeep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value = 880;
+    g.gain.value = 0.05;
+    o.start();
+    setTimeout(() => { o.stop(); ctx.close(); }, 220);
+    // Haptic if supported
+    if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
+  } catch {}
+}
+
+/* =====================================================================
+   8. INTERACTION HANDLERS
+   ===================================================================== */
+
+function toggleExerciseDone(exId) {
+  const today = todayKey();
+  const dayKey = state.selectedDay;
+
+  // Init today's log if needed (or reset if it was for a different workout)
+  if (!store.completed[today] || store.completed[today].dayKey !== dayKey) {
+    store.completed[today] = { dayKey, exerciseIds: [] };
+  }
+  const log = store.completed[today];
+  const i = log.exerciseIds.indexOf(exId);
+  if (i >= 0) {
+    log.exerciseIds.splice(i, 1);
+  } else {
+    log.exerciseIds.push(exId);
+    // Find the entry to count sets
+    const entry = PROGRAM[dayKey].exercises.find(e => e.id === exId);
+    if (entry) store.totalSets += entry.sets;
+
+    // If this completes the workout
+    const workout = PROGRAM[dayKey];
+    if (log.exerciseIds.length === workout.exercises.length) {
+      // Bump streak / totals (once per day)
+      if (store.lastWorkoutDate !== today) {
+        store.totalWorkouts += 1;
+
+        // Streak logic
+        const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+        const ykey = yesterday.toISOString().slice(0,10);
+        if (store.lastWorkoutDate === ykey || store.streak === 0) {
+          store.streak = (store.lastWorkoutDate === ykey) ? store.streak + 1 : 1;
+        } else {
+          store.streak = 1;
+        }
+        store.lastWorkoutDate = today;
+      }
+    }
+  }
+  saveStore();
+  updateStreakBadge();
+  renderWorkout();
+}
+
+function updateStreakBadge() {
+  const el = document.getElementById('streakCount');
+  if (el) el.textContent = store.streak;
+}
+
+/* =====================================================================
+   9. NAVIGATION / INIT
+   ===================================================================== */
+
+function navigate(page) {
+  state.page = page;
+  ['home','workout','explorer','progress'].forEach(p => {
+    document.getElementById('page-' + p).classList.toggle('hidden', p !== page);
+  });
+
+  // Re-run anim
+  const active = document.getElementById('page-' + page);
+  active.classList.remove('page'); void active.offsetWidth; active.classList.add('page');
+
+  if (page === 'home')     renderHome();
+  if (page === 'workout')  renderWorkout();
+  if (page === 'explorer') renderExplorer();
+  if (page === 'progress') renderProgress();
+
+  // Update bottom nav state
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    const isActive = b.dataset.nav === page || (page === 'workout' && b.dataset.nav === 'home');
+    b.style.color = isActive ? 'var(--accent)' : 'var(--text-dim)';
+  });
+
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+function bindGlobal() {
+  // Bottom nav
+  document.querySelectorAll('[data-nav]').forEach(b => {
+    b.addEventListener('click', () => navigate(b.dataset.nav));
+  });
+
+  // Modal close
+  document.querySelectorAll('[data-close-modal]').forEach(b => {
+    b.addEventListener('click', closeExerciseModal);
+  });
+
+  // Timer controls
+  document.querySelectorAll('[data-timer-preset]').forEach(b => {
+    b.addEventListener('click', () => {
+      const s = parseInt(b.dataset.timerPreset, 10);
+      state.timer.total = s; state.timer.remaining = s; state.timer.paused = false;
+      const lbl = document.getElementById('timerLabel');
+      if (lbl) lbl.textContent = 'Take a breath';
+      document.getElementById('timerToggle').textContent = 'PAUSE';
+      updateTimerDisplay();
+      startTimerLoop();
+    });
+  });
+
+  document.getElementById('timerToggle').addEventListener('click', () => {
+    if (state.timer.remaining === 0) {
+      // Restart
+      state.timer.remaining = state.timer.total;
+      state.timer.paused = false;
+      document.getElementById('timerLabel').textContent = 'Take a breath';
+      startTimerLoop();
+      document.getElementById('timerToggle').textContent = 'PAUSE';
+      return;
+    }
+    state.timer.paused = !state.timer.paused;
+    document.getElementById('timerToggle').textContent = state.timer.paused ? 'RESUME' : 'PAUSE';
+  });
+
+  document.getElementById('timerClose').addEventListener('click', closeTimer);
+}
+
+function init() {
+  bindGlobal();
+  updateStreakBadge();
+  navigate('home');
+}
+
+init();
 </script>
 
 </body>
