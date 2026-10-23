@@ -1,160 +1,208 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 220" width="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 280" width="100%" role="img" aria-label="Anmol K Sachan — Security Researcher, Pentester, Bug Bounty Hunter">
+  <title>Anmol K Sachan — Security Researcher · Pentester · Bug Bounty Hunter</title>
   <style>
     :root {
-      --bg:      #0d1117;
-      --bg2:     #161b22;
+      --bg:      #0b0f14;
+      --bg2:     #121820;
       --accent:  #00e5b0;
-      --accent2: #7c3aed;
+      --accent2: #a78bfa;
       --text:    #e6edf3;
-      --muted:   #8b949e;
-      --grid:    rgba(0,229,176,0.06);
-      --dim:     rgba(0,229,176,0.18);
-      --border:  rgba(0,229,176,0.25);
+      --muted:   #7d8590;
+      --grid:    rgba(0,229,176,0.10);
+      --dim:     rgba(0,229,176,0.22);
+      --border:  rgba(0,229,176,0.28);
     }
     @media (prefers-color-scheme: light) {
       :root {
-        --bg:      #ffffff;
-        --bg2:     #f0f6ff;
+        --bg:      #fbfcfd;
+        --bg2:     #eef2f6;
         --accent:  #0d7a5f;
-        --accent2: #5b21b6;
+        --accent2: #6d28d9;
         --text:    #0d1117;
         --muted:   #57606a;
-        --grid:    rgba(13,122,95,0.05);
-        --dim:     rgba(13,122,95,0.15);
-        --border:  rgba(13,122,95,0.3);
+        --grid:    rgba(13,122,95,0.12);
+        --dim:     rgba(13,122,95,0.25);
+        --border:  rgba(13,122,95,0.35);
       }
     }
-    @keyframes blink   { 0%,49%{opacity:1} 50%,100%{opacity:0} }
-    @keyframes pulse   { 0%,100%{opacity:.25} 50%{opacity:.9} }
-    @keyframes shimmer { 0%{stroke-dashoffset:0} 100%{stroke-dashoffset:-40} }
-    @keyframes fadeup  { 0%{opacity:0;transform:translateY(6px)} 100%{opacity:1;transform:translateY(0)} }
-    .cursor  { animation: blink 1.1s step-end infinite; }
-    .shimmer { animation: shimmer 3s linear infinite; }
-    .p1 { animation: pulse 2.8s ease-in-out infinite; }
-    .p2 { animation: pulse 2.8s ease-in-out infinite .6s; }
-    .p3 { animation: pulse 2.8s ease-in-out infinite 1.2s; }
-    .p4 { animation: pulse 2.8s ease-in-out infinite 1.8s; }
+    .mono { font-family: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, 'DejaVu Sans Mono', 'Courier New', monospace; }
+    .bg   { fill: var(--bg); }
+    .bg2  { fill: var(--bg2); }
+    .acc  { fill: var(--accent); }
+    .acc2 { fill: var(--accent2); }
+    .txt  { fill: var(--text); }
+    .mut  { fill: var(--muted); }
+    .gridf{ fill: var(--grid); }
+    .s-acc{ stroke: var(--accent); fill: none; }
+    .s-dim{ stroke: var(--dim); fill: none; }
+    .s-bor{ stroke: var(--border); fill: none; }
+    .st-acc { stop-color: var(--accent); }
+
+    @keyframes blink   { 0%,49% { opacity: 1 } 50%,100% { opacity: 0 } }
+    @keyframes scan    { 0% { transform: translateY(-70px) } 100% { transform: translateY(300px) } }
+    @keyframes glitchA {
+      0%,86%,100% { opacity: 0; transform: translate(0,0) }
+      87% { opacity: .85; transform: translate(-3px, 1px) }
+      88% { opacity: 0 }
+      90% { opacity: .7;  transform: translate(2px, -1px) }
+      91% { opacity: 0 }
+    }
+    @keyframes glitchB {
+      0%,86%,100% { opacity: 0; transform: translate(0,0) }
+      87% { opacity: .85; transform: translate(3px, -1px) }
+      88% { opacity: 0 }
+      90% { opacity: .7;  transform: translate(-2px, 1px) }
+      91% { opacity: 0 }
+    }
+    .cursor  { animation: blink 1s step-end infinite; }
+    .scan    { animation: scan 7s linear infinite; }
+    .glitchA { animation: glitchA 7s linear infinite; }
+    .glitchB { animation: glitchB 7s linear infinite; }
   </style>
 
-  <!-- Base background -->
-  <rect width="900" height="220" fill="var(--bg)"/>
+  <defs>
+    <clipPath id="frame"><rect width="1000" height="280" rx="14"/></clipPath>
+    <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+      <circle cx="11" cy="11" r="0.9" class="gridf"/>
+    </pattern>
+    <linearGradient id="scanGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   class="st-acc" stop-opacity="0"/>
+      <stop offset=".85" class="st-acc" stop-opacity=".07"/>
+      <stop offset="1"   class="st-acc" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="underline" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" class="st-acc" stop-opacity=".9"/>
+      <stop offset="1" class="st-acc" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="sweep" gradientUnits="userSpaceOnUse" x1="62" y1="12" x2="18" y2="-58">
+      <stop offset="0" class="st-acc" stop-opacity=".45"/>
+      <stop offset="1" class="st-acc" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="radarFill" cx="0" cy="0" r="92" gradientUnits="userSpaceOnUse">
+      <stop offset="0" class="st-acc" stop-opacity=".08"/>
+      <stop offset="1" class="st-acc" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-20%" y="-60%" width="140%" height="220%">
+      <feGaussianBlur stdDeviation="9"/>
+    </filter>
+    <clipPath id="typing">
+      <rect x="82" y="70" height="24" width="0">
+        <animate attributeName="width" begin="0.4s" dur="0.9s" fill="freeze" calcMode="discrete"
+                 keyTimes="0;0.1667;0.3333;0.5;0.6667;0.8333;1"
+                 values="0;8.4;16.8;25.2;33.6;42;50.4"/>
+      </rect>
+    </clipPath>
+  </defs>
 
-  <!-- Subtle grid overlay -->
-  <g opacity="1">
-    <line x1="0" y1="44" x2="900" y2="44"  stroke="var(--grid)" stroke-width="1"/>
-    <line x1="0" y1="88" x2="900" y2="88"  stroke="var(--grid)" stroke-width="1"/>
-    <line x1="0" y1="132" x2="900" y2="132" stroke="var(--grid)" stroke-width="1"/>
-    <line x1="0" y1="176" x2="900" y2="176" stroke="var(--grid)" stroke-width="1"/>
-    <line x1="112" y1="0" x2="112" y2="220" stroke="var(--grid)" stroke-width="1"/>
-    <line x1="225" y1="0" x2="225" y2="220" stroke="var(--grid)" stroke-width="1"/>
-    <line x1="337" y1="0" x2="337" y2="220" stroke="var(--grid)" stroke-width="1"/>
-    <line x1="450" y1="0" x2="450" y2="220" stroke="var(--grid)" stroke-width="1"/>
-    <line x1="562" y1="0" x2="562" y2="220" stroke="var(--grid)" stroke-width="1"/>
-    <line x1="675" y1="0" x2="675" y2="220" stroke="var(--grid)" stroke-width="1"/>
-    <line x1="787" y1="0" x2="787" y2="220" stroke="var(--grid)" stroke-width="1"/>
+  <g clip-path="url(#frame)">
+    <!-- Background -->
+    <rect width="1000" height="280" class="bg"/>
+    <rect width="1000" height="280" fill="url(#dots)"/>
+    <rect class="scan" x="0" y="0" width="1000" height="70" fill="url(#scanGrad)"/>
+
+    <!-- Window chrome -->
+    <rect width="1000" height="36" class="bg2"/>
+    <line x1="0" y1="36" x2="1000" y2="36" class="s-bor" stroke-width="1"/>
+    <circle cx="22" cy="18" r="5.5" fill="#ff5f56" opacity=".9"/>
+    <circle cx="42" cy="18" r="5.5" fill="#ffbd2e" opacity=".9"/>
+    <circle cx="62" cy="18" r="5.5" fill="#27c93f" opacity=".9"/>
+    <text x="500" y="22.5" text-anchor="middle" class="mono mut" font-size="12">fr13nd0x7f@kali: ~/recon</text>
+    <text x="984" y="22.5" text-anchor="end" class="mono mut" font-size="11" opacity=".7">zsh</text>
+
+    <!-- Prompt 1: whoami -->
+    <text x="48" y="66" class="mono" font-size="14">
+      <tspan class="acc">┌──(</tspan><tspan class="acc2" font-weight="700">fr13nd0x7f㉿kali</tspan><tspan class="acc">)-[</tspan><tspan class="txt">~</tspan><tspan class="acc">]</tspan>
+    </text>
+    <text x="48" y="88" class="mono acc" font-size="14" textLength="25.2" lengthAdjust="spacingAndGlyphs">└─$</text>
+    <text x="82" y="88" class="mono txt" font-size="14" textLength="50.4" lengthAdjust="spacingAndGlyphs" clip-path="url(#typing)">whoami</text>
+    <rect x="82" y="75" width="8" height="16" rx="1" class="acc">
+      <animate attributeName="x" begin="0.4s" dur="0.9s" fill="freeze" calcMode="discrete"
+               keyTimes="0;0.1667;0.3333;0.5;0.6667;0.8333;1"
+               values="82;90.4;98.8;107.2;115.6;124;132.4"/>
+      <set attributeName="opacity" to="0" begin="1.4s" fill="freeze"/>
+    </rect>
+
+    <!-- Output: name -->
+    <g opacity="0">
+      <animate attributeName="opacity" begin="1.4s" dur="0.45s" fill="freeze"
+               values="0;1;0.2;1;0.5;1" keyTimes="0;0.2;0.4;0.6;0.8;1"/>
+      <text x="48" y="142" class="mono acc" font-size="46" font-weight="700" textLength="400" lengthAdjust="spacingAndGlyphs" filter="url(#glow)" opacity=".35">Anmol K Sachan</text>
+      <text x="48" y="142" class="mono acc2 glitchA" font-size="46" font-weight="700" textLength="400" lengthAdjust="spacingAndGlyphs">Anmol K Sachan</text>
+      <text x="48" y="142" class="mono acc glitchB" font-size="46" font-weight="700" textLength="400" lengthAdjust="spacingAndGlyphs">Anmol K Sachan</text>
+      <text x="48" y="142" class="mono txt" font-size="46" font-weight="700" textLength="400" lengthAdjust="spacingAndGlyphs">Anmol K Sachan</text>
+    </g>
+
+    <!-- Output: roles -->
+    <g opacity="0">
+      <animate attributeName="opacity" begin="1.75s" dur="0.4s" fill="freeze" values="0;1"/>
+      <rect x="48" y="153" width="400" height="1.5" fill="url(#underline)"/>
+      <text x="48" y="180" class="mono" font-size="14" style="white-space:pre"><tspan class="acc">▸ </tspan><tspan class="txt">Security Researcher</tspan><tspan class="acc2">  //  </tspan><tspan class="txt">Pentester</tspan><tspan class="acc2">  //  </tspan><tspan class="txt">Bug Bounty Hunter</tspan></text>
+    </g>
+
+    <!-- Prompt 2: idle cursor -->
+    <g opacity="0">
+      <set attributeName="opacity" to="1" begin="2.1s" fill="freeze"/>
+      <text x="48" y="212" class="mono" font-size="14">
+        <tspan class="acc">┌──(</tspan><tspan class="acc2" font-weight="700">fr13nd0x7f㉿kali</tspan><tspan class="acc">)-[</tspan><tspan class="txt">~</tspan><tspan class="acc">]</tspan>
+      </text>
+      <text x="48" y="233" class="mono acc" font-size="14" textLength="25.2" lengthAdjust="spacingAndGlyphs">└─$</text>
+      <rect class="cursor acc" x="82" y="220" width="8" height="16" rx="1"/>
+    </g>
+
+    <!-- Radar -->
+    <g transform="translate(838,146)">
+      <circle r="92" fill="url(#radarFill)"/>
+      <circle r="92" class="s-dim" stroke-width="5" stroke-dasharray="1.5 6.53"/>
+      <circle r="84" class="s-bor" stroke-width="1"/>
+      <circle r="56" class="s-dim" stroke-width="1"/>
+      <circle r="28" class="s-dim" stroke-width="1"/>
+      <line x1="-92" y1="0" x2="92" y2="0" class="s-dim" stroke-width="1"/>
+      <line x1="0" y1="-92" x2="0" y2="92" class="s-dim" stroke-width="1"/>
+      <text x="-92" y="-100" class="mono mut" font-size="9" letter-spacing="2">ATTACK SURFACE</text>
+      <text x="92"  y="-100" text-anchor="end" class="mono acc" font-size="9" letter-spacing="1">● LIVE</text>
+
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="4s" repeatCount="indefinite"/>
+        <path d="M0,0 L84,0 A84,84 0 0,0 42,-72.7 Z" fill="url(#sweep)"/>
+        <line x1="0" y1="0" x2="84" y2="0" class="s-acc" stroke-width="1.5"/>
+      </g>
+
+      <!-- Blips flash as the sweep passes them -->
+      <g opacity=".15">
+        <animate attributeName="opacity" dur="4s" repeatCount="indefinite" keyTimes="0;0.083;0.088;0.588;1" values=".15;.15;1;.15;.15"/>
+        <circle cx="48.5" cy="28" r="3" class="acc"/>
+        <text x="55" y="31" class="mono acc" font-size="9">XSS</text>
+      </g>
+      <g opacity=".15">
+        <animate attributeName="opacity" dur="4s" repeatCount="indefinite" keyTimes="0;0.347;0.352;0.852;1" values=".15;.15;1;.15;.15"/>
+        <circle cx="-40.2" cy="57.3" r="3" class="acc2"/>
+        <text x="-34" y="60.5" class="mono acc2" font-size="9">IDOR</text>
+      </g>
+      <g opacity=".3">
+        <animate attributeName="opacity" dur="4s" repeatCount="indefinite" keyTimes="0;0.088;0.583;0.588;1" values=".3;.15;.15;1;.3"/>
+        <circle cx="-32.9" cy="-19" r="3" class="acc"/>
+        <text x="-27" y="-15.5" class="mono acc" font-size="9">SSRF</text>
+      </g>
+      <g opacity=".72">
+        <animate attributeName="opacity" dur="4s" repeatCount="indefinite" keyTimes="0;0.338;0.833;0.838;1" values=".72;.15;.15;1;.72"/>
+        <circle cx="38" cy="-65.8" r="3" class="acc2"/>
+        <text x="44" y="-62.5" class="mono acc2" font-size="9">RCE</text>
+      </g>
+
+      <circle r="3" class="acc"/>
+    </g>
+
+    <!-- tmux-style status bar -->
+    <rect x="0" y="248" width="1000" height="32" class="bg2"/>
+    <line x1="0" y1="248" x2="1000" y2="248" class="s-bor" stroke-width="1"/>
+    <rect x="0" y="248" width="92" height="32" class="acc"/>
+    <text x="46" y="268.5" text-anchor="middle" class="mono bg" font-size="11" font-weight="700" letter-spacing="1.5">◉ RECON</text>
+    <text x="108" y="268.5" class="mono" font-size="11.5" style="white-space:pre"><tspan class="acc" font-weight="700">0:research*</tspan><tspan class="mut">   1:pentest   2:bug-bounty   3:report</tspan></text>
+    <text x="984" y="268.5" text-anchor="end" class="mono mut" font-size="11.5">
+      <tspan>0x7F </tspan><tspan class="acc2">≡</tspan><tspan> 127.0.0.1 </tspan><tspan class="acc2">≡</tspan><tspan class="acc"> ~/home</tspan>
+    </text>
   </g>
 
-  <!-- Pulsing accent dots (scattered) -->
-  <circle class="p1" cx="54"  cy="36"  r="2.5" fill="var(--accent)"/>
-  <circle class="p2" cx="176" cy="192" r="2"   fill="var(--accent)"/>
-  <circle class="p3" cx="724" cy="28"  r="2.5" fill="var(--accent)"/>
-  <circle class="p4" cx="848" cy="188" r="2"   fill="var(--accent)"/>
-  <circle class="p2" cx="90"  cy="140" r="1.5" fill="var(--accent2)"/>
-  <circle class="p3" cx="820" cy="80"  r="1.5" fill="var(--accent2)"/>
-  <circle class="p1" cx="450" cy="16"  r="2"   fill="var(--accent2)"/>
-
-  <!-- Top shimmer line -->
-  <line x1="0" y1="1" x2="900" y2="1"
-        stroke="var(--accent)" stroke-width="2"
-        stroke-dasharray="18 6"
-        class="shimmer"/>
-
-  <!-- Bottom shimmer line -->
-  <line x1="900" y1="219" x2="0" y2="219"
-        stroke="var(--accent)" stroke-width="2"
-        stroke-dasharray="18 6"
-        class="shimmer"/>
-
-  <!-- Left bracket decoration -->
-  <path d="M40 68 L24 68 L24 152 L40 152"
-        fill="none" stroke="var(--border)" stroke-width="1.5" stroke-linecap="round"/>
-
-  <!-- Right bracket decoration -->
-  <path d="M860 68 L876 68 L876 152 L860 152"
-        fill="none" stroke="var(--border)" stroke-width="1.5" stroke-linecap="round"/>
-
-  <!-- Corner accent marks — top-left -->
-  <line x1="0"  y1="20" x2="16" y2="20" stroke="var(--accent)" stroke-width="1.5"/>
-  <line x1="20" y1="0"  x2="20" y2="16" stroke="var(--accent)" stroke-width="1.5"/>
-
-  <!-- Corner accent marks — top-right -->
-  <line x1="900" y1="20" x2="884" y2="20" stroke="var(--accent)" stroke-width="1.5"/>
-  <line x1="880" y1="0"  x2="880" y2="16" stroke="var(--accent)" stroke-width="1.5"/>
-
-  <!-- Corner accent marks — bottom-left -->
-  <line x1="0"  y1="200" x2="16"  y2="200" stroke="var(--accent)" stroke-width="1.5"/>
-  <line x1="20" y1="220" x2="20"  y2="204" stroke="var(--accent)" stroke-width="1.5"/>
-
-  <!-- Corner accent marks — bottom-right -->
-  <line x1="900" y1="200" x2="884" y2="200" stroke="var(--accent)" stroke-width="1.5"/>
-  <line x1="880" y1="220" x2="880" y2="204" stroke="var(--accent)" stroke-width="1.5"/>
-
-  <!-- Prompt symbol -->
-  <text x="64" y="103"
-        font-family="'Courier New', 'Consolas', monospace"
-        font-size="22" font-weight="bold"
-        fill="var(--accent)" opacity="0.55">~/</text>
-
-  <!-- Name -->
-  <text x="450" y="108"
-        text-anchor="middle"
-        font-family="'Courier New', 'Consolas', monospace"
-        font-size="46" font-weight="bold" letter-spacing="-0.5"
-        fill="var(--text)">Anmol K Sachan</text>
-
-  <!-- Blinking cursor -->
-  <rect class="cursor" x="735" y="71" width="4" height="42" rx="1" fill="var(--accent)"/>
-
-  <!-- Handle -->
-  <text x="450" y="138"
-        text-anchor="middle"
-        font-family="'Courier New', 'Consolas', monospace"
-        font-size="13" letter-spacing="1.5"
-        fill="var(--accent)">@FR13ND0x7F</text>
-
-  <!-- Separator dots -->
-  <text x="450" y="163"
-        text-anchor="middle"
-        font-family="'Courier New', 'Consolas', monospace"
-        font-size="6" letter-spacing="6"
-        fill="var(--dim)">◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆</text>
-
-  <!-- Role pills -->
-  <!-- Security Researcher -->
-  <rect x="190" y="172" width="170" height="26" rx="13"
-        fill="none" stroke="var(--dim)" stroke-width="1"/>
-  <text x="275" y="189"
-        text-anchor="middle"
-        font-family="'Courier New', 'Consolas', monospace"
-        font-size="11" letter-spacing="0.5"
-        fill="var(--muted)">Security Researcher</text>
-
-  <!-- Pentester -->
-  <rect x="378" y="172" width="90" height="26" rx="13"
-        fill="none" stroke="var(--dim)" stroke-width="1"/>
-  <text x="423" y="189"
-        text-anchor="middle"
-        font-family="'Courier New', 'Consolas', monospace"
-        font-size="11" letter-spacing="0.5"
-        fill="var(--muted)">Pentester</text>
-
-  <!-- Bug Bounty Hunter -->
-  <rect x="485" y="172" width="152" height="26" rx="13"
-        fill="none" stroke="var(--dim)" stroke-width="1"/>
-  <text x="561" y="189"
-        text-anchor="middle"
-        font-family="'Courier New', 'Consolas', monospace"
-        font-size="11" letter-spacing="0.5"
-        fill="var(--muted)">Bug Bounty Hunter</text>
-
+  <!-- Frame border -->
+  <rect x="0.5" y="0.5" width="999" height="279" rx="14" class="s-bor" stroke-width="1"/>
 </svg>
