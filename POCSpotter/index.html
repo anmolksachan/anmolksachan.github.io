@@ -1007,7 +1007,7 @@ footer a:hover{color:var(--accent)}
   </div>
   <div style="margin-top:14px;display:flex;justify-content:center;gap:10px;position:relative;z-index:1">
     <button class="nav-pill" onclick="toggleApiDocs()">📡 Free API Docs</button>
-    <a class="nav-pill" href="https://github.com/anmolksachan/" target="_blank">⭐ Follow on GitHub</a>
+    <a class="nav-pill" href="https://github.com/anmolksachan/POCSpotter" target="_blank">⭐ Star on GitHub</a>
   </div>
 </header>
 
@@ -1075,7 +1075,7 @@ footer a:hover{color:var(--accent)}
 <footer>
   <div>Built with ♥ by <a href="https://github.com/anmolksachan" target="_blank">Anmol K Sachan</a> — @FR13ND0x7F</div>
   <div class="footer-links">
-    <a href="https://github.com/anmolksachan/" target="_blank">GitHub</a>
+    <a href="https://github.com/anmolksachan/POCSpotter" target="_blank">GitHub</a>
     <a href="https://twitter.com/FR13ND0x7f" target="_blank">Twitter</a>
     <a href="https://anmolksachan.github.io" target="_blank">Portfolio</a>
   </div>
@@ -1154,23 +1154,22 @@ async function fetchText(url) {
   } catch { return null; }
 }
 
-// CISA KEV has inconsistent CORS headers — try direct, then two CORS proxies.
-// This makes it work on GitHub Pages without needing a local server.
+// CISA blocks CORS — fetch via proxy with per-attempt timeout so we never hang.
+function _timed(ms) {
+  const c = new AbortController();
+  setTimeout(() => c.abort(), ms);
+  return c.signal;
+}
 async function fetchKEV() {
   const target = API.kev();
-  // 1. Try direct (works on GitHub Pages when CISA sends CORS headers)
+  // 1. allorigins.win — 5s timeout
   try {
-    const r = await fetch(target, {headers:{Accept:'application/json'}});
+    const r = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`, {signal:_timed(5000)});
     if (r.ok) return r.json();
   } catch {}
-  // 2. corsproxy.io fallback
+  // 2. thingproxy — 5s timeout
   try {
-    const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(target)}`);
-    if (r.ok) return r.json();
-  } catch {}
-  // 3. allorigins fallback
-  try {
-    const r = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`);
+    const r = await fetch(`https://thingproxy.freeboard.io/fetch/${target}`, {signal:_timed(5000)});
     if (r.ok) return r.json();
   } catch {}
   return null;
@@ -1241,10 +1240,11 @@ async function doSearch(override) {
   document.getElementById('results').style.display = 'none';
   showLoader();
 
-  // Parallel fetches
+  // Parallel fetches — KEV has an extra 6s hard cap so it never blocks results
+  const kevTimeout = new Promise(res => setTimeout(() => res(null), 6000));
   const [nvd, kev, trickestTxt, ghRepos, nuclei] = await Promise.all([
     fetchJSON(API.nvd(cve)).then(d=>{stepDone(0);return d;}),
-    fetchKEV().then(d=>{stepDone(1);return d;}),
+    Promise.race([fetchKEV(), kevTimeout]).then(d=>{stepDone(1);return d;}),
     fetchText(API.trickest(cve,year)).then(d=>{stepDone(2);return d;}),
     fetchJSON(API.ghRepos(cve)).then(d=>{stepDone(3);return d;}),
     fetchJSON(API.nuclei(cve)).then(d=>{stepDone(4);return d;}),
@@ -1633,9 +1633,10 @@ async function loadTrendingKEV() {
     return;
   }
   try {
-    const data = await fetchKEV();
+    const kevCap = new Promise(res => setTimeout(() => res(null), 11000));
+    const data = await Promise.race([fetchKEV(), kevCap]);
     if (!data?.vulnerabilities?.length) {
-      grid.innerHTML = '<div class="trending-loading">Could not load KEV data.</div>';
+      grid.innerHTML = '<div class="trending-loading">Could not load KEV data. <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank">View on CISA ↗</a></div>';
       return;
     }
     // Most recently added (last 8)
