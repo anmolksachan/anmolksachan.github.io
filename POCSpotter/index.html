@@ -1,150 +1,1685 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CVE POC Lookup</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-      color: #333;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      box-sizing: border-box;
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+
+<!-- Primary SEO -->
+<title>POCSpotter — CVE POC & Exploit Search Engine | Find CVE Exploits Instantly</title>
+<meta name="description" content="POCSpotter is a free one-stop CVE exploit and POC search engine. Find proof-of-concept exploits, CVSS severity, CISA KEV status, Nuclei templates, Metasploit modules, Exploit-DB entries and GitHub POCs for any CVE instantly.">
+<meta name="keywords" content="CVE POC search, CVE exploit finder, proof of concept exploit, CVE lookup tool, vulnerability exploit search, CVSS severity checker, CISA KEV lookup, nuclei template CVE, metasploit CVE search, exploit-db search, CVE POC database, CVE research tool, security vulnerability lookup, CVE-2024, GitHub CVE exploits, offensive security tools, penetration testing CVE lookup, CVE exploit scanner">
+<meta name="author" content="Anmol K Sachan">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://anmolksachan.github.io/POCSpotter/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://anmolksachan.github.io/POCSpotter/">
+<meta property="og:title" content="POCSpotter — CVE POC & Exploit Search Engine">
+<meta property="og:description" content="Find CVE exploits, POCs, Nuclei templates, CVSS severity and CISA KEV status instantly. One-stop exploit search for security researchers.">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/60771253?v=4">
+<meta property="og:site_name" content="POCSpotter">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@FR13ND0x7f">
+<meta name="twitter:creator" content="@FR13ND0x7f">
+<meta name="twitter:title" content="POCSpotter — CVE POC & Exploit Search Engine">
+<meta name="twitter:description" content="Find CVE exploits, POCs, Nuclei templates, CVSS severity and CISA KEV status instantly.">
+<meta name="twitter:image" content="https://avatars.githubusercontent.com/u/60771253?v=4">
+
+<!-- JSON-LD: WebSite + SearchAction (enables Google search box in SERPs) -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@graph":[
+    {
+      "@type":"WebSite",
+      "name":"POCSpotter",
+      "url":"https://anmolksachan.github.io/POCSpotter/",
+      "description":"One-stop CVE POC and exploit search engine for security researchers.",
+      "potentialAction":{
+        "@type":"SearchAction",
+        "target":{"@type":"EntryPoint","urlTemplate":"https://anmolksachan.github.io/POCSpotter/?q={search_term_string}"},
+        "query-input":"required name=search_term_string"
+      },
+      "author":{
+        "@type":"Person",
+        "name":"Anmol K Sachan",
+        "alternateName":"FR13ND0x7F",
+        "url":"https://anmolksachan.github.io",
+        "sameAs":["https://github.com/anmolksachan","https://twitter.com/FR13ND0x7f"]
+      }
+    },
+    {
+      "@type":"WebApplication",
+      "name":"POCSpotter",
+      "url":"https://anmolksachan.github.io/POCSpotter/",
+      "applicationCategory":"SecurityApplication",
+      "operatingSystem":"Any",
+      "description":"Free CVE exploit and POC search engine. Aggregates NVD CVSS scores, CISA KEV status, GitHub POCs, Nuclei templates, Exploit-DB and more.",
+      "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
+      "featureList":["NVD CVSS severity lookup","CISA KEV actively exploited check","GitHub POC aggregation","Nuclei template search","Exploit-DB integration","Metasploit module search","PacketStorm exploit lookup","AttackerKB analysis"]
     }
-    header {
-      text-align: center;
-      padding: 20px 0;
-      font-size: 1.8em;
-      font-weight: bold;
-      color: #4CAF50;
-      background-color: transparent;
-      width: 100%;
-      position: relative;
-    }
-    header::after {
-      content: '';
-      display: block;
-      width: 100px;
-      height: 3px;
-      background: #4CAF50;
-      margin: 10px auto 20px;
-      border-radius: 5px;
-    }
-    .extension-button {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      padding: 10px 20px;
-      background: linear-gradient(135deg, #ff7e5f, #feb47b);
-      color: white;
-      border: none;
-      border-radius: 25px;
-      font-size: 0.9em;
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .extension-button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-    .search-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      max-width: 600px;
-      margin-bottom: 30px;
-    }
-    #cveInput {
-      width: 100%;
-      padding: 15px;
-      margin-bottom: 10px;
-      border: 1px solid #ddd;
-      border-radius: 25px;
-      font-size: 1em;
-      outline: none;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-      background: #fff;
-    }
-    #cveInput:focus {
-      border-color: #4CAF50;
-      box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
-    }
-    #searchButton {
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(135deg, #4CAF50, #81c784);
-      color: white;
-      border: none;
-      border-radius: 25px;
-      font-size: 1em;
-      cursor: pointer;
-      transition: transform 0.3s ease, background 0.3s ease;
-    }
-    #searchButton:hover {
-      transform: scale(1.02);
-      background: linear-gradient(135deg, #45a049, #66bb6a);
-    }
-    #results {
-      width: 100%;
-      max-width: 600px;
-      margin-top: 20px;
-    }
-    .result {
-      background-color: white;
-      padding: 15px;
-      margin-bottom: 10px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      font-size: 0.9em;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .result:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-    }
-    .result a {
-      color: #4CAF50;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .result a:hover {
-      text-decoration: underline;
-    }
-    footer {
-      text-align: center;
-      font-size: 0.8em;
-      color: #666;
-      margin-top: 30px;
-    }
-    footer span {
-      color: #e74c3c;
-    }
-  </style>
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ─────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── TOKENS ─────────────────────────────────────────────── */
+:root{
+  --bg:         #080b0f;
+  --bg2:        #0c1015;
+  --card:       #0f1318;
+  --card2:      #131820;
+  --border:     rgba(255,255,255,.07);
+  --border2:    rgba(255,255,255,.12);
+  --accent:     #00ffa3;
+  --accent-dim: rgba(0,255,163,.15);
+  --cyan:       #00d4ff;
+  --cyan-dim:   rgba(0,212,255,.12);
+  --red:        #ff4d6d;
+  --orange:     #ff8c42;
+  --yellow:     #ffd166;
+  --green:      #06d6a0;
+  --text:       #e2e8f0;
+  --muted:      #4a5568;
+  --muted2:     #718096;
+  --radius:     12px;
+  --radius2:    8px;
+  --font:       'Inter', system-ui, sans-serif;
+  --mono:       'JetBrains Mono', monospace;
+}
+
+/* ── BASE ─────────────────────────────────────────────── */
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  font-size:14px;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+
+/* ── GRID BG ─────────────────────────────────────────────── */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(0,255,163,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,163,.03) 1px, transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ── NOISE OVERLAY ─────────────────────────────────────────────── */
+body::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:0;
+  opacity:.4;
+}
+
+a{color:var(--cyan);text-decoration:none;transition:color .2s}
+a:hover{color:var(--accent)}
+
+/* ── HERO ─────────────────────────────────────────────── */
+.hero{
+  position:relative;
+  z-index:1;
+  text-align:center;
+  padding:64px 24px 40px;
+}
+
+/* Glow blob */
+.hero::before{
+  content:'';
+  position:absolute;
+  top:-80px;left:50%;
+  transform:translateX(-50%);
+  width:600px;height:300px;
+  background:radial-gradient(ellipse, rgba(0,255,163,.08) 0%, transparent 70%);
+  pointer-events:none;
+  z-index:0;
+}
+
+.logo-wrap{position:relative;z-index:1;display:inline-block}
+.logo{
+  font-size:clamp(2.2rem, 5vw, 3.2rem);
+  font-weight:800;
+  letter-spacing:-2px;
+  background:linear-gradient(135deg, var(--accent) 0%, var(--cyan) 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  line-height:1;
+}
+.logo-dot{
+  display:inline-block;
+  width:8px;height:8px;
+  background:var(--accent);
+  border-radius:50%;
+  margin-left:2px;
+  vertical-align:super;
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,255,163,.4)}50%{box-shadow:0 0 0 6px rgba(0,255,163,0)}}
+
+.tagline{
+  font-size:.95rem;
+  color:var(--muted2);
+  margin-top:10px;
+  font-weight:400;
+  position:relative;z-index:1;
+}
+
+.badge-row{
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  margin-top:16px;
+  flex-wrap:wrap;
+  position:relative;z-index:1;
+}
+.badge{
+  font-size:.68rem;
+  font-family:var(--mono);
+  padding:3px 10px;
+  border-radius:20px;
+  border:1px solid var(--border2);
+  color:var(--muted2);
+  background:rgba(255,255,255,.03);
+  letter-spacing:.3px;
+}
+
+/* ── SEARCH ─────────────────────────────────────────────── */
+.search-section{
+  position:relative;z-index:1;
+  max-width:660px;
+  margin:0 auto;
+  padding:0 20px;
+}
+
+.search-outer{
+  position:relative;
+  margin-top:32px;
+}
+
+/* Animated glow ring */
+.search-outer::before{
+  content:'';
+  position:absolute;
+  inset:-2px;
+  border-radius:60px;
+  background:linear-gradient(135deg, rgba(0,255,163,.3), rgba(0,212,255,.3));
+  opacity:0;
+  transition:opacity .3s;
+  z-index:0;
+}
+.search-outer:focus-within::before{opacity:1}
+
+.search-box{
+  position:relative;z-index:1;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(13,18,26,.65);
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:60px;
+  padding:6px 6px 6px 22px;
+  box-shadow:0 4px 24px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.07);
+  transition:border-color .3s, background .3s, box-shadow .3s;
+}
+.search-outer:focus-within .search-box{
+  border-color:rgba(0,255,163,.4);
+  background:#111820;
+}
+
+.search-icon{font-size:1rem;color:var(--muted);flex-shrink:0}
+
+#cveInput{
+  flex:1;
+  background:none;
+  border:none;
+  outline:none;
+  color:var(--text);
+  font-size:1rem;
+  font-family:var(--mono);
+  font-weight:500;
+  letter-spacing:.5px;
+  min-width:0;
+}
+#cveInput::placeholder{color:var(--muted);font-family:var(--font);font-weight:400;letter-spacing:0;font-size:.95rem}
+
+#searchBtn{
+  flex-shrink:0;
+  background:linear-gradient(135deg, var(--accent), #00cfb0);
+  color:#050c08;
+  font-weight:700;
+  font-size:.85rem;
+  font-family:var(--font);
+  border:none;
+  padding:10px 24px;
+  border-radius:50px;
+  cursor:pointer;
+  transition:transform .15s, box-shadow .2s, opacity .2s;
+  letter-spacing:.3px;
+}
+#searchBtn:hover{
+  transform:scale(1.03);
+  box-shadow:0 0 20px rgba(0,255,163,.35);
+}
+#searchBtn:active{transform:scale(.97)}
+#searchBtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+.examples{
+  margin-top:12px;
+  text-align:center;
+  font-size:.78rem;
+  color:var(--muted);
+}
+.ex-chip{
+  display:inline-block;
+  margin:3px;
+  padding:3px 10px;
+  border-radius:20px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.02);
+  cursor:pointer;
+  font-family:var(--mono);
+  font-size:.75rem;
+  color:var(--muted2);
+  transition:all .2s;
+}
+.ex-chip:hover{
+  border-color:var(--accent);
+  color:var(--accent);
+  background:var(--accent-dim);
+}
+
+/* ── MAIN ─────────────────────────────────────────────── */
+main{
+  position:relative;z-index:1;
+  max-width:860px;
+  margin:40px auto 80px;
+  padding:0 20px;
+}
+
+/* ── EMPTY STATE ─────────────────────────────────────────────── */
+#placeholder{
+  text-align:center;
+  padding:60px 0;
+  animation:fadeIn .5s ease;
+}
+.placeholder-icon{
+  font-size:3rem;
+  opacity:.2;
+  display:block;
+  margin-bottom:16px;
+}
+.placeholder-text{
+  color:var(--muted);
+  font-size:.9rem;
+  line-height:1.8;
+}
+.feat-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+  gap:10px;
+  margin-top:32px;
+}
+.feat-item{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:14px 16px;
+  text-align:left;
+}
+.feat-item-ico{font-size:1.2rem;display:block;margin-bottom:6px}
+.feat-item-name{font-size:.8rem;font-weight:600;color:var(--muted2)}
+.feat-item-desc{font-size:.75rem;color:var(--muted);margin-top:2px}
+
+/* ── LOADER ─────────────────────────────────────────────── */
+#loader{
+  display:none;
+  padding:60px 0;
+  text-align:center;
+  animation:fadeIn .3s;
+}
+.loader-ring{
+  display:inline-block;
+  width:40px;height:40px;
+  border:2px solid var(--border2);
+  border-top-color:var(--accent);
+  border-right-color:var(--cyan);
+  border-radius:50%;
+  animation:spin .6s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-steps{margin-top:20px;display:flex;flex-direction:column;gap:6px;align-items:center}
+.loader-step{
+  font-size:.75rem;
+  font-family:var(--mono);
+  color:var(--muted);
+  padding:4px 14px;
+  border-radius:4px;
+  background:rgba(255,255,255,.02);
+  opacity:0;
+  animation:stepIn .4s forwards;
+}
+.loader-step.done{color:var(--accent)}
+.loader-step.active{color:var(--cyan);animation:stepIn .4s forwards, blink 1s ease-in-out infinite}
+@keyframes stepIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ── RESULTS ─────────────────────────────────────────────── */
+#results{display:none;animation:fadeIn .4s ease}
+
+/* ── CVE HEADER CARD ─────────────────────────────────────────────── */
+.cve-banner{
+  position:relative;
+  background:rgba(13,18,26,.72);
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:var(--radius);
+  padding:24px;
+  margin-bottom:12px;
+  overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.06);
+}
+.cve-banner::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:3px;
+  background:var(--sev-gradient, linear-gradient(90deg, var(--accent), var(--cyan)));
+}
+
+/* Severity variants */
+.sev-CRITICAL{--sev-gradient:linear-gradient(90deg,#ff4d6d,#ff6b6b);--sev-color:#ff4d6d;--sev-bg:rgba(255,77,109,.1)}
+.sev-HIGH    {--sev-gradient:linear-gradient(90deg,#ff8c42,#ffae42);--sev-color:#ff8c42;--sev-bg:rgba(255,140,66,.1)}
+.sev-MEDIUM  {--sev-gradient:linear-gradient(90deg,#ffd166,#ffe08a);--sev-color:#ffd166;--sev-bg:rgba(255,209,102,.1)}
+.sev-LOW     {--sev-gradient:linear-gradient(90deg,#06d6a0,#00ffa3);--sev-color:#06d6a0;--sev-bg:rgba(6,214,160,.1)}
+.sev-NA      {--sev-gradient:linear-gradient(90deg,#4a5568,#718096);--sev-color:#718096;--sev-bg:rgba(113,128,150,.1)}
+
+.cve-top-row{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+
+.cve-id-label{
+  font-family:var(--mono);
+  font-size:1.4rem;
+  font-weight:700;
+  color:var(--accent);
+  letter-spacing:-0.5px;
+}
+
+.sev-pill{
+  font-size:.7rem;
+  font-weight:700;
+  font-family:var(--mono);
+  padding:4px 10px;
+  border-radius:6px;
+  background:var(--sev-bg, rgba(0,255,163,.1));
+  color:var(--sev-color, var(--accent));
+  border:1px solid var(--sev-color, var(--accent));
+  letter-spacing:.8px;
+  text-transform:uppercase;
+}
+
+.cvss-num{
+  font-family:var(--mono);
+  font-size:1.5rem;
+  font-weight:700;
+  color:var(--sev-color, var(--accent));
+  line-height:1;
+}
+.cvss-label{font-size:.65rem;color:var(--muted);margin-top:1px;letter-spacing:.5px}
+
+.kev-pill{
+  display:flex;align-items:center;gap:5px;
+  font-size:.7rem;
+  font-weight:600;
+  padding:4px 10px;
+  border-radius:6px;
+  background:rgba(255,77,109,.12);
+  color:#ff4d6d;
+  border:1px solid rgba(255,77,109,.3);
+  animation:glowRed 2s ease-in-out infinite;
+}
+@keyframes glowRed{0%,100%{box-shadow:0 0 0 0 rgba(255,77,109,0)}50%{box-shadow:0 0 8px rgba(255,77,109,.3)}}
+.kev-dot{width:6px;height:6px;background:#ff4d6d;border-radius:50%;animation:pulse 1.5s ease-in-out infinite}
+
+.copy-cve{
+  margin-left:auto;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border2);
+  color:var(--muted2);
+  padding:5px 14px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:.75rem;
+  font-family:var(--mono);
+  transition:all .2s;
+}
+.copy-cve:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+
+.cve-desc{
+  font-size:.88rem;
+  color:#b0bec5;
+  line-height:1.75;
+  margin-bottom:14px;
+  padding-bottom:14px;
+  border-bottom:1px solid var(--border);
+}
+
+.meta-pills{display:flex;flex-wrap:wrap;gap:8px}
+.meta-pill{
+  display:flex;align-items:center;gap:5px;
+  font-size:.75rem;
+  padding:4px 10px;
+  border-radius:6px;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);
+  color:var(--muted2);
+  font-family:var(--mono);
+}
+.meta-pill .mk{color:var(--muted);margin-right:2px}
+
+.affected-wrap{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.affected-label{font-size:.72rem;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;font-weight:600}
+.aff-chip{
+  display:inline-block;
+  font-size:.72rem;
+  font-family:var(--mono);
+  padding:3px 8px;
+  border-radius:5px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.02);
+  color:var(--muted2);
+  margin:2px;
+}
+
+/* ── QUICK LINKS ─────────────────────────────────────────────── */
+.quick-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-bottom:12px;
+}
+.qlink{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 14px;
+  border-radius:var(--radius2);
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--muted2);
+  font-size:.78rem;
+  font-weight:500;
+  transition:all .2s;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.qlink:hover{
+  border-color:var(--cyan);
+  color:var(--cyan);
+  background:var(--cyan-dim);
+  text-decoration:none;
+  transform:translateY(-1px);
+}
+.qlink-ico{font-size:.9rem}
+
+/* ── SECTION CARDS ─────────────────────────────────────────────── */
+.s-card{
+  background:rgba(13,18,26,.68);
+  backdrop-filter:blur(16px) saturate(160%);
+  -webkit-backdrop-filter:blur(16px) saturate(160%);
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:var(--radius);
+  margin-bottom:10px;
+  overflow:hidden;
+  box-shadow:0 4px 20px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.05);
+  transition:border-color .2s, box-shadow .2s;
+}
+.s-card:hover{border-color:rgba(255,255,255,.15);box-shadow:0 6px 28px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.07)}
+
+.s-head{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:14px 18px;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+  user-select:none;
+  transition:background .2s;
+}
+.s-head:hover{background:rgba(255,255,255,.02)}
+.s-ico{font-size:1rem}
+.s-title{font-weight:600;font-size:.88rem;flex:1;color:var(--text)}
+.s-count{
+  font-size:.7rem;
+  font-family:var(--mono);
+  background:rgba(255,255,255,.06);
+  padding:2px 8px;
+  border-radius:10px;
+  color:var(--muted2);
+}
+.s-count.has-data{background:var(--accent-dim);color:var(--accent)}
+.s-chevron{color:var(--muted);font-size:.7rem;transition:transform .25s}
+.s-card.collapsed .s-chevron{transform:rotate(-90deg)}
+.s-card.collapsed .s-body{display:none}
+.s-body{padding:16px 18px}
+
+/* ── POC ITEMS ─────────────────────────────────────────────── */
+.poc-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:9px 0;
+  border-bottom:1px solid rgba(255,255,255,.04);
+  animation:fadeIn .3s ease both;
+}
+.poc-item:last-of-type{border-bottom:none}
+
+.poc-src{
+  flex-shrink:0;
+  font-size:.65rem;
+  font-family:var(--mono);
+  padding:2px 7px;
+  border-radius:4px;
+  min-width:70px;
+  text-align:center;
+  font-weight:600;
+  letter-spacing:.3px;
+  text-transform:uppercase;
+}
+.src-trickest{background:rgba(0,255,163,.1);color:var(--accent);border:1px solid rgba(0,255,163,.2)}
+.src-github  {background:rgba(0,212,255,.1);color:var(--cyan);border:1px solid rgba(0,212,255,.2)}
+
+.poc-link-wrap{flex:1;min-width:0}
+.poc-link{
+  font-size:.82rem;
+  color:var(--text);
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  transition:color .2s;
+}
+.poc-link:hover{color:var(--accent);text-decoration:none}
+.poc-link-sub{font-size:.72rem;color:var(--muted);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.poc-stars{
+  flex-shrink:0;
+  font-size:.72rem;
+  color:#a0856b;
+  white-space:nowrap;
+  font-family:var(--mono);
+}
+
+.open-all-wrap{display:flex;gap:8px;margin-top:14px}
+.open-all,.copy-all{
+  flex:1;
+  padding:9px;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);
+  border-radius:var(--radius2);
+  font-size:.8rem;
+  cursor:pointer;
+  transition:all .2s;
+  font-family:var(--font);
+}
+.open-all{color:var(--muted2)}
+.open-all:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-dim)}
+.copy-all{color:var(--muted)}
+.copy-all:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+
+/* ── NUCLEI ─────────────────────────────────────────────── */
+.nuclei-item{
+  display:flex;
+  flex-direction:column;
+  padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,.04);
+  animation:fadeIn .3s ease both;
+}
+.nuclei-item:last-child{border-bottom:none}
+.nuclei-top{display:flex;align-items:center;gap:8px}
+.nuclei-badge{
+  font-size:.65rem;
+  font-family:var(--mono);
+  padding:2px 7px;
+  border-radius:4px;
+  background:rgba(0,212,255,.1);
+  color:var(--cyan);
+  border:1px solid rgba(0,212,255,.2);
+  font-weight:600;
+  letter-spacing:.3px;
+}
+.nuclei-name{font-size:.84rem;color:var(--text);transition:color .2s}
+.nuclei-name:hover{color:var(--accent);text-decoration:none}
+.nuclei-path{font-size:.72rem;color:var(--muted);font-family:var(--mono);margin-top:3px}
+
+/* ── FRAMEWORKS ─────────────────────────────────────────────── */
+.fw-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:8px;
+}
+.fw-card{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  padding:13px;
+  background:rgba(13,18,26,.6);
+  backdrop-filter:blur(12px) saturate(160%);
+  -webkit-backdrop-filter:blur(12px) saturate(160%);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius2);
+  text-decoration:none;
+  box-shadow:0 2px 12px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.05);
+  transition:all .2s;
+}
+.fw-card:hover{
+  border-color:rgba(255,255,255,.16);
+  background:rgba(18,26,38,.8);
+  transform:translateY(-2px);
+  box-shadow:0 8px 28px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);
+  text-decoration:none;
+}
+.fw-ico{font-size:1.3rem;flex-shrink:0;margin-top:1px}
+.fw-name{font-size:.82rem;font-weight:600;color:var(--text);transition:color .2s}
+.fw-card:hover .fw-name{color:var(--accent)}
+.fw-desc{font-size:.72rem;color:var(--muted);margin-top:2px}
+
+/* ── EMPTY / ERROR ─────────────────────────────────────────────── */
+.s-empty{
+  text-align:center;
+  padding:20px 0;
+  color:var(--muted);
+  font-size:.82rem;
+}
+.s-empty a{color:var(--muted2)}
+.s-empty a:hover{color:var(--accent)}
+
+/* ── FOOTER ─────────────────────────────────────────────── */
+footer{
+  position:relative;z-index:1;
+  text-align:center;
+  padding:28px 20px;
+  color:var(--muted);
+  font-size:.78rem;
+  border-top:1px solid var(--border);
+}
+footer a{color:var(--muted2)}
+footer a:hover{color:var(--accent)}
+.footer-links{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:6px}
+
+/* ── NAV PILLS ─────────────────────────────────────────────── */
+.nav-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 16px;border-radius:20px;
+  border:1px solid var(--border2);
+  background:rgba(255,255,255,.04);
+  color:var(--muted2);font-size:.78rem;font-weight:500;
+  cursor:pointer;text-decoration:none;font-family:var(--font);
+  transition:all .2s;
+}
+.nav-pill:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);text-decoration:none}
+
+/* ── API DOCS PANEL ─────────────────────────────────────────────── */
+#apiPanel{
+  position:relative;z-index:1;
+  max-width:860px;margin:0 auto;
+  padding:0 20px;
+}
+.api-panel-inner{
+  background:rgba(13,18,26,.72);
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 8px 32px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.06);
+  border-radius:var(--radius);
+  padding:28px;
+  margin:16px 0;
+  animation:fadeIn .3s ease;
+}
+.api-panel-title{font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:6px}
+.api-panel-sub{font-size:.83rem;color:var(--muted2);margin-bottom:24px;line-height:1.7}
+.api-endpoint{margin-bottom:22px}
+.api-ep-name{font-size:.8rem;font-weight:600;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.api-ep-badge{font-size:.65rem;padding:2px 7px;border-radius:4px;background:rgba(0,255,163,.1);color:var(--accent);border:1px solid rgba(0,255,163,.2);font-family:var(--mono);font-weight:700}
+.api-ep-badge.free{background:rgba(0,212,255,.1);color:var(--cyan);border-color:rgba(0,212,255,.2)}
+.api-code-wrap{position:relative}
+.api-code{
+  background:#050a08;
+  border:1px solid var(--border);
+  border-radius:var(--radius2);
+  padding:14px 16px;
+  font-family:var(--mono);
+  font-size:.75rem;
+  color:#a8d8a8;
+  line-height:1.75;
+  overflow-x:auto;
+  white-space:pre;
+}
+.copy-code-btn{
+  position:absolute;top:8px;right:8px;
+  background:rgba(255,255,255,.05);border:1px solid var(--border);
+  color:var(--muted);padding:3px 9px;border-radius:5px;
+  cursor:pointer;font-size:.68rem;font-family:var(--font);transition:all .2s;
+}
+.copy-code-btn:hover{border-color:var(--accent);color:var(--accent)}
+.api-section-label{
+  font-size:.72rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:12px;margin-top:20px;
+  padding-bottom:8px;border-bottom:1px solid var(--border);
+}
+.api-source-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;margin-bottom:16px}
+.api-src-card{
+  background:rgba(255,255,255,.02);border:1px solid var(--border);
+  border-radius:var(--radius2);padding:12px;
+}
+.api-src-name{font-size:.82rem;font-weight:600;color:var(--text)}
+.api-src-url{font-size:.7rem;font-family:var(--mono);color:var(--cyan);margin-top:3px;word-break:break-all}
+.api-src-note{font-size:.72rem;color:var(--muted);margin-top:4px}
+
+/* ── TRENDING SECTION ─────────────────────────────────────────────── */
+.trending-section{
+  position:relative;z-index:1;
+  max-width:860px;
+  margin:32px auto 0;
+  padding:0 20px;
+}
+.trending-head{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:14px;
+}
+.trending-title{font-size:.82rem;font-weight:600;color:var(--muted2);letter-spacing:.5px;text-transform:uppercase}
+.trending-live{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:.68rem;font-family:var(--mono);
+  padding:2px 8px;border-radius:10px;
+  background:rgba(255,77,109,.1);color:#ff6b6b;
+  border:1px solid rgba(255,77,109,.2);
+}
+.live-dot{width:5px;height:5px;background:#ff4d6d;border-radius:50%;animation:pulse 1.5s ease-in-out infinite}
+
+.kev-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:8px;
+}
+.kev-card{
+  background:rgba(13,18,26,.65);
+  backdrop-filter:blur(14px) saturate(160%);
+  -webkit-backdrop-filter:blur(14px) saturate(160%);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius2);
+  padding:12px 14px;
+  cursor:pointer;
+  transition:all .2s;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 2px 12px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.05);
+}
+.kev-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--red)}
+.kev-card:hover{border-color:rgba(255,77,109,.35);background:rgba(20,12,14,.8);transform:translateY(-2px);box-shadow:0 6px 24px rgba(255,77,109,.1), inset 0 1px 0 rgba(255,255,255,.06)}
+.kev-card-cve{font-family:var(--mono);font-size:.82rem;font-weight:700;color:var(--accent)}
+.kev-card-prod{font-size:.75rem;color:var(--muted2);margin-top:3px}
+.kev-card-date{font-size:.68rem;font-family:var(--mono);color:var(--muted);margin-top:4px}
+.kev-card-ransom{font-size:.65rem;color:#ff4d6d;margin-top:3px;font-weight:600}
+
+.trending-footer{
+  text-align:center;margin-top:10px;
+  font-size:.75rem;color:var(--muted);
+}
+.trending-footer a{color:var(--muted2)}
+.trending-footer a:hover{color:var(--accent)}
+
+.trending-loading{text-align:center;padding:20px;color:var(--muted);font-size:.82rem}
+
+/* ── SCROLLBAR ─────────────────────────────────────────────── */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#0a0a0a}
+::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#3a3a3a}
+
+/* ── SOCIAL SIDEBAR ─────────────────────────────────────────────── */
+#social-bar{
+  position:fixed;
+  right:18px;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:1000;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  align-items:flex-end;
+}
+
+.social-item{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  cursor:pointer;
+  text-decoration:none;
+  animation:slideInRight .5s cubic-bezier(.34,1.56,.64,1) both;
+}
+.social-item:nth-child(1){animation-delay:.1s}
+.social-item:nth-child(2){animation-delay:.2s}
+.social-item:nth-child(3){animation-delay:.3s}
+.social-item:nth-child(4){animation-delay:.4s}
+.social-item:nth-child(5){animation-delay:.5s}
+
+@keyframes slideInRight{
+  from{opacity:0;transform:translateX(30px)}
+  to{opacity:1;transform:translateX(0)}
+}
+
+.social-label{
+  font-size:.72rem;
+  font-weight:600;
+  font-family:var(--font);
+  letter-spacing:.3px;
+  padding:5px 12px;
+  border-radius:20px;
+  white-space:nowrap;
+  opacity:0;
+  transform:translateX(10px);
+  transition:opacity .25s ease, transform .25s ease;
+  pointer-events:none;
+  /* glass */
+  background:rgba(15,20,28,.75);
+  backdrop-filter:blur(16px) saturate(180%);
+  -webkit-backdrop-filter:blur(16px) saturate(180%);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 4px 16px rgba(0,0,0,.4);
+}
+
+.social-icon{
+  width:40px;height:40px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;
+  flex-shrink:0;
+  /* glass base */
+  background:rgba(15,20,28,.72);
+  backdrop-filter:blur(20px) saturate(200%);
+  -webkit-backdrop-filter:blur(20px) saturate(200%);
+  border:1px solid rgba(255,255,255,.13);
+  box-shadow:0 4px 20px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.08);
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s ease, border-color .25s ease, background .25s ease;
+}
+
+/* hover reveals label + morphs icon */
+.social-item:hover .social-label{opacity:1;transform:translateX(0)}
+
+/* per-platform accent colors */
+.social-item[data-platform="github"]:hover .social-icon{
+  background:rgba(24,26,32,.85);
+  border-color:rgba(240,240,240,.35);
+  box-shadow:0 6px 28px rgba(255,255,255,.15), inset 0 1px 0 rgba(255,255,255,.12);
+  transform:scale(1.15);
+}
+.social-item[data-platform="github"]:hover .social-label{color:#f0f0f0}
+
+.social-item[data-platform="twitter"]:hover .social-icon{
+  background:rgba(8,16,28,.85);
+  border-color:rgba(29,155,240,.5);
+  box-shadow:0 6px 28px rgba(29,155,240,.25), inset 0 1px 0 rgba(255,255,255,.1);
+  transform:scale(1.15);
+}
+.social-item[data-platform="twitter"]:hover .social-label{color:#1d9bf0}
+
+.social-item[data-platform="linkedin"]:hover .social-icon{
+  background:rgba(6,14,28,.85);
+  border-color:rgba(10,102,194,.55);
+  box-shadow:0 6px 28px rgba(10,102,194,.3), inset 0 1px 0 rgba(255,255,255,.1);
+  transform:scale(1.15);
+}
+.social-item[data-platform="linkedin"]:hover .social-label{color:#0a66c2}
+
+.social-item[data-platform="medium"]:hover .social-icon{
+  background:rgba(8,18,12,.85);
+  border-color:rgba(0,255,163,.35);
+  box-shadow:0 6px 28px rgba(0,255,163,.2), inset 0 1px 0 rgba(255,255,255,.1);
+  transform:scale(1.15);
+}
+.social-item[data-platform="medium"]:hover .social-label{color:var(--accent)}
+
+.social-item[data-platform="portfolio"]:hover .social-icon{
+  background:rgba(8,12,20,.85);
+  border-color:rgba(0,212,255,.4);
+  box-shadow:0 6px 28px rgba(0,212,255,.22), inset 0 1px 0 rgba(255,255,255,.1);
+  transform:scale(1.15);
+}
+.social-item[data-platform="portfolio"]:hover .social-label{color:var(--cyan)}
+
+/* hide on very small screens */
+@media(max-width:600px){
+  #social-bar{display:none}
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────── */
+@media(max-width:600px){
+  .hero{padding:40px 16px 28px}
+  .logo{font-size:2rem}
+  .cvss-num{font-size:1.2rem}
+  .cve-id-label{font-size:1.1rem}
+  .fw-grid{grid-template-columns:1fr 1fr}
+  .quick-links{gap:5px}
+  .qlink{font-size:.72rem;padding:5px 10px}
+}
+</style>
 </head>
 <body>
-  <header>
-    CVE POC Lookup
-    <button class="extension-button" onclick="window.open('https://github.com/anmolksachan/CVE-POC-Lookup-Browser-Extension/', '_blank')">
-      Add to browser!
-    </button>
-  </header>
-  <div class="search-container">
-    <input type="text" id="cveInput" placeholder="Enter CVE ID (e.g., CVE-2024-4577)" />
-    <button id="searchButton">Search</button>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="logo-wrap">
+    <div class="logo">POCSpotter<span class="logo-dot"></span></div>
   </div>
+  <div class="tagline">One-stop CVE exploit &amp; POC search engine</div>
+  <div class="badge-row">
+    <span class="badge">NVD · CVSS</span>
+    <span class="badge">CISA KEV</span>
+    <span class="badge">Trickest · GitHub</span>
+    <span class="badge">Nuclei Templates</span>
+    <span class="badge">Exploit-DB · Sploitus</span>
+    <span class="badge">PacketStorm · Metasploit</span>
+  </div>
+  <div style="margin-top:14px;display:flex;justify-content:center;gap:10px;position:relative;z-index:1">
+    <button class="nav-pill" onclick="toggleApiDocs()">📡 Free API Docs</button>
+    <a class="nav-pill" href="https://github.com/anmolksachan/" target="_blank">⭐ Follow on GitHub</a>
+  </div>
+</header>
+
+<!-- API DOCS PANEL -->
+<div id="apiPanel" style="display:none"></div>
+
+<!-- SEARCH -->
+<div class="search-section">
+  <div class="search-outer">
+    <div class="search-box">
+      <span class="search-icon">⌕</span>
+      <input id="cveInput" type="text" placeholder="CVE-YYYY-NNNNN" autocomplete="off" spellcheck="false" maxlength="25"/>
+      <button id="searchBtn">Search →</button>
+    </div>
+  </div>
+  <div class="examples">
+    Try:
+    <span class="ex-chip" onclick="doSearch('CVE-2024-4577')">CVE-2024-4577</span>
+    <span class="ex-chip" onclick="doSearch('CVE-2021-44228')">CVE-2021-44228</span>
+    <span class="ex-chip" onclick="doSearch('CVE-2023-44487')">CVE-2023-44487</span>
+    <span class="ex-chip" onclick="doSearch('CVE-2024-3400')">CVE-2024-3400</span>
+    <span class="ex-chip" onclick="doSearch('CVE-2023-20198')">CVE-2023-20198</span>
+  </div>
+</div>
+
+<!-- TRENDING KEV -->
+<div class="trending-section" id="trendingSection">
+  <div class="trending-head">
+    <span class="trending-title">🔴 Recently Added to CISA KEV</span>
+    <span class="trending-live"><span class="live-dot"></span>Live</span>
+  </div>
+  <div id="kevGrid"><div class="trending-loading">Loading latest exploited CVEs…</div></div>
+  <div class="trending-footer">Source: <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank">CISA Known Exploited Vulnerabilities Catalog</a></div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- PLACEHOLDER -->
+  <div id="placeholder">
+    <span class="placeholder-icon">🔎</span>
+    <p class="placeholder-text">Enter any CVE ID above to instantly find<br>exploits, POCs, templates &amp; severity data.</p>
+    <div class="feat-grid">
+      <div class="feat-item"><span class="feat-item-ico">📊</span><div class="feat-item-name">NVD Severity</div><div class="feat-item-desc">CVSS score, CWE, affected products</div></div>
+      <div class="feat-item"><span class="feat-item-ico">⚠️</span><div class="feat-item-name">CISA KEV</div><div class="feat-item-desc">Actively exploited in the wild?</div></div>
+      <div class="feat-item"><span class="feat-item-ico">🐚</span><div class="feat-item-name">GitHub POCs</div><div class="feat-item-desc">Trickest + GitHub repo search</div></div>
+      <div class="feat-item"><span class="feat-item-ico">⚡</span><div class="feat-item-name">Nuclei Templates</div><div class="feat-item-desc">ProjectDiscovery scanner templates</div></div>
+      <div class="feat-item"><span class="feat-item-ico">💥</span><div class="feat-item-name">Exploit DBs</div><div class="feat-item-desc">Exploit-DB, Sploitus, PacketStorm</div></div>
+      <div class="feat-item"><span class="feat-item-ico">🛡</span><div class="feat-item-name">Frameworks</div><div class="feat-item-desc">Metasploit, Vulhub, AttackerKB</div></div>
+    </div>
+  </div>
+
+  <!-- LOADER -->
+  <div id="loader">
+    <div class="loader-ring"></div>
+    <div class="loader-steps" id="loaderSteps"></div>
+  </div>
+
+  <!-- RESULTS -->
   <div id="results"></div>
-  <footer>
-    Coded with <span>&hearts;</span> by Anmol K Sachan<br>@FR13ND0x7F
-  </footer>
-  <script src="popup.js"></script>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div>Built with ♥ by <a href="https://github.com/anmolksachan" target="_blank">Anmol K Sachan</a> — @FR13ND0x7F</div>
+  <div class="footer-links">
+    <a href="https://github.com/anmolksachan/" target="_blank">GitHub</a>
+    <a href="https://twitter.com/FR13ND0x7f" target="_blank">Twitter</a>
+    <a href="https://anmolksachan.github.io" target="_blank">Portfolio</a>
+  </div>
+</footer>
+
+<!-- SOCIAL SIDEBAR -->
+<nav id="social-bar" aria-label="Social links">
+  <a class="social-item" href="https://github.com/anmolksachan" target="_blank" rel="noopener noreferrer" data-platform="github">
+    <span class="social-label">Follow me on GitHub</span>
+    <span class="social-icon" title="GitHub">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="color:#f0f0f0"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+    </span>
+  </a>
+  <a class="social-item" href="https://twitter.com/FR13ND0x7f" target="_blank" rel="noopener noreferrer" data-platform="twitter">
+    <span class="social-label">@FR13ND0x7f</span>
+    <span class="social-icon" title="Twitter / X">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" style="color:#1d9bf0"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    </span>
+  </a>
+  <a class="social-item" href="https://www.linkedin.com/in/anmolksachan" target="_blank" rel="noopener noreferrer" data-platform="linkedin">
+    <span class="social-label">LinkedIn</span>
+    <span class="social-icon" title="LinkedIn">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" style="color:#0a66c2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    </span>
+  </a>
+  <a class="social-item" href="https://anmolksachan.medium.com" target="_blank" rel="noopener noreferrer" data-platform="medium">
+    <span class="social-label">Medium Blog</span>
+    <span class="social-icon" title="Medium Blog">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="color:#00ffa3"><path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/></svg>
+    </span>
+  </a>
+  <a class="social-item" href="https://anmolksachan.github.io" target="_blank" rel="noopener noreferrer" data-platform="portfolio">
+    <span class="social-label">Portfolio</span>
+    <span class="social-icon" title="Portfolio">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#00d4ff"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+    </span>
+  </a>
+</nav>
+
+<script>
+'use strict';
+
+// ── URLS ──────────────────────────────────────────────────────────────────────
+const API = {
+  nvd:       c     => `https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=${c}`,
+  trickest:  (c,y) => `https://raw.githubusercontent.com/trickest/cve/main/${y}/${c}.md`,
+  ghRepos:   c     => `https://api.github.com/search/repositories?q=${c}&sort=stars&order=desc&per_page=8`,
+  nuclei:    c     => `https://api.github.com/search/code?q=${c}+in:file+repo:projectdiscovery/nuclei-templates&per_page=6`,
+  kev:       ()    => `https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json`,
+};
+
+const LINK = {
+  exploitdb:   c => `https://www.exploit-db.com/search?cve=${c.replace('CVE-','')}`,
+  sploitus:    c => `https://sploitus.com/?query=${encodeURIComponent(c)}`,
+  packetstorm: c => `https://packetstormsecurity.com/search/?q=${c}`,
+  attackerkb:  c => `https://attackerkb.com/search?q=${encodeURIComponent(c)}`,
+  nvd:         c => `https://nvd.nist.gov/vuln/detail/${c}`,
+  vulhub:      c => `https://github.com/vulhub/vulhub/search?q=${c}`,
+  github:      c => `https://github.com/search?q=${c}&type=repositories&s=stars`,
+  metasploit:  c => `https://github.com/search?q=${c}+metasploit&type=code`,
+  vuldb:       c => `https://vuldb.com/?search=${c}`,
+  snyk:        c => `https://security.snyk.io/search?q=${c}`,
+};
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+async function fetchJSON(url) {
+  try {
+    const r = await fetch(url, {headers:{Accept:'application/json'}});
+    return r.ok ? r.json() : null;
+  } catch { return null; }
+}
+async function fetchText(url) {
+  try {
+    const r = await fetch(url);
+    return r.ok ? r.text() : null;
+  } catch { return null; }
+}
+
+// CISA KEV has inconsistent CORS headers — try direct, then two CORS proxies.
+// This makes it work on GitHub Pages without needing a local server.
+async function fetchKEV() {
+  const target = API.kev();
+  // 1. Try direct (works on GitHub Pages when CISA sends CORS headers)
+  try {
+    const r = await fetch(target, {headers:{Accept:'application/json'}});
+    if (r.ok) return r.json();
+  } catch {}
+  // 2. corsproxy.io fallback
+  try {
+    const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(target)}`);
+    if (r.ok) return r.json();
+  } catch {}
+  // 3. allorigins fallback
+  try {
+    const r = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`);
+    if (r.ok) return r.json();
+  } catch {}
+  return null;
+}
+
+function esc(s) {
+  return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function cvssClass(score) {
+  if (score == null) return 'NA';
+  if (score >= 9)   return 'CRITICAL';
+  if (score >= 7)   return 'HIGH';
+  if (score >= 4)   return 'MEDIUM';
+  return 'LOW';
+}
+
+function fmt(n) { return n >= 1000 ? (n/1000).toFixed(1)+'k' : String(n); }
+
+// ── LOADER STEPS ──────────────────────────────────────────────────────────────
+const steps = ['NVD', 'CISA KEV', 'Trickest POCs', 'GitHub Repos', 'Nuclei Templates'];
+function showLoader() {
+  const wrap = document.getElementById('loaderSteps');
+  wrap.innerHTML = steps.map((s,i) =>
+    `<div class="loader-step" style="animation-delay:${i*0.1}s" id="step-${i}">[  ] ${s}</div>`
+  ).join('');
+  document.getElementById('loader').style.display = 'block';
+}
+function stepDone(i) {
+  const el = document.getElementById(`step-${i}`);
+  if (el) { el.classList.add('done'); el.innerHTML = el.innerHTML.replace('[  ]','[✓]'); }
+}
+
+// ── MAKE SECTION CARD ─────────────────────────────────────────────────────────
+function card(ico, title, count, body, id) {
+  const hasData = count > 0;
+  return `
+  <div class="s-card" id="${id}">
+    <div class="s-head" onclick="toggleCard('${id}')">
+      <span class="s-ico">${ico}</span>
+      <span class="s-title">${title}</span>
+      ${count !== null ? `<span class="s-count ${hasData?'has-data':''}">${count}</span>` : ''}
+      <span class="s-chevron">▾</span>
+    </div>
+    <div class="s-body">${body}</div>
+  </div>`;
+}
+function toggleCard(id) {
+  document.getElementById(id).classList.toggle('collapsed');
+}
+
+// ── MAIN SEARCH ───────────────────────────────────────────────────────────────
+async function doSearch(override) {
+  if (window.location.protocol === 'file:') {
+    alert('APIs are blocked by CORS on file://\n\nRun: python3 -m http.server 8080\nThen open: http://localhost:8080');
+    return;
+  }
+  const raw = (override || document.getElementById('cveInput').value.trim()).toUpperCase();
+  const cve  = raw.match(/CVE-\d{4}-\d+/)?.[0];
+  if (!cve) { alert('Invalid CVE format. Example: CVE-2024-4577'); return; }
+
+  document.getElementById('cveInput').value = cve;
+  const year = cve.split('-')[1];
+  const btn  = document.getElementById('searchBtn');
+  btn.disabled = true;
+
+  document.getElementById('placeholder').style.display = 'none';
+  document.getElementById('results').style.display = 'none';
+  showLoader();
+
+  // Parallel fetches
+  const [nvd, kev, trickestTxt, ghRepos, nuclei] = await Promise.all([
+    fetchJSON(API.nvd(cve)).then(d=>{stepDone(0);return d;}),
+    fetchKEV().then(d=>{stepDone(1);return d;}),
+    fetchText(API.trickest(cve,year)).then(d=>{stepDone(2);return d;}),
+    fetchJSON(API.ghRepos(cve)).then(d=>{stepDone(3);return d;}),
+    fetchJSON(API.nuclei(cve)).then(d=>{stepDone(4);return d;}),
+  ]);
+
+  btn.disabled = false;
+  document.getElementById('loader').style.display = 'none';
+
+  // ── Parse NVD ──
+  let desc='No description available.', cvssScore=null, sevLabel='N/A',
+      cwes=[], published='', modified='', affectedProducts=[], vecStr='';
+
+  const vuln = nvd?.vulnerabilities?.[0]?.cve;
+  if (vuln) {
+    desc      = vuln.descriptions?.find(d=>d.lang==='en')?.value || desc;
+    published = (vuln.published||'').split('T')[0];
+    modified  = (vuln.lastModified||'').split('T')[0];
+    cwes      = vuln.weaknesses?.flatMap(w=>w.description?.map(d=>d.value)).filter(Boolean)||[];
+
+    const m31 = vuln.metrics?.cvssMetricV31?.[0];
+    const m30 = vuln.metrics?.cvssMetricV30?.[0];
+    const m2  = vuln.metrics?.cvssMetricV2?.[0];
+    const m   = m31 || m30 || m2;
+    if (m) {
+      cvssScore = m.cvssData?.baseScore;
+      sevLabel  = m.cvssData?.baseSeverity || cvssClass(cvssScore);
+      vecStr    = m.cvssData?.vectorString || '';
+    }
+
+    const cpes = vuln.configurations?.flatMap(c=>
+      c.nodes?.flatMap(n=>n.cpeMatch?.map(cp=>{
+        const p=cp.criteria?.split(':');
+        return p?.[4] ? `${p[3]} ${p[4]}` : null;
+      }).filter(Boolean))
+    ).filter(Boolean)||[];
+    affectedProducts = [...new Set(cpes)].slice(0,14);
+  }
+
+  const sevClass = `sev-${cvssClass(cvssScore)}`;
+
+  // ── KEV ──
+  const kevVuln    = kev?.vulnerabilities?.find(v=>v.cveID===cve);
+  const isKev      = !!kevVuln;
+  const kevProduct = kevVuln?.product || '';
+  const kevVendor  = kevVuln?.vendorProject || '';
+  const kevDate    = kevVuln?.dateAdded || '';
+  const kevRansom  = kevVuln?.knownRansomwareCampaignUse === 'Known';
+
+  // ── Trickest POCs ──
+  const trickestPocs = (trickestTxt?.match(/- (https:\/\/github\.com\/[^\s)]+)/g)||[])
+    .map(m=>m.replace(/^- /,'').trim());
+
+  // ── GitHub Repos ──
+  const ghItems = (ghRepos?.items||[]).map(r=>({
+    url:r.html_url, name:r.full_name, stars:r.stargazers_count, desc:r.description||''
+  }));
+  const tSet = new Set(trickestPocs);
+  const extraGh = ghItems.filter(r=>!tSet.has(r.url));
+
+  // Combined POC list
+  const allPocs = [
+    ...trickestPocs.map(u=>({url:u, source:'trickest', stars:null, name:u.replace('https://github.com/','')})),
+    ...extraGh.map(r=>({url:r.url, source:'github', stars:r.stars, name:r.name, desc:r.desc})),
+  ];
+
+  // ── Nuclei ──
+  const nucleiItems = (nuclei?.items||[]).map(i=>({
+    name:i.name, path:i.path, url:i.html_url
+  }));
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // BUILD HTML
+  // ─────────────────────────────────────────────────────────────────────────
+
+  // 1. CVE Banner
+  let banner = `<div class="cve-banner ${sevClass}">`;
+  banner += `<div class="cve-top-row">
+    <span class="cve-id-label">${esc(cve)}</span>
+    ${cvssScore!=null ? `<div><div class="cvss-num">${esc(String(cvssScore))}</div><div class="cvss-label">CVSS</div></div>
+    <span class="sev-pill">${esc(sevLabel)}</span>` : `<span class="sev-pill">NO CVSS</span>`}
+    ${isKev ? `<span class="kev-pill"><span class="kev-dot"></span>CISA KEV — Actively Exploited</span>` : ''}
+    <button class="copy-cve" onclick="navigator.clipboard.writeText('${esc(cve)}').then(()=>{this.textContent='✓ Copied';setTimeout(()=>this.textContent='Copy CVE',1600)})">Copy CVE</button>
+  </div>`;
+  banner += `<div class="cve-desc">${esc(desc)}</div>`;
+
+  const metas = [];
+  if (published)    metas.push(`<span class="meta-pill"><span class="mk">Published</span>${esc(published)}</span>`);
+  if (modified)     metas.push(`<span class="meta-pill"><span class="mk">Modified</span>${esc(modified)}</span>`);
+  if (cwes.length)  metas.push(`<span class="meta-pill"><span class="mk">CWE</span>${cwes.slice(0,3).map(esc).join(', ')}</span>`);
+  if (vecStr)       metas.push(`<span class="meta-pill" style="font-size:.65rem;word-break:break-all"><span class="mk">Vector</span>${esc(vecStr)}</span>`);
+  if (isKev) {
+    if (kevVendor)  metas.push(`<span class="meta-pill"><span class="mk">Vendor</span>${esc(kevVendor)}</span>`);
+    if (kevDate)    metas.push(`<span class="meta-pill"><span class="mk">KEV Added</span>${esc(kevDate)}</span>`);
+    if (kevRansom)  metas.push(`<span class="meta-pill" style="border-color:rgba(255,77,109,.3);color:#ff4d6d">⚠ Ransomware Use Known</span>`);
+  }
+  if (metas.length) banner += `<div class="meta-pills">${metas.join('')}</div>`;
+
+  if (affectedProducts.length) {
+    banner += `<div class="affected-wrap">
+      <div class="affected-label">Affected Products</div>
+      ${affectedProducts.map(p=>`<span class="aff-chip">${esc(p)}</span>`).join('')}
+    </div>`;
+  }
+  banner += '</div>';
+
+  // 2. Quick Links
+  const qlDefs = [
+    {ico:'💥',label:'Exploit-DB',   url:LINK.exploitdb(cve)},
+    {ico:'🎯',label:'Sploitus',     url:LINK.sploitus(cve)},
+    {ico:'📦',label:'PacketStorm',  url:LINK.packetstorm(cve)},
+    {ico:'🧠',label:'AttackerKB',   url:LINK.attackerkb(cve)},
+    {ico:'🗂', label:'NVD',          url:LINK.nvd(cve)},
+    {ico:'🐙',label:'GitHub',       url:LINK.github(cve)},
+    {ico:'🐋',label:'Vulhub',       url:LINK.vulhub(cve)},
+    {ico:'🛡', label:'Metasploit',   url:LINK.metasploit(cve)},
+    {ico:'🔍',label:'VulDB',        url:LINK.vuldb(cve)},
+    {ico:'🐍',label:'Snyk',         url:LINK.snyk(cve)},
+  ];
+  const ql = `<div class="quick-links">${qlDefs.map(q=>
+    `<a class="qlink" href="${esc(q.url)}" target="_blank" rel="noopener"><span class="qlink-ico">${q.ico}</span>${esc(q.label)}</a>`
+  ).join('')}</div>`;
+
+  // 3. POCs Card
+  let pocBody = '';
+  if (!allPocs.length) {
+    pocBody = `<div class="s-empty">No public POCs found in Trickest or GitHub.<br>
+      Try <a href="${esc(LINK.sploitus(cve))}" target="_blank">Sploitus</a> or <a href="${esc(LINK.exploitdb(cve))}" target="_blank">Exploit-DB</a> manually.</div>`;
+  } else {
+    pocBody = allPocs.map((p,i)=>`
+      <div class="poc-item" style="animation-delay:${i*0.05}s">
+        <span class="poc-src src-${esc(p.source)}">${esc(p.source)}</span>
+        <div class="poc-link-wrap">
+          <a class="poc-link" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}</a>
+          ${p.desc?`<div class="poc-link-sub">${esc(p.desc.substring(0,80))}${p.desc.length>80?'…':''}</div>`:''}
+        </div>
+        ${p.stars!=null?`<span class="poc-stars">⭐ ${fmt(p.stars)}</span>`:''}
+      </div>`).join('');
+    // Store URLs globally — avoids inline escaping issues
+    window._pocUrls = allPocs.map(p => p.url);
+    if (allPocs.length > 1) {
+      pocBody += `<div class="open-all-wrap">
+        <button class="open-all" onclick="openAll()">↗ Open All ${allPocs.length} POCs</button>
+        <button class="copy-all" onclick="copyAllUrls()">⎘ Copy All URLs</button>
+      </div>`;
+    }
+  }
+
+  // 4. Nuclei Card
+  let nucleiBody = '';
+  if (!nucleiItems.length) {
+    nucleiBody = `<div class="s-empty">No Nuclei templates found for this CVE.<br>
+      <a href="https://github.com/projectdiscovery/nuclei-templates/search?q=${encodeURIComponent(cve)}" target="_blank">Search manually →</a></div>`;
+  } else {
+    nucleiBody = nucleiItems.map((n,i)=>`
+      <div class="nuclei-item" style="animation-delay:${i*0.05}s">
+        <div class="nuclei-top">
+          <span class="nuclei-badge">nuclei</span>
+          <a class="nuclei-name" href="${esc(n.url)}" target="_blank" rel="noopener">${esc(n.name)}</a>
+        </div>
+        <div class="nuclei-path">${esc(n.path)}</div>
+      </div>`).join('');
+  }
+
+  // 5. Frameworks Card
+  const fwDefs = [
+    {ico:'🛡', name:'Metasploit',       desc:'Search MSF modules',          url:LINK.metasploit(cve)},
+    {ico:'💥', name:'Exploit-DB',       desc:'Curated exploit archive',     url:LINK.exploitdb(cve)},
+    {ico:'🎯', name:'Sploitus',         desc:'Aggregated exploit search',   url:LINK.sploitus(cve)},
+    {ico:'📦', name:'PacketStorm',      desc:'Security advisories & PoCs',  url:LINK.packetstorm(cve)},
+    {ico:'🐋', name:'Vulhub',           desc:'Docker vuln environments',    url:LINK.vulhub(cve)},
+    {ico:'🧠', name:'AttackerKB',       desc:'Community exploit analysis',  url:LINK.attackerkb(cve)},
+    {ico:'🔍', name:'VulDB',            desc:'Vulnerability database',      url:LINK.vuldb(cve)},
+    {ico:'🐍', name:'Snyk',             desc:'Open source vuln data',       url:LINK.snyk(cve)},
+  ];
+  const fwBody = `<div class="fw-grid">${fwDefs.map(f=>`
+    <a class="fw-card" href="${esc(f.url)}" target="_blank" rel="noopener">
+      <span class="fw-ico">${f.ico}</span>
+      <div><div class="fw-name">${esc(f.name)}</div><div class="fw-desc">${esc(f.desc)}</div></div>
+    </a>`).join('')}</div>`;
+
+  // ── ASSEMBLE ──
+  const out = document.getElementById('results');
+  out.innerHTML = banner + ql
+    + card('🐚', 'Public POCs &amp; Exploits', allPocs.length, pocBody, 'c-pocs')
+    + card('⚡', 'Nuclei Templates', nucleiItems.length, nucleiBody, 'c-nuclei')
+    + card('🔧', 'Exploit Frameworks &amp; Databases', null, fwBody, 'c-fw');
+
+  out.style.display = 'block';
+  out.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function openAll() {
+  const urls = window._pocUrls || [];
+  if (!urls.length) return;
+  // Open first immediately (counts as direct user gesture — not blocked)
+  window.open(urls[0], '_blank', 'noopener,noreferrer');
+  // Open rest with delay — reduces popup blocker triggering
+  urls.slice(1).forEach((u, i) => {
+    setTimeout(() => window.open(u, '_blank', 'noopener,noreferrer'), (i + 1) * 300);
+  });
+}
+
+function copyAllUrls() {
+  const urls = window._pocUrls || [];
+  if (!urls.length) return;
+  navigator.clipboard.writeText(urls.join('\n')).then(() => {
+    const btn = document.querySelector('.copy-all');
+    if (btn) { btn.textContent = '✓ Copied!'; setTimeout(() => btn.textContent = '⎘ Copy All URLs', 1800); }
+  });
+}
+
+// ── API DOCS ──────────────────────────────────────────────────────────────────
+function toggleApiDocs() {
+  const panel = document.getElementById('apiPanel');
+  if (panel.style.display !== 'none') { panel.style.display = 'none'; return; }
+
+  panel.style.display = 'block';
+  panel.innerHTML = `<div class="api-panel-inner">
+    <div class="api-panel-title">📡 POCSpotter — Free API Reference</div>
+    <div class="api-panel-sub">
+      POCSpotter aggregates multiple free public APIs. All endpoints below are free, open, and CORS-accessible — use them directly in your own tools, scripts, or applications with no key required (some have rate limits).
+    </div>
+
+    <div class="api-section-label">🔍 Search by CVE ID</div>
+
+    <div class="api-endpoint">
+      <div class="api-ep-name">NVD — CVSS Score, Description, CWE, Affected Products <span class="api-ep-badge">FREE</span></div>
+      <div class="api-code-wrap">
+        <pre class="api-code">GET https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2024-4577
+
+# Returns: CVSS score, severity, description, CWE, affected CPEs
+# Rate limit: 5 req/30s (unauthenticated) | 50 req/30s with API key
+# Key (free): https://nvd.nist.gov/developers/request-an-api-key</pre>
+        <button class="copy-code-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+    </div>
+
+    <div class="api-endpoint">
+      <div class="api-ep-name">Trickest CVE — GitHub POC Links <span class="api-ep-badge free">FREE</span></div>
+      <div class="api-code-wrap">
+        <pre class="api-code">GET https://raw.githubusercontent.com/trickest/cve/main/{YEAR}/{CVE-ID}.md
+
+# Example:
+GET https://raw.githubusercontent.com/trickest/cve/main/2024/CVE-2024-4577.md
+
+# Returns: Markdown with GitHub POC URLs listed under "- https://github.com/..."
+# No auth required · No rate limit</pre>
+        <button class="copy-code-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+    </div>
+
+    <div class="api-endpoint">
+      <div class="api-ep-name">CISA KEV — Actively Exploited CVEs <span class="api-ep-badge">FREE</span></div>
+      <div class="api-code-wrap">
+        <pre class="api-code">GET https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+
+# Returns: Full catalog of CVEs actively exploited in the wild
+# Filter by cveID field to check a specific CVE
+# Updated: daily | No auth required | No rate limit</pre>
+        <button class="copy-code-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+    </div>
+
+    <div class="api-endpoint">
+      <div class="api-ep-name">GitHub Search — Public POC Repositories <span class="api-ep-badge free">FREE</span></div>
+      <div class="api-code-wrap">
+        <pre class="api-code">GET https://api.github.com/search/repositories?q=CVE-2024-4577&sort=stars&order=desc&per_page=10
+
+# Returns: Repos matching CVE ID, sorted by stars
+# Rate limit: 10 req/min unauthenticated | 30/min with token
+# Header: Authorization: Bearer &lt;github_token&gt; (optional, increases limit)</pre>
+        <button class="copy-code-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+    </div>
+
+    <div class="api-endpoint">
+      <div class="api-ep-name">ProjectDiscovery — Nuclei Templates <span class="api-ep-badge free">FREE</span></div>
+      <div class="api-code-wrap">
+        <pre class="api-code">GET https://api.github.com/search/code?q=CVE-2024-4577+in:file+repo:projectdiscovery/nuclei-templates&per_page=5
+
+# Returns: Nuclei YAML templates for the CVE
+# Same rate limits as GitHub Search API above</pre>
+        <button class="copy-code-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+    </div>
+
+    <div class="api-endpoint">
+      <div class="api-ep-name">OSV.dev — Open Source Vulnerability Details <span class="api-ep-badge free">FREE</span></div>
+      <div class="api-code-wrap">
+        <pre class="api-code">GET https://api.osv.dev/v1/vulns/CVE-2024-4577
+
+# Returns: Affected packages, versions, severity, references
+# No auth required | No rate limit</pre>
+        <button class="copy-code-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+    </div>
+
+    <div class="api-section-label">⚡ JavaScript — Use POCSpotter Logic in Your Project</div>
+    <div class="api-endpoint">
+      <div class="api-code-wrap">
+        <pre class="api-code">// Fetch all data for a CVE — copy this function into your project
+async function pocspotter(cveId) {
+  const year = cveId.split('-')[1];
+  const [nvd, kev, trickest, ghRepos] = await Promise.all([
+    fetch(\`https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=\${cveId}\`).then(r=>r.json()),
+    fetch('https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json').then(r=>r.json()),
+    fetch(\`https://raw.githubusercontent.com/trickest/cve/main/\${year}/\${cveId}.md\`).then(r=>r.text()).catch(()=>null),
+    fetch(\`https://api.github.com/search/repositories?q=\${cveId}&sort=stars&per_page=8\`).then(r=>r.json()),
+  ]);
+  const vuln  = nvd?.vulnerabilities?.[0]?.cve;
+  const score = vuln?.metrics?.cvssMetricV31?.[0]?.cvssData?.baseScore;
+  const pocs  = (trickest?.match(/- (https:\/\/github\.com\/[^\s)]+)/g)||[]).map(m=>m.slice(2));
+  const isKev = kev?.vulnerabilities?.some(v=>v.cveID===cveId);
+  return { cveId, score, isKev, pocs, githubRepos: ghRepos?.items||[], nvd: vuln };
+}
+
+// Usage:
+const result = await pocspotter('CVE-2024-4577');
+console.log(result);</pre>
+        <button class="copy-code-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+    </div>
+
+    <div class="api-section-label">🐍 Python — Quick CVE Lookup Script</div>
+    <div class="api-endpoint">
+      <div class="api-code-wrap">
+        <pre class="api-code">import requests
+
+def pocspotter(cve_id):
+    year = cve_id.split('-')[1]
+    results = {}
+
+    # NVD
+    r = requests.get(f'https://services.nvd.nist.gov/rest/json/cves/2.0?cveId={cve_id}')
+    vuln = r.json().get('vulnerabilities', [{}])[0].get('cve', {})
+    results['description'] = next((d['value'] for d in vuln.get('descriptions',[]) if d['lang']=='en'), '')
+    m = (vuln.get('metrics',{}).get('cvssMetricV31') or vuln.get('metrics',{}).get('cvssMetricV30') or [None])[0]
+    results['cvss'] = m['cvssData']['baseScore'] if m else None
+
+    # Trickest POCs
+    r2 = requests.get(f'https://raw.githubusercontent.com/trickest/cve/main/{year}/{cve_id}.md')
+    import re
+    results['pocs'] = re.findall(r'- (https://github\.com/\S+)', r2.text) if r2.ok else []
+
+    # CISA KEV
+    r3 = requests.get('https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json')
+    results['is_kev'] = any(v['cveID']==cve_id for v in r3.json().get('vulnerabilities',[]))
+
+    return results
+
+print(pocspotter('CVE-2024-4577'))</pre>
+        <button class="copy-code-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+    </div>
+
+    <div class="api-section-label">🔗 All Free Data Sources</div>
+    <div class="api-source-grid">
+      <div class="api-src-card"><div class="api-src-name">NVD (NIST)</div><div class="api-src-url">services.nvd.nist.gov/rest/json/cves/2.0</div><div class="api-src-note">CVSS, CWE, affected products</div></div>
+      <div class="api-src-card"><div class="api-src-name">CISA KEV</div><div class="api-src-url">cisa.gov/…/known_exploited_vulnerabilities.json</div><div class="api-src-note">Actively exploited CVEs</div></div>
+      <div class="api-src-card"><div class="api-src-name">Trickest CVE</div><div class="api-src-url">raw.githubusercontent.com/trickest/cve</div><div class="api-src-note">GitHub POC aggregation</div></div>
+      <div class="api-src-card"><div class="api-src-name">GitHub API</div><div class="api-src-url">api.github.com/search/repositories</div><div class="api-src-note">POC repos &amp; nuclei templates</div></div>
+      <div class="api-src-card"><div class="api-src-name">OSV.dev</div><div class="api-src-url">api.osv.dev/v1/vulns/{CVE}</div><div class="api-src-note">Open source vuln data</div></div>
+      <div class="api-src-card"><div class="api-src-name">Exploit-DB</div><div class="api-src-url">exploit-db.com/search?cve=</div><div class="api-src-note">Curated exploit database</div></div>
+      <div class="api-src-card"><div class="api-src-name">Sploitus</div><div class="api-src-url">sploitus.com/?query=</div><div class="api-src-note">Aggregated exploit search</div></div>
+      <div class="api-src-card"><div class="api-src-name">PacketStorm</div><div class="api-src-url">packetstormsecurity.com/search/?q=</div><div class="api-src-note">Security advisories &amp; PoCs</div></div>
+    </div>
+    <button onclick="toggleApiDocs()" style="background:none;border:1px solid var(--border);color:var(--muted);padding:8px 20px;border-radius:6px;cursor:pointer;font-size:.8rem;width:100%;margin-top:8px;font-family:var(--font);transition:all .2s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">✕ Close API Docs</button>
+  </div>`;
+  panel.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function copyCode(btn) {
+  const code = btn.previousElementSibling.textContent;
+  navigator.clipboard.writeText(code.trim()).then(()=>{
+    btn.textContent='Copied!';
+    setTimeout(()=>btn.textContent='Copy',1600);
+  });
+}
+
+// ── TRENDING KEV ─────────────────────────────────────────────────────────────
+async function loadTrendingKEV() {
+  const grid = document.getElementById('kevGrid');
+  // file:// protocol always fails CORS — detect it and show a friendly note
+  if (window.location.protocol === 'file:') {
+    grid.innerHTML = '<div class="trending-loading">⚠ Open via <code>http://localhost:PORT</code> or GitHub Pages to load live data.</div>';
+    return;
+  }
+  try {
+    const data = await fetchKEV();
+    if (!data?.vulnerabilities?.length) {
+      grid.innerHTML = '<div class="trending-loading">Could not load KEV data.</div>';
+      return;
+    }
+    // Most recently added (last 8)
+    const recent = [...data.vulnerabilities]
+      .sort((a,b) => new Date(b.dateAdded) - new Date(a.dateAdded))
+      .slice(0, 8);
+
+    grid.innerHTML = `<div class="kev-grid">${recent.map(v => `
+      <div class="kev-card" onclick="doSearch('${esc(v.cveID)}')" title="Search ${esc(v.cveID)}">
+        <div class="kev-card-cve">${esc(v.cveID)}</div>
+        <div class="kev-card-prod">${esc(v.vendorProject)} — ${esc(v.product)}</div>
+        <div class="kev-card-date">Added: ${esc(v.dateAdded)}</div>
+        ${v.knownRansomwareCampaignUse==='Known'?'<div class="kev-card-ransom">⚠ Ransomware</div>':''}
+      </div>`).join('')}
+    </div>`;
+  } catch {
+    grid.innerHTML = '<div class="trending-loading">Could not load KEV data.</div>';
+  }
+}
+
+// ── EVENTS ────────────────────────────────────────────────────────────────────
+document.getElementById('searchBtn').addEventListener('click', () => doSearch());
+document.getElementById('cveInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doSearch();
+});
+
+// Auto-format input
+document.getElementById('cveInput').addEventListener('input', function() {
+  const v = this.value.toUpperCase().replace(/[^CVE0-9-]/g,'');
+  if (v !== this.value) this.value = v;
+});
+
+// ── ON LOAD ───────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  // Load trending KEV
+  loadTrendingKEV();
+
+  // Handle ?q= URL param (for Google SearchAction sitelinks)
+  const q = new URLSearchParams(window.location.search).get('q');
+  if (q && /CVE-\d{4}-\d+/i.test(q)) {
+    document.getElementById('cveInput').value = q.toUpperCase();
+    doSearch(q.toUpperCase());
+  }
+});
+</script>
 </body>
 </html>
