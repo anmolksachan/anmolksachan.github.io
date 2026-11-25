@@ -1,0 +1,106 @@
+---
+import type { Article } from '../lib/articles';
+import { deriveCategory, formatDateShort } from '../lib/articles';
+
+interface Props {
+  article:  Article;
+  featured?: boolean;
+  size?:    'default' | 'compact';
+}
+const { article, featured = false, size = 'default' } = Astro.props;
+const base    = '/blogs';
+const cat     = deriveCategory(article);
+const href    = `${base}/${article.slug}/`;
+---
+
+{size === 'compact' ? (
+  <a href={href} class="article-card group flex gap-4 p-4 no-underline" aria-label={article.title}>
+    {article.cover && (
+      <div class="shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-bg-overlay">
+        <img src={article.cover.src} alt={article.cover.alt || article.title}
+             loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+      </div>
+    )}
+    <div class="min-w-0 flex flex-col justify-between gap-1">
+      <div>
+        <span class="cat-badge text-2xs mb-2 inline-block" data-cat={cat}>{cat}</span>
+        <h3 class="card-title text-sm font-semibold text-txt-primary leading-snug transition-colors line-clamp-2">
+          {article.title}
+        </h3>
+      </div>
+      <div class="flex items-center gap-2 text-2xs font-mono text-txt-muted">
+        <time datetime={article.pubDate}>{formatDateShort(article.pubDate)}</time>
+        <span>·</span>
+        <span>{article.readingTime} min</span>
+      </div>
+    </div>
+  </a>
+) : featured ? (
+  <a href={href} class="article-card group block no-underline" aria-label={`Featured: ${article.title}`}>
+    {article.cover && (
+      <div class="relative h-56 sm:h-72 overflow-hidden bg-bg-overlay">
+        <img src={article.cover.src} alt={article.cover.alt || article.title}
+             loading="lazy"
+             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+        <div class="absolute inset-0 bg-gradient-to-t from-bg-surface via-bg-surface/30 to-transparent"></div>
+        <span class="absolute top-4 left-4 text-2xs font-mono uppercase tracking-wider
+                     px-2.5 py-1 bg-accent text-txt-inverse font-semibold rounded-sm">
+          Featured
+        </span>
+      </div>
+    )}
+    <div class="p-6">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="cat-badge" data-cat={cat}>{cat}</span>
+      </div>
+      <h2 class="card-title font-display font-semibold text-2xl text-white leading-tight mb-3 transition-colors">
+        {article.title}
+      </h2>
+      <p class="text-txt-secondary text-sm leading-relaxed line-clamp-3 mb-4">
+        {article.excerpt}
+      </p>
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2 text-xs font-mono text-txt-muted">
+          <time datetime={article.pubDate}>{formatDateShort(article.pubDate)}</time>
+          <span>·</span>
+          <span>{article.readingTime} min read</span>
+        </div>
+        <span class="text-xs text-accent font-mono opacity-0 group-hover:opacity-100 transition-opacity">
+          Read →
+        </span>
+      </div>
+    </div>
+  </a>
+) : (
+  <a href={href} class="article-card group block no-underline" aria-label={article.title}>
+    {article.cover && (
+      <div class="relative h-44 overflow-hidden bg-bg-overlay">
+        <img src={article.cover.src} alt={article.cover.alt || article.title}
+             loading="lazy"
+             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        <div class="absolute inset-0 bg-gradient-to-t from-bg-surface/60 to-transparent"></div>
+      </div>
+    )}
+    <div class="p-5">
+      <div class="flex items-center gap-2 mb-2.5">
+        <span class="cat-badge" data-cat={cat}>{cat}</span>
+      </div>
+      <h3 class="card-title font-display font-semibold text-lg text-white leading-snug mb-2.5 transition-colors line-clamp-2">
+        {article.title}
+      </h3>
+      <p class="text-txt-secondary text-sm leading-relaxed line-clamp-2 mb-4">
+        {article.excerpt}
+      </p>
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2 text-xs font-mono text-txt-muted">
+          <time datetime={article.pubDate}>{formatDateShort(article.pubDate)}</time>
+          <span>·</span>
+          <span>{article.readingTime} min read</span>
+        </div>
+        {article.tags.slice(0, 2).map(t => (
+          <span class="tag-badge">{t}</span>
+        ))}
+      </div>
+    </div>
+  </a>
+)}

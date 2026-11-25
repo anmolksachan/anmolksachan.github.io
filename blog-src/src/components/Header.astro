@@ -1,0 +1,141 @@
+---
+interface Props {
+  currentPath?: string;
+}
+const { currentPath = '' } = Astro.props;
+const base = '/blogs';
+
+const navLinks = [
+  { href: `${base}/`,            label: 'All Articles' },
+  { href: `${base}/#topics`,     label: 'Topics' },
+  { href: 'https://anmolksachan.github.io', label: 'Portfolio', external: true },
+];
+---
+
+<header
+  id="site-header"
+  class="sticky top-0 z-50 w-full border-b border-border-subtle bg-bg-base/90 backdrop-blur-md"
+>
+  <div class="max-w-layout mx-auto px-5 h-14 flex items-center justify-between gap-4">
+
+    <!-- Brand -->
+    <a href={base + '/'} class="flex items-center gap-2.5 no-underline group shrink-0" aria-label="Anmol K Sachan — Blog home">
+      <span class="font-mono text-xs text-accent opacity-70 group-hover:opacity-100 transition-opacity"
+            aria-hidden="true">~/</span>
+      <span class="font-display font-semibold text-sm text-white group-hover:text-accent transition-colors">
+        anmolksachan
+      </span>
+      <span class="hidden sm:inline text-txt-muted text-xs font-mono">.security</span>
+    </a>
+
+    <!-- Desktop nav -->
+    <nav aria-label="Main navigation" class="hidden md:flex items-center gap-6">
+      {navLinks.map(link => (
+        <a
+          href={link.href}
+          target={link.external ? '_blank' : undefined}
+          rel={link.external ? 'noopener noreferrer' : undefined}
+          class:list={[
+            'text-sm font-medium no-underline transition-colors',
+            currentPath === link.href
+              ? 'text-accent'
+              : 'text-txt-secondary hover:text-txt-primary',
+          ]}
+        >
+          {link.label}
+          {link.external && (
+            <span class="ml-0.5 text-xs opacity-50" aria-label="opens in new tab">↗</span>
+          )}
+        </a>
+      ))}
+    </nav>
+
+    <!-- Right actions -->
+    <div class="flex items-center gap-3">
+      <!-- Cmd+K search trigger -->
+      <button
+        onclick="document.getElementById('cmd-dialog').classList.add('active'); document.getElementById('cmd-input').focus(); document.body.style.overflow='hidden';"
+        class="hidden sm:flex items-center gap-2 text-txt-muted hover:text-txt-primary transition-colors
+               text-xs font-mono px-3 py-1.5 rounded-lg border border-border-subtle
+               hover:border-border-dim bg-bg-surface cursor-pointer"
+        aria-label="Search articles (Cmd+K)"
+      >
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <span class="text-txt-muted">Search</span>
+        <kbd class="ml-1 text-2xs px-1 py-0.5 rounded border border-border-subtle">⌘K</kbd>
+      </button>
+
+      <!-- Mobile search -->
+      <button
+        onclick="document.getElementById('cmd-dialog').classList.add('active'); document.getElementById('cmd-input').focus(); document.body.style.overflow='hidden';"
+        class="sm:hidden p-2 text-txt-secondary hover:text-accent transition-colors cursor-pointer"
+        aria-label="Search"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+      </button>
+
+      <!-- Mobile menu toggle -->
+      <button
+        id="mobile-menu-btn"
+        class="md:hidden p-2 text-txt-secondary hover:text-accent transition-colors cursor-pointer"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <svg id="menu-open-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <svg id="menu-close-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile nav dropdown -->
+  <div
+    id="mobile-menu"
+    class="hidden md:hidden border-t border-border-subtle bg-bg-surface px-5 py-4"
+    aria-label="Mobile navigation"
+  >
+    {navLinks.map(link => (
+      <a
+        href={link.href}
+        target={link.external ? '_blank' : undefined}
+        rel={link.external ? 'noopener noreferrer' : undefined}
+        class="flex items-center justify-between py-3 text-sm font-medium text-txt-secondary
+               hover:text-txt-primary border-b border-border-subtle last:border-0 no-underline transition-colors"
+      >
+        {link.label}
+        {link.external && <span class="text-xs opacity-40">↗</span>}
+      </a>
+    ))}
+  </div>
+</header>
+
+<script>
+  const btn   = document.getElementById('mobile-menu-btn')!;
+  const menu  = document.getElementById('mobile-menu')!;
+  const open  = document.getElementById('menu-open-icon')!;
+  const close = document.getElementById('menu-close-icon')!;
+
+  btn.addEventListener('click', () => {
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!expanded));
+    menu.classList.toggle('hidden');
+    open.classList.toggle('hidden');
+    close.classList.toggle('hidden');
+  });
+
+  // Scroll: add shadow to header
+  const header = document.getElementById('site-header')!;
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('shadow-[0_1px_0_rgba(0,230,115,0.08)]', window.scrollY > 10);
+  }, { passive: true });
+</script>

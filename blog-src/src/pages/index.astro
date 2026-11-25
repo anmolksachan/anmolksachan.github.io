@@ -1,0 +1,344 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header     from '../components/Header.astro';
+import Footer     from '../components/Footer.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import articlesRaw from '../data/articles.json';
+import type { Article } from '../lib/articles';
+import { deriveCategory, ALL_CATEGORIES } from '../lib/articles';
+
+const articles   = articlesRaw as Article[];
+const featured   = articles.find(a => a.featured) ?? articles[0];
+const rest        = articles.filter(a => a.id !== featured?.id);
+
+// Category stats
+const catMap = new Map<string, number>();
+for (const a of articles) {
+  const c = deriveCategory(a);
+  catMap.set(c, (catMap.get(c) ?? 0) + 1);
+}
+const topCats = [...catMap.entries()]
+  .sort((a, b) => b[1] - a[1])
+  .filter(([c]) => c !== 'All');
+
+const stats = {
+  articles:   articles.length,
+  categories: catMap.size,
+  latest:     articles[0]?.pubDate,
+};
+
+const base = '/blogs';
+---
+
+<BaseLayout
+  title="Anmol K Sachan — Security Research & Blog"
+  description="Security research, vulnerability write-ups, AI/LLM security, OSINT tools, and bug bounty stories by Anmol K Sachan, security consultant at NetSPI."
+>
+  <Header currentPath={base + '/'} />
+
+  <main id="main-content">
+
+    <!-- ── HERO ──────────────────────────────────────────────────────── -->
+    <section class="relative overflow-hidden border-b border-border-subtle bg-bg-base">
+      <!-- Background grid -->
+      <div class="pointer-events-none absolute inset-0 opacity-[0.03]"
+           style="background-image: linear-gradient(rgba(0,230,115,.8) 1px, transparent 1px), linear-gradient(90deg, rgba(0,230,115,.8) 1px, transparent 1px); background-size: 48px 48px;"
+           aria-hidden="true"></div>
+      <!-- Radial glow -->
+      <div class="pointer-events-none absolute inset-0"
+           style="background: radial-gradient(ellipse 60% 50% at 20% 50%, rgba(0,230,115,0.04) 0%, transparent 70%)"
+           aria-hidden="true"></div>
+
+      <div class="relative max-w-layout mx-auto px-5 py-16 sm:py-20">
+        <div class="max-w-2xl">
+          <!-- Terminal badge -->
+          <div class="inline-flex items-center gap-2.5 font-mono text-xs text-accent
+                      border border-accent/25 px-3 py-1.5 rounded-sm mb-6
+                      bg-accent/5">
+            <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" aria-hidden="true"></span>
+            <span>~/security-research</span>
+            <span class="text-txt-muted animate-blink" aria-hidden="true">_</span>
+          </div>
+
+          <h1 class="font-display font-bold text-4xl sm:text-5xl text-white leading-tight tracking-tight mb-5">
+            Anmol K Sachan
+          </h1>
+
+          <p class="text-txt-secondary text-lg leading-relaxed mb-3">
+            Security Consultant <span class="text-txt-muted">·</span>
+            Vulnerability Researcher <span class="text-txt-muted">·</span>
+            Builder
+          </p>
+
+          <p class="text-txt-muted text-base leading-relaxed mb-8 max-w-xl">
+            Writing about offensive security, AI/LLM exploitation, bug bounty
+            research, and the security tooling that makes it all possible.
+            Currently at <span class="text-txt-secondary font-medium">NetSPI</span>.
+          </p>
+
+          <!-- CTA row -->
+          <div class="flex flex-wrap gap-3">
+            <a href="#articles"
+               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm
+                      bg-accent text-txt-inverse hover:bg-accent-bright transition-colors no-underline">
+              Read Research
+              <span aria-hidden="true">→</span>
+            </a>
+            <a href="https://anmolksachan.github.io" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm
+                      border border-border-base text-txt-secondary hover:text-txt-primary
+                      hover:border-border-strong transition-colors no-underline">
+              Portfolio ↗
+            </a>
+          </div>
+
+          <!-- Stats row -->
+          <div class="mt-10 pt-8 border-t border-border-subtle flex flex-wrap gap-8">
+            <div>
+              <span class="font-mono text-2xl font-bold text-accent">{stats.articles}</span>
+              <span class="block text-xs text-txt-muted font-mono uppercase tracking-wider mt-0.5">Articles</span>
+            </div>
+            <div>
+              <span class="font-mono text-2xl font-bold text-accent">{stats.categories}</span>
+              <span class="block text-xs text-txt-muted font-mono uppercase tracking-wider mt-0.5">Topics</span>
+            </div>
+            <div>
+              <span class="font-mono text-2xl font-bold text-accent">
+                {new Date(stats.latest!).getFullYear()}
+              </span>
+              <span class="block text-xs text-txt-muted font-mono uppercase tracking-wider mt-0.5">Latest Year</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FEATURED ───────────────────────────────────────────────────── -->
+    {featured && (
+      <section class="max-w-layout mx-auto px-5 py-14" aria-label="Featured article">
+        <div class="flex items-center gap-3 mb-7">
+          <span class="text-xs font-mono uppercase tracking-wider text-accent">Featured</span>
+          <span class="flex-1 h-px bg-border-subtle"></span>
+        </div>
+        <div class="max-w-3xl">
+          <ArticleCard article={featured} featured={true} />
+        </div>
+      </section>
+    )}
+
+    <!-- ── ALL ARTICLES ───────────────────────────────────────────────── -->
+    <section id="articles" class="max-w-layout mx-auto px-5 pb-16 scroll-mt-20">
+      <div class="flex items-center gap-3 mb-7">
+        <span class="text-xs font-mono uppercase tracking-wider text-accent">All Articles</span>
+        <span class="flex-1 h-px bg-border-subtle"></span>
+        <span class="text-xs font-mono text-txt-muted">{articles.length} total</span>
+      </div>
+
+      <!-- Search + Filter bar -->
+      <div class="flex flex-col sm:flex-row gap-3 mb-8">
+        <div class="relative flex-1">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-txt-muted pointer-events-none"
+               fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <input id="search-input" type="search" placeholder="Search articles…"
+                 class="w-full pl-9 pr-4 py-2.5 text-sm bg-bg-surface border border-border-subtle rounded-lg
+                        text-txt-primary placeholder-txt-muted font-mono
+                        focus:border-accent/40 focus:ring-1 focus:ring-accent/20 outline-none transition-colors"
+                 aria-label="Search articles" autocomplete="off" />
+        </div>
+        <select id="cat-select"
+                class="px-3 py-2.5 text-sm bg-bg-surface border border-border-subtle rounded-lg
+                       text-txt-secondary font-mono outline-none
+                       focus:border-accent/40 cursor-pointer transition-colors"
+                aria-label="Filter by category">
+          <option value="All">All categories</option>
+          {topCats.map(([cat, n]) => (
+            <option value={cat}>{cat} ({n})</option>
+          ))}
+        </select>
+        <select id="sort-select"
+                class="px-3 py-2.5 text-sm bg-bg-surface border border-border-subtle rounded-lg
+                       text-txt-secondary font-mono outline-none
+                       focus:border-accent/40 cursor-pointer transition-colors"
+                aria-label="Sort articles">
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+        </select>
+      </div>
+
+      <!-- Results info -->
+      <p id="results-info" class="text-xs font-mono text-txt-muted mb-5" aria-live="polite"></p>
+
+      <!-- Empty state -->
+      <div id="empty-state" class="hidden text-center py-16">
+        <p class="text-txt-muted text-lg mb-2">No articles found</p>
+        <p class="text-txt-muted text-sm">Try a different search term or category</p>
+        <button onclick="clearFilters()" class="mt-4 text-sm text-accent hover:underline cursor-pointer">
+          Clear filters
+        </button>
+      </div>
+
+      <!-- Article grid -->
+      <div id="article-grid"
+           class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+           role="list"
+           aria-label="Articles">
+        {rest.map(article => (
+          <div role="listitem" class="fade-up-on-scroll" data-article
+               data-title={article.title.toLowerCase()}
+               data-excerpt={article.excerpt.toLowerCase()}
+               data-tags={article.tags.join(' ').toLowerCase()}
+               data-cat={deriveCategory(article)}
+               data-date={article.pubDate}>
+            <ArticleCard article={article} />
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ── TOPICS ─────────────────────────────────────────────────────── -->
+    <section id="topics" class="border-t border-border-subtle bg-bg-surface scroll-mt-20">
+      <div class="max-w-layout mx-auto px-5 py-14">
+        <div class="flex items-center gap-3 mb-9">
+          <span class="text-xs font-mono uppercase tracking-wider text-accent">Topics</span>
+          <span class="flex-1 h-px bg-border-subtle"></span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          {topCats.map(([cat, count]) => (
+            <button
+              onclick={`filterByCat('${cat}')`}
+              class="group flex items-center justify-between p-4 rounded-lg border border-border-subtle
+                     bg-bg-raised hover:border-border-base transition-all text-left cursor-pointer"
+              aria-label={`Show ${count} articles in ${cat}`}
+            >
+              <span class="text-sm font-medium text-txt-secondary group-hover:text-txt-primary transition-colors">
+                {cat}
+              </span>
+              <span class="font-mono text-xs text-txt-muted bg-bg-overlay px-2 py-0.5 rounded">
+                {count}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ── ABOUT ──────────────────────────────────────────────────────── -->
+    <section class="border-t border-border-subtle">
+      <div class="max-w-layout mx-auto px-5 py-14">
+        <div class="max-w-2xl">
+          <div class="flex items-center gap-3 mb-7">
+            <span class="text-xs font-mono uppercase tracking-wider text-accent">About</span>
+            <span class="flex-1 h-px bg-border-subtle max-w-xs"></span>
+          </div>
+          <h2 class="font-display font-semibold text-2xl text-white mb-4">
+            Anmol K Sachan
+          </h2>
+          <p class="text-txt-secondary leading-relaxed mb-4">
+            Senior Security Consultant at <a href="https://netspi.com" target="_blank" rel="noopener noreferrer"
+            class="text-accent hover:underline">NetSPI</a>, focused on offensive security, penetration testing,
+            and vulnerability research. Working at the intersection of AI/LLM security,
+            web application security, and security automation.
+          </p>
+          <p class="text-txt-secondary leading-relaxed mb-6">
+            Creator of <a href="https://anmolksachan.github.io/LLMPenTestHub/" target="_blank" rel="noopener noreferrer"
+            class="text-accent hover:underline">LLM PenTest Hub</a>,
+            <a href="https://github.com/anmolksachan/ThreatTracer" target="_blank" rel="noopener noreferrer"
+            class="text-accent hover:underline">ThreatTracer</a>, and other open-source tools.
+            Regular contributor to CVE research, bug bounty programs, and AI security standards.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <a href="https://github.com/anmolksachan" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-1.5 text-sm text-txt-secondary hover:text-accent no-underline transition-colors">
+              <span>GitHub ↗</span>
+            </a>
+            <a href="https://linkedin.com/in/anmolksachan" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-1.5 text-sm text-txt-secondary hover:text-accent no-underline transition-colors">
+              <span>LinkedIn ↗</span>
+            </a>
+            <a href="https://twitter.com/FR13ND0x7f" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-1.5 text-sm text-txt-secondary hover:text-accent no-underline transition-colors">
+              <span>X / Twitter ↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+
+  <!-- Search + filter JS -->
+  <script define:vars={{ articlesData: rest.map(a => ({
+    title:   a.title.toLowerCase(),
+    excerpt: a.excerpt.toLowerCase(),
+    tags:    a.tags.join(' ').toLowerCase(),
+    cat:     deriveCategory(a),
+    date:    a.pubDate,
+  })) }}>
+    const items      = document.querySelectorAll('[data-article]');
+    const searchInput = document.getElementById('search-input');
+    const catSelect   = document.getElementById('cat-select');
+    const sortSelect  = document.getElementById('sort-select');
+    const emptyState  = document.getElementById('empty-state');
+    const resultsInfo = document.getElementById('results-info');
+
+    function applyFilters() {
+      const q   = searchInput.value.trim().toLowerCase();
+      const cat = catSelect.value;
+      const sort = sortSelect.value;
+
+      let visible = [...items].filter(item => {
+        const title   = item.dataset.title   || '';
+        const excerpt = item.dataset.excerpt || '';
+        const tags    = item.dataset.tags    || '';
+        const itemCat = item.dataset.cat     || '';
+        const matchQ  = !q || title.includes(q) || excerpt.includes(q) || tags.includes(q);
+        const matchC  = cat === 'All' || itemCat === cat;
+        return matchQ && matchC;
+      });
+
+      // Sort
+      visible.sort((a, b) => {
+        const da = new Date(a.dataset.date || 0).getTime();
+        const db = new Date(b.dataset.date || 0).getTime();
+        return sort === 'oldest' ? da - db : db - da;
+      });
+
+      // Hide all, then show sorted visible
+      items.forEach(el => el.style.display = 'none');
+      visible.forEach((el, i) => {
+        el.style.display = '';
+        el.style.order = String(i);
+      });
+
+      emptyState.classList.toggle('hidden', visible.length > 0);
+      resultsInfo.textContent = visible.length === items.length
+        ? `Showing all ${items.length} articles`
+        : `${visible.length} of ${items.length} articles`;
+    }
+
+    function filterByCat(cat) {
+      catSelect.value = cat;
+      document.getElementById('articles').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      applyFilters();
+    }
+    window.filterByCat = filterByCat;
+
+    function clearFilters() {
+      searchInput.value = '';
+      catSelect.value   = 'All';
+      sortSelect.value  = 'newest';
+      applyFilters();
+    }
+    window.clearFilters = clearFilters;
+
+    searchInput.addEventListener('input',  applyFilters);
+    catSelect.addEventListener('change',   applyFilters);
+    sortSelect.addEventListener('change',  applyFilters);
+
+    applyFilters();
+  </script>
+</BaseLayout>

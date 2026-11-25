@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Anmol K Sachan — Security Research</title>
+    <link>https://anmolksachan.github.io/blogs/</link>
+    <description>Security research, vulnerability write-ups, AI/LLM security, OSINT tools, and bug bounty stories by Anmol K Sachan.</description>
+    <language>en-us</language>
+    <managingEditor>anmolksachan@outlook.com (Anmol K Sachan)</managingEditor>
+    <webMaster>anmolksachan@outlook.com (Anmol K Sachan)</webMaster>
+    <lastBuildDate>Wed, 25 Nov 2026 16:43:21 GMT</lastBuildDate>
+    <atom:link href="https://anmolksachan.github.io/blogs/rss.xml" rel="self" type="application/rss+xml" />
+    <ttl>1440</ttl>
+    <item>
+      <title><![CDATA[PHP2Shell: CVE-2026-109618 Pre-Auth RCE, I Tested It Locally and Here’s How It Works]]></title>
+      <link>https://anmolksachan.github.io/blogs/php2shell-cve-2026-109618-pre-auth-rce-i-tested-it-locally-and-heres-how-it-works-0a50d01fa552/</link>
+      <guid isPermaLink="true">https://anmolksachan.github.io/blogs/php2shell-cve-2026-109618-pre-auth-rce-i-tested-it-locally-and-heres-how-it-works-0a50d01fa552/</guid>
+      <description><![CDATA[PRE-AUTH RCE CONFIRMED — PHP 8.5.11, uid=33(www-data), local Docker labTL;DRPHP’s session.upload_progress feature enabled by default has a pre-RINIT use-after-free that allows an unauthenticated attacker to leak heap…]]></description>
+      <pubDate>Thu, 22 Oct 2026 12:00:37 GMT</pubDate>
+      <category><![CDATA[Vulnerability Research]]></category>
+      <category><![CDATA[cybersecurity]]></category>
+      <category><![CDATA[cve]]></category>
+      <category><![CDATA[php]]></category>
+      <category><![CDATA[penetration-testing]]></category>
+      <source url="https://anmolksachan.medium.com/php2shell-cve-2026-109618-pre-auth-rce-i-tested-it-locally-and-heres-how-it-works-0a50d01fa552">Medium</source>
+    </item>
+  <item>
+      <title><![CDATA[The CVE in the Slack channel]]></title>
+      <link>https://anmolksachan.github.io/blogs/the-cve-in-the-slack-channel-94fb683b946e/</link>
+      <guid isPermaLink="true">https://anmolksachan.github.io/blogs/the-cve-in-the-slack-channel-94fb683b946e/</guid>
+      <description><![CDATA[Someone drops a CVE ID into the team channel. No context. Just `CVE-2021–44228` and a question mark, or worse, a thumbs-up emoji that somebody added ironically.And now your afternoon has a shape.You open NVD first,…]]></description>
+      <pubDate>Fri, 10 Jul 2026 18:22:37 GMT</pubDate>
+      <category><![CDATA[Vulnerability Research]]></category>
+      
+      <source url="https://anmolksachan.medium.com/the-cve-in-the-slack-channel-94fb683b946e">Medium</source>
+    </item>
+  <item>
+      <title><![CDATA[I Built a Burp Suite Extension to Automate LLM Prompt Injection Testing]]></title>
+      <link>https://anmolksachan.github.io/blogs/i-built-a-burp-suite-extension-to-automate-llm-prompt-injection-testing-b4add8a11774/</link>
+      <guid isPermaLink="true">https://anmolksachan.github.io/blogs/i-built-a-burp-suite-extension-to-automate-llm-prompt-injection-testing-b4add8a11774/</guid>
+      <description><![CDATA[Because manually fuzzing AI APIs in 2026 is table stakes, and we deserve better tooling.By Anmol K Sachan (@FR13ND0x7f) · Security ResearcherI’ve been doing a lot of AI/LLM security assessments over the past year. Every…]]></description>
+      <pubDate>Tue, 10 Mar 2026 06:48:17 GMT</pubDate>
+      <category><![CDATA[AI/LLM Security]]></category>
+      
+      <source url="https://anmolksachan.medium.com/i-built-a-burp-suite-extension-to-automate-llm-prompt-injection-testing-b4add8a11774">Medium</source>
+    </item>
+  <item>
+      <title><![CDATA[CloudFail v2: Finding the Real IP Behind Cloudflare (And Why the Old Tool Was Broken)]]></title>
+      <link>https://anmolksachan.github.io/blogs/cloudfail-v2-finding-the-real-ip-behind-cloudflare-and-why-the-old-tool-was-broken-984c216c6062/</link>
+      <guid isPermaLink="true">https://anmolksachan.github.io/blogs/cloudfail-v2-finding-the-real-ip-behind-cloudflare-and-why-the-old-tool-was-broken-984c216c6062/</guid>
+      <description><![CDATA[So I’ve been doing a lot of recon work lately and kept running into the same wall, Cloudflare. Great for the people running sites, genuinely annoying for those of us doing authorized pen tests. The classic move is to…]]></description>
+      <pubDate>Tue, 24 Feb 2026 21:15:30 GMT</pubDate>
+      <category><![CDATA[Security Tooling]]></category>
+      
+      <source url="https://anmolksachan.medium.com/cloudfail-v2-finding-the-real-ip-behind-cloudflare-and-why-the-old-tool-was-broken-984c216c6062">Medium</source>
+    </item>
+  <item>
+      <title><![CDATA[Six Browser Tabs and a Spreadsheet. There Had to Be a Better Way.]]></title>
+      <link>https://anmolksachan.github.io/blogs/six-browser-tabs-and-a-spreadsheet-there-had-to-be-a-better-way-6575f6b0f0c7/</link>
+      <guid isPermaLink="true">https://anmolksachan.github.io/blogs/six-browser-tabs-and-a-spreadsheet-there-had-to-be-a-better-way-6575f6b0f0c7/</guid>
+      <description><![CDATA[ThreatTracer does in one command what used to take me 40 minutes of manual lookups.Late into a pentest engagement last year, I found myself doing something embarrassing. I had discovered that the target was running an…]]></description>
+      <pubDate>Fri, 20 Feb 2026 07:16:34 GMT</pubDate>
+      <category><![CDATA[Security Research]]></category>
+      
+      <source url="https://anmolksachan.medium.com/six-browser-tabs-and-a-spreadsheet-there-had-to-be-a-better-way-6575f6b0f0c7">Medium</source>
+    </item>
+  <item>
+      <title><![CDATA[Introducing LLM PenTest Hub: Your Complete Resource for AI Security Testing]]></title>
+      <link>https://anmolksachan.github.io/blogs/introducing-llm-pentest-hub-your-complete-resource-for-ai-security-testing-0ff24f47784e/</link>
+      <guid isPermaLink="true">https://anmolksachan.github.io/blogs/introducing-llm-pentest-hub-your-complete-resource-for-ai-security-testing-0ff24f47784e/</guid>
+      <description><![CDATA[By FR13ND0x7F | January 28, 2026As Large Language Models continue to revolutionize how we interact with technology, a new frontier of security challenges has emerged. Today, I’m excited to introduce LLM PenTest Hub — a…]]></description>
+      <pubDate>Wed, 28 Jan 2026 05:23:30 GMT</pubDate>
+      <category><![CDATA[Vulnerability Research]]></category>
+      
+      <source url="https://anmolksachan.medium.com/introducing-llm-pentest-hub-your-complete-resource-for-ai-security-testing-0ff24f47784e">Medium</source>
+    </item>
+  <item>
+      <title><![CDATA[How “The Time Machine v3.0” Landed Me in the CERT-In Hall of Fame]]></title>
+      <link>https://anmolksachan.github.io/blogs/how-the-time-machine-v3-0-landed-me-in-the-cert-in-hall-of-fame-5d356ad34911/</link>
+      <guid isPermaLink="true">https://anmolksachan.github.io/blogs/how-the-time-machine-v3-0-landed-me-in-the-cert-in-hall-of-fame-5d356ad34911/</guid>
+      <description><![CDATA[There’s something oddly satisfying about watching your own code unravel secrets hidden in time.That’s exactly how my evening started, just another casual run of The Time Machine v3.0, my OSINT framework built to…]]></description>
+      <pubDate>Fri, 31 Oct 2025 05:27:28 GMT</pubDate>
+      <category><![CDATA[OSINT]]></category>
+      
+      <source url="https://anmolksachan.medium.com/how-the-time-machine-v3-0-landed-me-in-the-cert-in-hall-of-fame-5d356ad34911">Medium</source>
+    </item>
+  <item>
+      <title><![CDATA[Time Traveling for Bugs: How The Time Machine v3.0 Uncovered More XSS via Google Dorking [Part 2]]]></title>
+      <link>https://anmolksachan.github.io/blogs/time-traveling-for-bugs-how-the-time-machine-v3-0-uncovered-more-xss-via-google-dorking-part-2-95c5c4d44315/</link>
+      <guid isPermaLink="true">https://anmolksachan.github.io/blogs/time-traveling-for-bugs-how-the-time-machine-v3-0-uncovered-more-xss-via-google-dorking-part-2-95c5c4d44315/</guid>
+      <description><![CDATA[After the success of my first run with The Time Machine on REDACTED.com, I couldn’t help but think — what else is hiding out there?Sure, the Wayback Machine gave me 595k+ URLs to chew through, but sometimes, a little…]]></description>
+      <pubDate>Sat, 09 Aug 2025 12:22:12 GMT</pubDate>
+      <category><![CDATA[OSINT]]></category>
+      
+      <source url="https://anmolksachan.medium.com/time-traveling-for-bugs-how-the-time-machine-v3-0-uncovered-more-xss-via-google-dorking-part-2-95c5c4d44315">Medium</source>
+    </item>
+  <item>
+      <title><![CDATA[Time Traveling for Bugs: How The Time Machine v3.0 Uncovered an XSS on REDACTED.com [Part 1]]]></title>
+      <link>https://anmolksachan.github.io/blogs/time-traveling-for-bugs-how-the-time-machine-uncovered-an-xss-on-redacted-com-92e3662a50e4/</link>
+      <guid isPermaLink="true">https://anmolksachan.github.io/blogs/time-traveling-for-bugs-how-the-time-machine-uncovered-an-xss-on-redacted-com-92e3662a50e4/</guid>
+      <description><![CDATA[Hey everyone! As someone who loves digging into web applications, whether for bug bounties or just pure curiosity, I’m always on the lookout for tools that make the recon phase smoother. We all know the Wayback Machine…]]></description>
+      <pubDate>Mon, 04 Aug 2025 05:42:44 GMT</pubDate>
+      <category><![CDATA[OSINT]]></category>
+      
+      <source url="https://anmolksachan.medium.com/time-traveling-for-bugs-how-the-time-machine-uncovered-an-xss-on-redacted-com-92e3662a50e4">Medium</source>
+    </item>
+  <item>
+      <title><![CDATA[ThreatTracer 3.0: Redefining Vulnerability Intelligence for Modern Defenders]]></title>
+      <link>https://anmolksachan.github.io/blogs/threattracer-3-0-redefining-vulnerability-intelligence-for-modern-defenders-7661ffc11873/</link>
+      <guid isPermaLink="true">https://anmolksachan.github.io/blogs/threattracer-3-0-redefining-vulnerability-intelligence-for-modern-defenders-7661ffc11873/</guid>
+      <description><![CDATA[Find CVEs, public exploits, and 0-Day vulnerabilities for any software component.In a world where vulnerabilities emerge daily, security teams need tools that don’t just report risks but anticipate them. ThreatTracer…]]></description>
+      <pubDate>Fri, 02 May 2025 10:25:33 GMT</pubDate>
+      <category><![CDATA[Security Automation]]></category>
+      
+      <source url="https://anmolksachan.medium.com/threattracer-3-0-redefining-vulnerability-intelligence-for-modern-defenders-7661ffc11873">Medium</source>
+    </item>
+  </channel>
+</rss>

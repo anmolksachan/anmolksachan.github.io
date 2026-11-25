@@ -1,0 +1,255 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Reset & base ───────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    @apply bg-bg-base text-txt-primary font-body;
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background: rgba(0, 230, 115, 0.25);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid theme('colors.accent.DEFAULT');
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+  :focus:not(:focus-visible) { outline: none; }
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0c1912; }
+::-webkit-scrollbar-thumb { background: rgba(0,230,115,0.25); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,230,115,0.45); }
+* { scrollbar-width: thin; scrollbar-color: rgba(0,230,115,0.25) #0c1912; }
+
+/* ── Reading progress bar ───────────────────────────────────────────── */
+#reading-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, #00e673, #00d4ff);
+  z-index: 9999;
+  transition: width 0.1s linear;
+}
+
+/* ── Article prose styles ───────────────────────────────────────────── */
+.article-content {
+  @apply text-txt-primary;
+  font-size: 1.0625rem;
+  line-height: 1.85;
+  font-family: theme('fontFamily.body');
+}
+
+.article-content h2,
+.article-content h3,
+.article-content h4 {
+  @apply font-display text-white mt-10 mb-4 scroll-mt-24;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.article-content h2 { @apply text-2xl; }
+.article-content h3 { @apply text-xl; }
+.article-content h4 { @apply text-lg; }
+
+.article-content p { @apply mb-5 text-txt-primary; }
+
+.article-content a {
+  @apply text-accent underline underline-offset-2 decoration-accent/40
+         hover:decoration-accent transition-colors;
+}
+
+.article-content strong { @apply text-white font-semibold; }
+.article-content em     { @apply italic text-txt-secondary; }
+
+.article-content ul,
+.article-content ol {
+  @apply pl-6 mb-5 space-y-1.5;
+}
+.article-content ul > li { list-style: disc; }
+.article-content ol > li { list-style: decimal; }
+.article-content li { @apply text-txt-primary; }
+
+.article-content blockquote {
+  @apply my-6 pl-5 border-l-2 border-accent/40 text-txt-secondary italic;
+}
+
+.article-content hr {
+  @apply my-10 border-0 border-t border-border-subtle;
+}
+
+/* Code inline */
+.article-content :not(pre) > code {
+  @apply font-mono text-accent bg-bg-raised px-1.5 py-0.5 rounded text-sm;
+  font-size: 0.875em;
+}
+
+/* Code blocks */
+.article-content pre {
+  @apply relative my-6 rounded-lg overflow-hidden
+         bg-bg-surface border border-border-subtle;
+  padding: 0;
+}
+
+.article-content pre > code {
+  @apply block font-mono text-sm text-txt-primary p-5 overflow-x-auto;
+  line-height: 1.65;
+}
+
+/* Copy button on code blocks */
+.code-copy-btn {
+  @apply absolute top-3 right-3 text-txt-muted text-xs font-mono
+         px-2.5 py-1 rounded
+         bg-bg-overlay border border-border-subtle
+         hover:border-accent/40 hover:text-accent
+         transition-all cursor-pointer select-none;
+}
+
+/* Figures / images */
+.article-content figure {
+  @apply my-8;
+}
+.article-content figure img,
+.article-content img {
+  @apply w-full rounded-lg border border-border-subtle cursor-zoom-in;
+  max-width: 100%;
+}
+.article-content figcaption {
+  @apply mt-2.5 text-center text-sm text-txt-muted;
+}
+
+/* Tables */
+.article-content table {
+  @apply w-full my-6 border-collapse text-sm;
+}
+.article-content th {
+  @apply px-4 py-2.5 text-left font-semibold text-white
+         bg-bg-raised border-b border-border-base;
+}
+.article-content td {
+  @apply px-4 py-2.5 border-b border-border-subtle text-txt-secondary;
+}
+.article-content tr:last-child td { @apply border-0; }
+
+/* ── TOC ────────────────────────────────────────────────────────────── */
+.toc-item {
+  @apply block text-sm text-txt-muted hover:text-accent transition-colors
+         py-1 border-l-2 border-transparent pl-3;
+}
+.toc-item.active {
+  @apply text-accent border-accent;
+}
+.toc-item[data-level="3"] { @apply pl-6 text-xs; }
+.toc-item[data-level="4"] { @apply pl-9 text-xs; }
+
+/* ── Card ───────────────────────────────────────────────────────────── */
+.article-card {
+  @apply block bg-bg-surface border border-border-subtle rounded-xl overflow-hidden
+         transition-all duration-300 hover:border-border-base hover:shadow-card-hover
+         no-underline;
+}
+.article-card:hover .card-title {
+  @apply text-accent;
+}
+
+/* ── Tag / badge ────────────────────────────────────────────────────── */
+.tag-badge {
+  @apply inline-block text-2xs font-mono uppercase tracking-wider
+         px-2 py-0.5 rounded
+         bg-accent/10 text-accent border border-accent/20;
+}
+.cat-badge {
+  @apply inline-block text-2xs font-mono uppercase tracking-wider
+         px-2.5 py-1 rounded-sm
+         border;
+}
+
+/* ── Lightbox ───────────────────────────────────────────────────────── */
+#lightbox {
+  display: none;
+  position: fixed; inset: 0; z-index: 9000;
+  background: rgba(0,0,0,0.92);
+  align-items: center; justify-content: center;
+  padding: 2rem;
+  cursor: zoom-out;
+}
+#lightbox.active { display: flex; }
+#lightbox img { max-width: 92vw; max-height: 90vh; border-radius: 6px; }
+
+/* ── Search ─────────────────────────────────────────────────────────── */
+.search-results-item {
+  @apply flex gap-3 p-3 rounded-lg cursor-pointer
+         hover:bg-bg-raised transition-colors;
+}
+
+/* ── Cmd+K dialog ───────────────────────────────────────────────────── */
+#cmd-dialog {
+  display: none;
+  position: fixed; inset: 0; z-index: 8000;
+  background: rgba(0,0,0,0.75);
+  align-items: flex-start; justify-content: center;
+  padding-top: 10vh;
+}
+#cmd-dialog.active { display: flex; }
+#cmd-dialog-box {
+  width: min(640px, 92vw);
+  @apply bg-bg-surface border border-border-base rounded-xl overflow-hidden shadow-glow;
+}
+
+/* ── Fade-up animation ──────────────────────────────────────────────── */
+.fade-up-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.fade-up-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Category color map ─────────────────────────────────────────────── */
+[data-cat="Vulnerability Research"] { border-color: rgba(255,61,85,.30); color: #ff3d55; background-color: rgba(255,61,85,.08); }
+[data-cat="AI/LLM Security"]        { border-color: rgba(0,212,255,.30); color: #00d4ff; background-color: rgba(0,212,255,.08); }
+[data-cat="Bug Bounty"]             { border-color: rgba(255,197,51,.30); color: #ffc533; background-color: rgba(255,197,51,.08); }
+[data-cat="OSINT"]                  { border-color: rgba(176,90,242,.30); color: #b05af2; background-color: rgba(176,90,242,.08); }
+[data-cat="Security Tooling"]       { border-color: rgba(255,149,68,.30); color: #ff9544; background-color: rgba(255,149,68,.08); }
+[data-cat="Security Automation"]    { border-color: rgba(0,230,115,.30); color: #00e673; background-color: rgba(0,230,115,.10); }
+[data-cat="API Security"]           { border-color: rgba(0,212,255,.30); color: #00d4ff; background-color: rgba(0,212,255,.08); }
+[data-cat="Web Security"]           { border-color: rgba(255,197,51,.30); color: #ffc533; background-color: rgba(255,197,51,.08); }
+[data-cat="Security Research"]      { border-color: rgba(73,102,84,.30); color: #7fa990; background-color: #111f17; }
+
+/* ── Reduced motion ─────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .fade-up-on-scroll { opacity: 1; transform: none; }
+}
+
+/* ── Print ──────────────────────────────────────────────────────────── */
+@media print {
+  #reading-progress, header, footer, .toc-sidebar,
+  .share-section, .related-section, .prev-next { display: none !important; }
+  body { background: white; color: black; }
+  .article-content a { color: inherit; text-decoration: underline; }
+}

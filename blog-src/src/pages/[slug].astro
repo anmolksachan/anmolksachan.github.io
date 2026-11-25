@@ -1,0 +1,297 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header     from '../components/Header.astro';
+import Footer     from '../components/Footer.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import articlesRaw from '../data/articles.json';
+import type { Article } from '../lib/articles';
+import {
+  deriveCategory, formatDate, relatedArticles,
+  extractToc, injectHeadingIds,
+} from '../lib/articles';
+
+export function getStaticPaths() {
+  const articles = articlesRaw as Article[];
+  return articles.map(a => ({ params: { slug: a.slug }, props: { article: a, all: articles } }));
+}
+
+interface Props {
+  article: Article;
+  all:     Article[];
+}
+
+const { article, all } = Astro.props;
+const cat      = deriveCategory(article);
+const related  = relatedArticles(article, all, 3);
+
+// Inject heading IDs and extract TOC
+const contentWithIds = injectHeadingIds(article.content);
+const toc = extractToc(article.content);
+
+// Prev / next
+const sorted = [...all].sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
+const idx    = sorted.findIndex(a => a.id === article.id);
+const prev   = idx < sorted.length - 1 ? sorted[idx + 1] : null;
+const next   = idx > 0                 ? sorted[idx - 1] : null;
+
+const base = '/blogs';
+const pageUrl = `https://anmolksachan.github.io${base}/${article.slug}/`;
+---
+
+<BaseLayout
+  title={article.title}
+  description={article.excerpt}
+  image={article.cover?.src}
+  canonical={pageUrl}
+  type="article"
+  pubDate={article.pubDate}
+  tags={article.tags}
+>
+  <!-- Reading progress bar -->
+  <div id="reading-progress"
+       class="fixed top-0 left-0 z-[100] h-0.5 bg-accent transition-none"
+       style="width: 0%; will-change: width;"
+       role="progressbar" aria-label="Reading progress" aria-valuenow="0"
+       aria-valuemin="0" aria-valuemax="100"></div>
+
+  <Header currentPath={`${base}/${article.slug}/`} />
+
+  <main id="main-content">
+
+    <!-- ── ARTICLE HERO ──────────────────────────────────────────────── -->
+    <div class="border-b border-border-subtle bg-bg-base">
+      {article.cover && (
+        <div class="relative h-64 sm:h-80 md:h-96 overflow-hidden">
+          <img src={article.cover.src} alt={article.cover.alt || article.title}
+               class="w-full h-full object-cover" loading="eager" />
+          <div class="absolute inset-0 bg-gradient-to-t from-bg-base via-bg-base/50 to-transparent"></div>
+        </div>
+      )}
+
+      <div class="max-w-layout mx-auto px-5 pt-10 pb-8">
+        <!-- Breadcrumb -->
+        <nav aria-label="Breadcrumb" class="mb-6">
+          <ol class="flex items-center gap-2 text-xs font-mono text-txt-muted list-none p-0">
+            <li><a href={`${base}/`} class="hover:text-accent transition-colors no-underline">~/blogs</a></li>
+            <li aria-hidden="true" class="opacity-40">/</li>
+            <li class="text-txt-secondary truncate max-w-xs">{article.slug}</li>
+          </ol>
+        </nav>
+
+        <!-- Category badge -->
+        <div class="mb-4">
+          <span class="cat-badge" data-cat={cat}>{cat}</span>
+        </div>
+
+        <!-- Title -->
+        <h1 class="font-display font-bold text-3xl sm:text-4xl md:text-5xl text-white leading-tight tracking-tight mb-6 max-w-3xl">
+          {article.title}
+        </h1>
+
+        <!-- Meta row -->
+        <div class="flex flex-wrap items-center gap-4 text-sm font-mono text-txt-muted">
+          <span class="text-txt-secondary font-medium">{article.author}</span>
+          <span aria-hidden="true" class="opacity-40">·</span>
+          <time datetime={article.pubDate}>{formatDate(article.pubDate)}</time>
+          <span aria-hidden="true" class="opacity-40">·</span>
+          <span>{article.readingTime} min read</span>
+          {article.tags.length > 0 && (
+            <>
+              <span aria-hidden="true" class="opacity-40">·</span>
+              <div class="flex flex-wrap gap-2">
+                {article.tags.slice(0, 4).map(tag => (
+                  <span class="tag-badge">{tag}</span>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        <!-- Share row -->
+        <div class="mt-6 flex flex-wrap items-center gap-3">
+          <span class="text-xs font-mono text-txt-muted uppercase tracking-wider">Share:</span>
+          <button
+            id="copy-link-btn"
+            onclick={`navigator.clipboard.writeText('${pageUrl}').then(()=>{const b=document.getElementById('copy-link-btn');b.textContent='Copied!';b.classList.add('text-accent');setTimeout(()=>{b.textContent='Copy link';b.classList.remove('text-accent')},2000)})`}
+            class="inline-flex items-center gap-1.5 text-xs font-mono text-txt-secondary hover:text-accent
+                   border border-border-subtle px-3 py-1.5 rounded transition-colors cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+            Copy link
+          </button>
+          <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(pageUrl)}&via=FR13ND0x7f`}
+             target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-1.5 text-xs font-mono text-txt-secondary hover:text-accent
+                    border border-border-subtle px-3 py-1.5 rounded transition-colors no-underline">
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.736-8.858L1.999 2.25H8.08l4.261 5.636 5.903-5.636zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+            Tweet
+          </a>
+          <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pageUrl)}`}
+             target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-1.5 text-xs font-mono text-txt-secondary hover:text-accent
+                    border border-border-subtle px-3 py-1.5 rounded transition-colors no-underline">
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+            Share
+          </a>
+          <a href={article.mediumUrl} target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-1.5 text-xs font-mono text-txt-secondary hover:text-accent
+                    border border-border-subtle px-3 py-1.5 rounded transition-colors no-underline ml-auto">
+            View on Medium ↗
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CONTENT AREA ──────────────────────────────────────────────── -->
+    <div class="max-w-layout mx-auto px-5 py-12">
+      <div class="flex gap-12 items-start">
+
+        <!-- Article body -->
+        <article class="min-w-0 flex-1 max-w-2xl xl:max-w-3xl">
+          <div class="article-content" set:html={contentWithIds} />
+
+          <!-- Article footer -->
+          <div class="mt-12 pt-8 border-t border-border-subtle">
+            <div class="flex flex-wrap items-center gap-3">
+              <span class="text-xs font-mono text-txt-muted uppercase tracking-wider">Tags:</span>
+              {article.tags.length > 0 ? article.tags.map(tag => (
+                <span class="tag-badge">{tag}</span>
+              )) : (
+                <span class="tag-badge">{cat}</span>
+              )}
+            </div>
+          </div>
+
+          <!-- Prev / Next nav -->
+          {(prev || next) && (
+            <nav aria-label="Article navigation" class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {prev ? (
+                <a href={`${base}/${prev.slug}/`}
+                   class="group flex flex-col gap-1 p-4 rounded-lg border border-border-subtle
+                          hover:border-border-base bg-bg-surface transition-all no-underline">
+                  <span class="text-xs font-mono text-txt-muted uppercase tracking-wider">Previous</span>
+                  <span class="text-sm font-medium text-txt-secondary group-hover:text-txt-primary transition-colors line-clamp-2">
+                    {prev.title}
+                  </span>
+                </a>
+              ) : <div />}
+              {next ? (
+                <a href={`${base}/${next.slug}/`}
+                   class="group flex flex-col gap-1 p-4 rounded-lg border border-border-subtle
+                          hover:border-border-base bg-bg-surface transition-all no-underline sm:text-right">
+                  <span class="text-xs font-mono text-txt-muted uppercase tracking-wider">Next</span>
+                  <span class="text-sm font-medium text-txt-secondary group-hover:text-txt-primary transition-colors line-clamp-2">
+                    {next.title}
+                  </span>
+                </a>
+              ) : <div />}
+            </nav>
+          )}
+        </article>
+
+        <!-- Sticky sidebar: TOC -->
+        {toc.length > 2 && (
+          <aside class="hidden xl:block w-64 shrink-0 sticky top-20 self-start max-h-[calc(100vh-6rem)] overflow-y-auto"
+                 aria-label="Table of contents">
+            <div class="border border-border-subtle rounded-lg bg-bg-surface p-5">
+              <p class="text-xs font-mono uppercase tracking-wider text-txt-muted mb-4">Contents</p>
+              <nav>
+                <ul class="list-none p-0 space-y-1" id="toc-list">
+                  {toc.map(item => (
+                    <li>
+                      <a href={`#${item.id}`}
+                         class:list={[
+                           'toc-item block text-sm transition-colors no-underline',
+                           item.level === 2 ? 'pl-0' : item.level === 3 ? 'pl-3' : 'pl-6',
+                         ]}
+                         data-toc-id={item.id}>
+                        {item.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
+          </aside>
+        )}
+      </div>
+    </div>
+
+    <!-- ── RELATED ARTICLES ──────────────────────────────────────────── -->
+    {related.length > 0 && (
+      <section class="border-t border-border-subtle bg-bg-surface">
+        <div class="max-w-layout mx-auto px-5 py-14">
+          <div class="flex items-center gap-3 mb-8">
+            <span class="text-xs font-mono uppercase tracking-wider text-accent">Related Articles</span>
+            <span class="flex-1 h-px bg-border-subtle"></span>
+            <a href={`${base}/`} class="text-xs font-mono text-txt-muted hover:text-accent transition-colors no-underline">
+              All articles →
+            </a>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {related.map(a => (
+              <ArticleCard article={a} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+  </main>
+
+  <Footer />
+
+  <!-- Reading progress + TOC active state -->
+  <script>
+    // Reading progress
+    const bar = document.getElementById('reading-progress')!;
+    const article = document.querySelector('.article-content') as HTMLElement;
+
+    function updateProgress() {
+      if (!article) return;
+      const rect   = article.getBoundingClientRect();
+      const total  = article.offsetHeight;
+      const scrolled = -rect.top;
+      const pct = Math.min(100, Math.max(0, (scrolled / total) * 100));
+      bar.style.width = pct + '%';
+      bar.setAttribute('aria-valuenow', String(Math.round(pct)));
+    }
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+
+    // TOC active heading
+    const tocLinks = document.querySelectorAll<HTMLAnchorElement>('[data-toc-id]');
+    if (tocLinks.length > 0) {
+      const headings = [...tocLinks].map(l => document.getElementById(l.dataset.tocId!)).filter(Boolean) as HTMLElement[];
+
+      const tocObserver = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            tocLinks.forEach(l => l.classList.toggle('active', l.dataset.tocId === id));
+          }
+        }
+      }, { rootMargin: '-20% 0% -60% 0%' });
+
+      headings.forEach(h => tocObserver.observe(h));
+    }
+
+    // Smooth scroll for TOC links
+    document.querySelectorAll('[data-toc-id]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const id = (link as HTMLElement).dataset.tocId!;
+        const target = document.getElementById(id);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</BaseLayout>
